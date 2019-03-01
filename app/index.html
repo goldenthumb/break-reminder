@@ -11,8 +11,8 @@
     const port = process.env.PORT || 3000;
 
     const script = process.env.NODE_ENV === 'development'
-      ? `http://localhost:${port}/dist/app.min.js`
-      : '../dist/app.min.js';
+      ? `http://localhost:${port}/app/dist/app.min.js`
+      : '../app/dist/app.min.js';
 
     document.write(`<script defer src="${script}"><\/script>`);
   }

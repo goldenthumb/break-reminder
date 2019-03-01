@@ -6,20 +6,38 @@ if (process.env.NODE_ENV === 'development') {
   require('electron-debug')();
 }
 
-app.on('ready', async () => {
+const createWindow = () => {
   mainWindow = new BrowserWindow({
-    show: false,
-    width: 1000,
-    height: 800
+    width: 800,
+    height: 600,
+    show: false
   });
 
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+  if (process.env.NODE_ENV === 'development') {
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
+  mainWindow.on('closed', () => {
+    app.quit();
+  });
+};
+
+app.on('ready', createWindow);
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createWindow();
   }
 });

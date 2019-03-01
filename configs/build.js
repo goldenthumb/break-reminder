@@ -4,6 +4,7 @@ const config = {
   ...devConfig,
   devtool: false,
   mode: 'production',
+  target: 'electron-main',
 };
 
 config.output.filename = 'app.min.js';

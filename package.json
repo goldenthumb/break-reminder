@@ -4,11 +4,43 @@
   "description": "",
   "main": "app/main.js",
   "scripts": {
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack/devserver.js",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --config configs/devserver.js",
     "start": "npm run build && npm run start-maincross-env NODE_ENV=production electron ./app/main.js",
-    "package": "npm run build && electron-packager ./ --out=./release",
-    "build": "cross-env NODE_ENV=production webpack --config webpack/build",
+    "package": "npm run build && electron-builder build --publish never",
+    "build": "cross-env NODE_ENV=production webpack --config configs/build",
     "start-main-dev": "cross-env NODE_ENV=development electron ./app/main.js"
+  },
+  "build": {
+    "productName": "HelloElectron",
+    "appId": "com.electron.hello",
+    "asar": true,
+    "protocols": {
+      "name": "helloElectron",
+      "schemes": [
+        "helloelectron"
+      ]
+    },
+    "mac": {
+      "target": [
+        "default"
+      ],
+      "icon": "./resources/installer/icon.icns"
+    },
+    "dmg": {
+      "title": "HelloElectron",
+      "icon": "./resources/installer/icon.icns"
+    },
+    "win": {
+      "target": [
+        "zip",
+        "nsis"
+      ],
+      "icon": "./resources/installer/icon.ico"
+    },
+    "directories": {
+      "buildResources": "resources",
+      "output": "release"
+    }
   },
   "repository": {
     "type": "git",
@@ -22,13 +54,18 @@
   },
   "homepage": "https://github.com/goldenthumb/stretch-reminder#readme",
   "devDependencies": {
+    "autoprefixer": "^9.4.9",
     "@babel/core": "^7.3.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
     "cross-env": "^5.2.0",
+    "cross-spawn": "^6.0.5",
     "css-loader": "^2.1.0",
+    "electron": "^4.0.5",
+    "electron-builder": "^20.38.5",
+    "electron-debug": "^2.1.0",
     "eslint": "^5.14.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-airbnb-base": "^13.1.0",
@@ -44,12 +81,6 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
-    "autoprefixer": "^9.4.9",
-    "cross-spawn": "^6.0.5",
-    "electron": "^4.0.5",
-    "electron-builder": "^20.38.5",
-    "electron-debug": "^2.1.0",
-    "electron-packager": "^13.1.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3"
   }

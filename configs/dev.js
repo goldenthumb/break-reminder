@@ -9,8 +9,8 @@ module.exports = {
   target: 'electron-renderer',
   entry: [resolve(__dirname, '../app/index.js')],
   output: {
-    path: resolve(__dirname, '../dist'),
-    publicPath: `http://localhost:${port}/dist/`,
+    path: resolve(__dirname, '../app/dist'),
+    publicPath: `http://localhost:${port}/app/dist/`,
     filename: 'app.min.js'
   },
   module: {

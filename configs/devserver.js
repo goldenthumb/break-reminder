@@ -22,7 +22,7 @@ module.exports = () => {
         ignored: /node_modules/,
         poll: 100
       },
-      setup() {
+      before() {
         spawn('npm', ['run', 'start-main-dev'], {
           shell: true,
           env: process.env,
