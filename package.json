@@ -1,5 +1,5 @@
 {
-  "name": "stretch-reminder",
+  "name": "break-reminder",
   "version": "0.0.1",
   "description": "",
   "main": "app/main.js",
@@ -11,15 +11,9 @@
     "start-main-dev": "cross-env NODE_ENV=development electron ./app/main.js"
   },
   "build": {
-    "productName": "HelloElectron",
-    "appId": "com.electron.hello",
+    "productName": "BreakReminder",
+    "appId": "com.electron.BreakReminder",
     "asar": true,
-    "protocols": {
-      "name": "helloElectron",
-      "schemes": [
-        "helloelectron"
-      ]
-    },
     "mac": {
       "target": [
         "default"
@@ -28,7 +22,19 @@
     },
     "dmg": {
       "title": "HelloElectron",
-      "icon": "./resources/installer/icon.icns"
+      "icon": "./resources/installer/icon.icns",
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     },
     "win": {
       "target": [
@@ -44,15 +50,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/goldenthumb/stretch-reminder.git"
+    "url": "git+https://github.com/goldenthumb/break-reminder.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/goldenthumb/stretch-reminder/issues"
+    "url": "https://github.com/goldenthumb/break-reminder/issues"
   },
-  "homepage": "https://github.com/goldenthumb/stretch-reminder#readme",
+  "homepage": "https://github.com/goldenthumb/break-reminder#readme",
   "devDependencies": {
     "autoprefixer": "^9.4.9",
     "@babel/core": "^7.3.3",
