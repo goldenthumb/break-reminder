@@ -60,8 +60,8 @@
   },
   "homepage": "https://github.com/goldenthumb/break-reminder#readme",
   "devDependencies": {
-    "autoprefixer": "^9.4.9",
     "@babel/core": "^7.3.3",
+    "@babel/plugin-proposal-class-properties": "^7.3.4",
     "@babel/plugin-proposal-object-rest-spread": "^7.3.2",
     "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^10.0.1",
@@ -79,7 +79,6 @@
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.12.4",
     "node-sass": "^4.11.0",
-    "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "webpack": "^4.29.5",
@@ -87,7 +86,9 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
+    "query-string": "^6.3.0",
     "react": "^16.8.3",
-    "react-dom": "^16.8.3"
+    "react-dom": "^16.8.3",
+    "react-router-dom": "^4.3.1"
   }
 }

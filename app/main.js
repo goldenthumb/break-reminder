@@ -28,12 +28,11 @@ const createWindow = () => {
     y: bounds.y - 400 - 10,
     acceptFirstMouse: true,
     show: false,
-    resizable: false,
     movable: false,
     frame: false,
   });
 
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.loadURL(`file://${__dirname}/index.html?page=main`);
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
