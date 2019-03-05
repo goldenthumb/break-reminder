@@ -1,48 +1,65 @@
 import React, { Component } from 'react';
 import { remote } from 'electron';
 
-import { compose } from '../lib/utils';
+import { compose, delay } from '../lib/utils';
 import { useConsumer } from '../contexts';
 import withGetInitInfo from '../components/withGetInitInfo';
 
 const { BrowserWindow, screen } = remote;
 
-let blockWindow = null;
-
 class Main extends Component {
-  constructor(props) {
-    super(props);
-
-    this.timer = null;
+  componentDidMount() {
+    this.openBlockWindows();
   }
 
-  componentDidMount() {
+  componentDidUpdate(prevProps) {
     const { ctx: { state } } = this.props;
+    const { ctx: { state: prevState } } = prevProps;
+
+    if (!state.blockWindows && prevState.blockWindows) {
+      this.openBlockWindows();
+    }
+
+    if (state.blockWindows && !prevState.blockWindows) {
+      this.closeBlockWindows();
+    }
+  }
+
+  async openBlockWindows() {
+    const { ctx: { state, actions } } = this.props;
     const { intervalTime, config } = state;
 
-    this.timer = setTimeout(() => {
-      for (const { size } of screen.getAllDisplays()) {
-        blockWindow = new BrowserWindow({
-          resizable: false,
-          show: false,
-          ...size
-        });
+    await delay(intervalTime);
 
-        blockWindow.loadURL(`${config.renderPath}?page=block`);
+    const blockWindows = {};
 
-        blockWindow.once('ready-to-show', () => {
-          blockWindow.show();
-        });
-      }
-    }, intervalTime);
+    for (const { id, size } of screen.getAllDisplays()) {
+      const window = new BrowserWindow({
+        resizable: false,
+        show: false,
+        ...size
+      });
+
+      window.loadURL(`${config.renderPath}?page=block`);
+      window.once('ready-to-show', window.show);
+
+      blockWindows[id] = { id, window };
+    }
+
+    actions.setBlockWindows(blockWindows);
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.timer);
+  async closeBlockWindows() {
+    const { ctx: { state, actions } } = this.props;
+    const { blockWindows, breakTime } = state;
+
+    await delay(breakTime);
+
+    Object.values(blockWindows).map(({ window }) => window.close());
+    actions.setBlockWindows(null);
   }
 
   render() {
-
     return (
       <div>Main</div>
     )

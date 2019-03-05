@@ -8,17 +8,15 @@ class Provider extends Component {
     super(props);
 
     this.state = {
+      config: null,
       intervalTime: 20 * 60 * 1000,
       breakTime: 10 * 1000,
-      showBlockWindow: false,
-      config: null
+      blockWindows: null
     };
 
     this.actions = {
       setConfig: (config) => {
-        this.setState({
-          config
-        });
+        this.setState({ config });
       },
       setIntervalTime: (time) => {
         this.setState({
@@ -30,15 +28,8 @@ class Provider extends Component {
           breakTime: time
         });
       },
-      showBlockWindow: () => {
-        this.setState({
-          showBlockWindow: true
-        });
-      },
-      closeBlockWindow: () => {
-        this.setState({
-          showBlockWindow: false
-        });
+      setBlockWindows: (blockWindows) => {
+        this.setState({ blockWindows });
       }
     };
   }

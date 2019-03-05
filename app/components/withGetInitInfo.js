@@ -8,14 +8,20 @@ const withGetInitInfo = (WrappedComponent) => {
     constructor(props) {
       super(props);
 
-      const { ctx: { actions } } = props;
-
       ipcRenderer.send('requestInitInfo');
 
-      ipcRenderer.on('initInfo', (event, arg) => {
-        actions.setConfig(arg);
-      });
+      ipcRenderer.on('initInfo', this.initInfoListener);
     }
+
+    componentWillUnmount() {
+      ipcRenderer.removeListener('initInfo', this.initInfoListener);
+    }
+
+    initInfoListener = (event, arg) => {
+      const { ctx: { actions } } = this.props;
+
+      actions.setConfig(arg);
+    };
 
     render() {
       const { ctx: { state } } = this.props;
