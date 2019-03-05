@@ -4,9 +4,44 @@ const Context = createContext();
 const { Provider: ContextProvider, Consumer } = Context;
 
 class Provider extends Component {
-  state = {};
+  constructor(props) {
+    super(props);
 
-  actions = {};
+    this.state = {
+      intervalTime: 20 * 60 * 1000,
+      breakTime: 10 * 1000,
+      showBlockWindow: false,
+      config: null
+    };
+
+    this.actions = {
+      setConfig: (config) => {
+        this.setState({
+          config
+        });
+      },
+      setIntervalTime: (time) => {
+        this.setState({
+          breakInterval: time
+        });
+      },
+      setBreakTime: (time) => {
+        this.setState({
+          breakTime: time
+        });
+      },
+      showBlockWindow: () => {
+        this.setState({
+          showBlockWindow: true
+        });
+      },
+      closeBlockWindow: () => {
+        this.setState({
+          showBlockWindow: false
+        });
+      }
+    };
+  }
 
   render() {
     const { state, actions } = this;

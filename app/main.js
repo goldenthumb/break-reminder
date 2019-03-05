@@ -1,12 +1,9 @@
-const { app, BrowserWindow, Tray } = require('electron');
+const { app, BrowserWindow, Tray, ipcMain } = require('electron');
 const path = require('path');
 
+const renderPath = `file://${__dirname}/index.html`;
 let mainWindow = null;
 let tray = null;
-
-if (process.env.NODE_ENV === 'development') {
-  require('electron-debug')();
-}
 
 const createWindow = () => {
   tray = new Tray(path.resolve(__dirname, '../resources/tray.png'));
@@ -32,11 +29,15 @@ const createWindow = () => {
     frame: false,
   });
 
-  mainWindow.loadURL(`file://${__dirname}/index.html?page=main`);
+  mainWindow.loadURL(`${renderPath}?page=main`);
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();
   }
+
+  ipcMain.on('requestInitInfo', (event) => {
+    event.sender.send('initInfo', { renderPath })
+  });
 
   mainWindow.on('closed', () => {
     app.quit();
