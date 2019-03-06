@@ -1,23 +1,19 @@
-import React, { Component, PureComponent, createContext } from 'react';
+import React, { Component, createContext } from 'react';
 
 const Context = createContext();
-const { Provider: ContextProvider, Consumer } = Context;
+const { Provider: ContextProvider } = Context;
 
 class Provider extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      config: null,
-      intervalTime: 20 * 60 * 1000,
-      breakTime: 10 * 1000,
+      intervalTime: 6 * 1000,
+      breakTime: 3 * 1000,
       blockWindows: null
     };
 
     this.actions = {
-      setConfig: (config) => {
-        this.setState({ config });
-      },
       setIntervalTime: (time) => {
         this.setState({
           breakInterval: time
@@ -47,29 +43,4 @@ class Provider extends Component {
   }
 }
 
-const useConsumer = (WrappedComponent) => {
-  class WrapperComponent extends PureComponent {
-    render() {
-      return (
-        <Consumer>
-          {
-            (contexts) => (
-              <WrappedComponent
-                {...this.props}
-                ctx={contexts}
-              />
-            )
-          }
-        </Consumer>
-      );
-    }
-  }
-
-  WrapperComponent.displayName = `SubscribeWrap(${
-    WrappedComponent.displayName || WrappedComponent.name
-  })`;
-
-  return WrapperComponent;
-};
-
-export { Provider, useConsumer };
+export { Provider, Context };

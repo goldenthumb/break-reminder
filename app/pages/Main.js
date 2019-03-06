@@ -1,37 +1,24 @@
-import React, { Component } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { remote } from 'electron';
 
-import { compose, delay } from '../lib/utils';
-import { useConsumer } from '../contexts';
-import withGetInitInfo from '../components/withGetInitInfo';
+import { delay } from '../lib/utils';
+
+import { Context } from '../contexts';
+import useGetConfig from '../hooks/useGetConfig';
 
 const { BrowserWindow, screen } = remote;
 
-class Main extends Component {
-  componentDidMount() {
-    this.openBlockWindows();
-  }
+const Main = () => {
+  const [config] = useGetConfig();
+  const { state, actions } = useContext(Context);
+  const { blockWindows, intervalTime, breakTime } = state;
 
-  componentDidUpdate(prevProps) {
-    const { ctx: { state } } = this.props;
-    const { ctx: { state: prevState } } = prevProps;
-
-    if (!state.blockWindows && prevState.blockWindows) {
-      this.openBlockWindows();
-    }
-
-    if (state.blockWindows && !prevState.blockWindows) {
-      this.closeBlockWindows();
-    }
-  }
-
-  async openBlockWindows() {
-    const { ctx: { state, actions } } = this.props;
-    const { intervalTime, config } = state;
+  const openBlockWindows = async () => {
+    if (!config || blockWindows) return;
 
     await delay(intervalTime);
 
-    const blockWindows = {};
+    const nextBlockWindows = {};
 
     for (const { id, size } of screen.getAllDisplays()) {
       const window = new BrowserWindow({
@@ -43,27 +30,31 @@ class Main extends Component {
       window.loadURL(`${config.renderPath}?page=block`);
       window.once('ready-to-show', window.show);
 
-      blockWindows[id] = { id, window };
+      nextBlockWindows[id] = { id, window };
     }
 
-    actions.setBlockWindows(blockWindows);
-  }
+    actions.setBlockWindows(nextBlockWindows);
+  };
 
-  async closeBlockWindows() {
-    const { ctx: { state, actions } } = this.props;
-    const { blockWindows, breakTime } = state;
+  const closeBlockWindows = async () => {
+    if (!blockWindows) return;
 
     await delay(breakTime);
 
     Object.values(blockWindows).map(({ window }) => window.close());
     actions.setBlockWindows(null);
-  }
+  };
 
-  render() {
-    return (
-      <div>Main</div>
-    )
-  }
-}
+  useEffect(() => {
+    openBlockWindows();
+    closeBlockWindows();
+  }, [config, blockWindows, intervalTime, breakTime]);
 
-export default compose(withGetInitInfo, useConsumer)(Main);
+  return (
+    <div>
+      main
+    </div>
+  )
+};
+
+export default Main;
