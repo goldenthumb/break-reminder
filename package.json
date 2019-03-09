@@ -86,9 +86,11 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
+    "node-notifier": "^5.4.0",
     "query-string": "^6.3.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
+    "react-icons": "^3.5.0",
     "react-router-dom": "^4.3.1"
   }
 }

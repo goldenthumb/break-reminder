@@ -1,0 +1,18 @@
+@import '../../styles/variable';
+
+.header {
+  display: flex;
+  background: #f6fbff;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  color: $defaultColor;
+  border-bottom: 1px solid #f0f7fb;
+}
+
+.title {
+  width: 80%;
+  text-align: center;
+  vertical-align: middle;
+  color: $defaultColor;
+}

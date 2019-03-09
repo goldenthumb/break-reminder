@@ -8,21 +8,17 @@ class Provider extends Component {
     super(props);
 
     this.state = {
-      intervalTime: 6 * 1000,
-      breakTime: 3 * 1000,
+      intervalTime: 20 * 60 * 1000,
+      breakTime: 10 * 1000,
       blockWindows: null
     };
 
     this.actions = {
-      setIntervalTime: (time) => {
-        this.setState({
-          breakInterval: time
-        });
+      setIntervalTime: (intervalTime) => {
+        this.setState({ breakInterval });
       },
-      setBreakTime: (time) => {
-        this.setState({
-          breakTime: time
-        });
+      setBreakTime: (breakTime) => {
+        this.setState({ breakTime });
       },
       setBlockWindows: (blockWindows) => {
         this.setState({ blockWindows });

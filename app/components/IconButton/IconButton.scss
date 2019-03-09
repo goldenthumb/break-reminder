@@ -1,0 +1,11 @@
+@import '../../styles/variable';
+
+.button {
+  position: relative;
+  top: 2px;
+  border: 0;
+  background: none;
+  vertical-align: middle;
+  font-size: 22px;
+  color: $defaultColor;
+}

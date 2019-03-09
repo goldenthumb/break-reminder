@@ -6,6 +6,8 @@ import { delay } from '../lib/utils';
 import { Context } from '../contexts';
 import useGetConfig from '../hooks/useGetConfig';
 
+import Header from '../components/Header';
+
 const { BrowserWindow, screen } = remote;
 
 const Main = () => {
@@ -50,11 +52,9 @@ const Main = () => {
     closeBlockWindows();
   }, [config, blockWindows, intervalTime, breakTime]);
 
-  return (
-    <div>
-      main
-    </div>
-  )
+  return <>
+    <Header />
+  </>
 };
 
 export default Main;
