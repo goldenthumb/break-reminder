@@ -1,0 +1,13 @@
+@import '../../styles/variable';
+
+.time-board {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  font-size: 60px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  background: $lightBlue;
+  color: $defaultColor;
+}

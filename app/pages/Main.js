@@ -1,59 +1,52 @@
 import React, { useEffect, useContext } from 'react';
-import { remote } from 'electron';
 
-import { delay } from '../lib/utils';
+import delay from 'delay';
+import { openBlockWindow, closeBlockWindow } from '../lib/blockWinManager';
 
 import { Context } from '../contexts';
 import useGetConfig from '../hooks/useGetConfig';
 
 import Header from '../components/Header';
-
-const { BrowserWindow, screen } = remote;
+import TimeBoard from '../components/TimeBoard';
 
 const Main = () => {
   const [config] = useGetConfig();
   const { state, actions } = useContext(Context);
-  const { blockWindows, intervalTime, breakTime } = state;
+  const { blockWindows, breakInterval, breakDuration } = state;
 
-  const openBlockWindows = async () => {
+  const setTimer = async () => {
     if (!config || blockWindows) return;
 
-    await delay(intervalTime);
-
-    const nextBlockWindows = {};
-
-    for (const { id, size } of screen.getAllDisplays()) {
-      const window = new BrowserWindow({
-        resizable: false,
-        show: false,
-        ...size
-      });
-
-      window.loadURL(`${config.renderPath}?page=block`);
-      window.once('ready-to-show', window.show);
-
-      nextBlockWindows[id] = { id, window };
-    }
+    const timer = await delay(breakInterval);
+    const nextBlockWindows = openBlockWindow(config.renderPath);
 
     actions.setBlockWindows(nextBlockWindows);
+
+    return () => timer.clear();
   };
 
   const closeBlockWindows = async () => {
     if (!blockWindows) return;
 
-    await delay(breakTime);
+    const timer = await delay(breakDuration);
 
-    Object.values(blockWindows).map(({ window }) => window.close());
+    closeBlockWindow(blockWindows);
     actions.setBlockWindows(null);
+
+    return () => timer.clear();
   };
 
   useEffect(() => {
-    openBlockWindows();
+    setTimer();
+  }, [config, blockWindows, breakInterval]);
+
+  useEffect(() => {
     closeBlockWindows();
-  }, [config, blockWindows, intervalTime, breakTime]);
+  }, [blockWindows, breakDuration]);
 
   return <>
     <Header />
+    <TimeBoard />
   </>
 };
 

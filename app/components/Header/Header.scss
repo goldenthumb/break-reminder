@@ -2,7 +2,7 @@
 
 .header {
   display: flex;
-  background: #f6fbff;
+  background: $lightBlue;
   height: 40px;
   justify-content: center;
   align-items: center;
@@ -11,7 +11,7 @@
 }
 
 .title {
-  width: 80%;
+  width: calc(100% - 80px);
   text-align: center;
   vertical-align: middle;
   color: $defaultColor;

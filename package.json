@@ -86,6 +86,7 @@
     "webpack-dev-server": "^3.2.1"
   },
   "dependencies": {
+    "delay": "^4.1.0",
     "node-notifier": "^5.4.0",
     "query-string": "^6.3.0",
     "react": "^16.8.3",
