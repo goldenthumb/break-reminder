@@ -1,20 +1,20 @@
 import React from 'react';
-import { IoIosArrowBack, IoIosSettings } from 'react-icons/io';
+import { IoIosPower, IoIosSettings } from 'react-icons/io';
 import css from './Header.scss';
 
-import IconButton from '../IconButton';
+import Button from '../Button';
 
 const Header = () => (
   <div className={css['header']}>
-    <IconButton action={() => {}}>
-      <IoIosArrowBack />
-    </IconButton>
+    <Button theme='icon' action={() => {}}>
+      <IoIosSettings />
+    </Button>
     <div className={css['title']}>
       Break Reminder
     </div>
-    <IconButton action={() => {}}>
-      <IoIosSettings />
-    </IconButton>
+    <Button theme='icon' action={() => {}}>
+      <IoIosPower />
+    </Button>
   </div>
 );
 

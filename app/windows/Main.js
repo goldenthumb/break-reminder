@@ -8,6 +8,7 @@ import useGetConfig from '../hooks/useGetConfig';
 
 import Header from '../components/Header';
 import TimeBoard from '../components/TimeBoard';
+import OptionList from '../components/OptionList';
 
 const Main = () => {
   const [config] = useGetConfig();
@@ -25,7 +26,7 @@ const Main = () => {
     return () => timer.clear();
   };
 
-  const setBreakDuration = async () => {
+  const setBreakDurationTimer = async () => {
     if (!showBreakWindow) return;
 
     const timer = await delay(breakDuration);
@@ -41,12 +42,13 @@ const Main = () => {
   }, [config, showBreakWindow, breakInterval]);
 
   useEffect(() => {
-    setBreakDuration();
+    setBreakDurationTimer();
   }, [showBreakWindow, breakDuration]);
 
   return <>
     <Header />
     <TimeBoard />
+    <OptionList />
   </>
 };
 

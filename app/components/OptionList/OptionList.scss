@@ -1,0 +1,19 @@
+@import '../../styles/variable';
+
+.option-list {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  background: white;
+  width: calc(100% - 24px);
+  transform: translateX(-50%);
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 0px -1px 20px 0px rgba(220, 220, 220, 0.75);
+}
+
+.option-item {
+  color: #94969e;
+  padding: 12px 16px;
+  border-bottom: 1px solid #ebecec;
+}

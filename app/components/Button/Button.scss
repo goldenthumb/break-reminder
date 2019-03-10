@@ -1,0 +1,23 @@
+@import '../../styles/variable';
+
+.icon {
+  position: relative;
+  top: 2px;
+  border: 0;
+  background: none;
+  vertical-align: middle;
+  font-size: 22px;
+  color: $defaultColor;
+  outline: none;
+}
+
+.round-red {
+  font-size: 20px;
+  border-radius: 20px;
+  padding: 10px;
+  color: white;
+  line-height: 16px;
+  border: 0;
+  background: #f16b56;
+  box-shadow: 0 1px 1px 0 rgba(156, 156, 156, 0.75);
+}
