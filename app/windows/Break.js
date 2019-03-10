@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Block = () => (
+const Break = () => (
   <div>block!!</div>
 );
 
-export default Block;
+export default Break;

@@ -1,7 +1,7 @@
 import React, { useEffect, useContext } from 'react';
 
 import delay from 'delay';
-import { openBlockWindow, closeBlockWindow } from '../lib/blockWinManager';
+import breakWindow from '../lib/breakWindow';
 
 import { Context } from '../contexts';
 import useGetConfig from '../hooks/useGetConfig';
@@ -12,37 +12,37 @@ import TimeBoard from '../components/TimeBoard';
 const Main = () => {
   const [config] = useGetConfig();
   const { state, actions } = useContext(Context);
-  const { blockWindows, breakInterval, breakDuration } = state;
+  const { showBreakWindow, breakInterval, breakDuration } = state;
 
-  const setTimer = async () => {
-    if (!config || blockWindows) return;
+  const setBreakIntervalTimer = async () => {
+    if (!config || showBreakWindow) return;
 
     const timer = await delay(breakInterval);
-    const nextBlockWindows = openBlockWindow(config.renderPath);
 
-    actions.setBlockWindows(nextBlockWindows);
+    breakWindow.open({ loadUrl: `${config.renderPath}?window=break` });
+    actions.showBreakWindow();
 
     return () => timer.clear();
   };
 
-  const closeBlockWindows = async () => {
-    if (!blockWindows) return;
+  const setBreakDuration = async () => {
+    if (!showBreakWindow) return;
 
     const timer = await delay(breakDuration);
 
-    closeBlockWindow(blockWindows);
-    actions.setBlockWindows(null);
+    breakWindow.close();
+    actions.closeBreakWindow();
 
     return () => timer.clear();
   };
 
   useEffect(() => {
-    setTimer();
-  }, [config, blockWindows, breakInterval]);
+    setBreakIntervalTimer();
+  }, [config, showBreakWindow, breakInterval]);
 
   useEffect(() => {
-    closeBlockWindows();
-  }, [blockWindows, breakDuration]);
+    setBreakDuration();
+  }, [showBreakWindow, breakDuration]);
 
   return <>
     <Header />

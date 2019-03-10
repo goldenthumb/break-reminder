@@ -29,7 +29,7 @@ const createWindow = () => {
     frame: false,
   });
 
-  mainWindow.loadURL(`${renderPath}?page=main`);
+  mainWindow.loadURL(`${renderPath}?window=main`);
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.webContents.openDevTools();

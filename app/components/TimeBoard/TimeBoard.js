@@ -27,7 +27,9 @@ const TimeBoard = () => {
 
   return (
     <div className={css['time-board']}>
-      {`${hour}:${min}`}
+      <div>
+        {`${hour}:${min}`}
+      </div>
     </div>
   );
 };

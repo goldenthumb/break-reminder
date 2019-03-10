@@ -1,17 +1,17 @@
 import React from 'react';
 import qs from 'query-string';
 
-import { Main, Block } from './pages';
+import { Main, Break } from './windows';
 
 const Routes = ({ location: { search } }) => {
   const parsedHash = qs.parse(search);
 
-  const getPage = () => ({
+  const getWindow = () => ({
     main: <Main />,
-    block: <Block />
+    break: <Break />
   });
 
-  return getPage()[parsedHash.page] || null;
+  return getWindow()[parsedHash.window] || null;
 };
 
 export default Routes;

@@ -10,7 +10,7 @@ class Provider extends Component {
     this.state = {
       breakInterval: 20 * 60 * 1000,
       breakDuration: 20 * 1000,
-      blockWindows: null
+      showBreakWindow: false
     };
 
     this.actions = {
@@ -20,8 +20,15 @@ class Provider extends Component {
       setBreakDuration: (breakDuration) => {
         this.setState({ breakDuration });
       },
-      setBlockWindows: (blockWindows) => {
-        this.setState({ blockWindows });
+      showBreakWindow: () => {
+        this.setState({
+          showBreakWindow: true
+        });
+      },
+      closeBreakWindow: () => {
+        this.setState({
+          showBreakWindow: false
+        });
       }
     };
   }
