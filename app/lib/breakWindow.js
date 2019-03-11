@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 
 const { BrowserWindow, screen } = remote;
 
@@ -7,28 +7,39 @@ class BreakWindow {
     this._windows = {};
   }
 
-  open({ loadUrl, isAll = true }) {
-    for (const { id, size } of screen.getAllDisplays()) {
-      const window = new BrowserWindow({
-        resizable: false,
-        show: false,
-        ...size,
-        opacity: 0.96,
-        backgroundColor: '#343434',
-        frame: false
-      });
+  open({ isAll = true } = {}) {
+    if (!this._isEmpty()) return;
 
-      window.loadURL(loadUrl);
-      window.once('ready-to-show', window.show);
-      this._windows[id] = { id, window };
+    ipcRenderer.send('requestRenderPath');
 
-      if (!isAll) return;
-    }
+    ipcRenderer.once('renderPath', (_, renderPath) => {
+      for (const { id, size } of screen.getAllDisplays()) {
+        const window = new BrowserWindow({
+          resizable: false,
+          show: false,
+          ...size,
+          opacity: 0.9,
+          backgroundColor: '#505050'
+        });
+
+        window.loadURL(`${renderPath}?window=break`);
+        window.once('ready-to-show', window.show);
+        this._windows[id] = { id, window };
+
+        if (!isAll) return;
+      }
+    });
   }
 
   close() {
+    if (this._isEmpty()) return;
+
     Object.values(this._windows).map(({ window }) => window.close());
     this._windows = {};
+  }
+
+  _isEmpty() {
+    return Object.entries(this._windows).length === 0;
   }
 }
 

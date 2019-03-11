@@ -1,36 +1,52 @@
 import React from 'react';
+import { ipcRenderer }from 'electron';
 import css from './OptionList.scss';
 
 import OptionItem from '../OptionItem';
+import useGetConfig from '../../hooks/useGetConfig';
 
 const OptionList = () => {
-  const options = [
+  const [config] = useGetConfig();
+
+  if (!config) return null;
+
+  const optionList = [
     {
       id: 0,
       name: 'Start at login',
-      action: () => {}
+      isChecked: config.startAtLogin,
+      action: (checked) => {
+        ipcRenderer.send('setConfig', { startAtLogin: checked });
+      }
     },
     {
       id: 1,
       name: 'Notification',
-      action: () => {}
+      isChecked: config.notification,
+      action: (checked) => {
+        ipcRenderer.send('setConfig', { notification: checked });
+      }
     },
     {
       id: 2,
       name: 'Sound',
-      action: () => {}
+      isChecked: config.sound,
+      action: (checked) => {
+        ipcRenderer.send('setConfig', { sound: checked });
+      }
     }
   ];
 
   return (
     <div className={css['option-list']}>
-      {options.map(({ id, name, action }) => (
+      {optionList.map(({ id, name, isChecked, action }) => (
         <OptionItem
           key={id}
           name={name}
+          isChecked={isChecked}
           action={action}
         />
-       ))}
+      ))}
     </div>
   );
 };

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import Switch from 'react-switch';
 import css from './OptionItem.scss';
 
-const OptionItem = ({ name, action }) => {
-  const [option, setOption] = useState(false);
+const OptionItem = ({ name, isChecked, action }) => {
+  const [option, setOption] = useState(isChecked);
 
   const handleToggle = () => {
-    action();
+    action(!option);
     setOption(!option);
   };
 

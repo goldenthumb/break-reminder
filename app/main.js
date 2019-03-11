@@ -1,9 +1,22 @@
 const { app, BrowserWindow, Tray, ipcMain } = require('electron');
 const path = require('path');
+const Store = require('./Store');
 
-const renderPath = `file://${__dirname}/index.html`;
 let mainWindow = null;
 let tray = null;
+
+const renderPath = `file://${__dirname}/index.html`;
+
+const store = new Store({
+  configName: 'preferences',
+  defaults: {
+    config: {
+      startAtLogin: false,
+      notification: true,
+      sound: true
+    }
+  }
+});
 
 const createWindow = () => {
   tray = new Tray(path.resolve(__dirname, '../resources/tray.png'));
@@ -31,8 +44,21 @@ const createWindow = () => {
 
   mainWindow.loadURL(`${renderPath}?window=main`);
 
-  ipcMain.on('requestInitInfo', (event) => {
-    event.sender.send('initInfo', { renderPath })
+  ipcMain.on('requestRenderPath', (event) => {
+    event.sender.send('renderPath', renderPath);
+  });
+
+  ipcMain.on('requestConfig', (event) => {
+    event.sender.send('config', { ...store.get('config') })
+  });
+
+  ipcMain.on('setConfig', (event, option) => {
+    store.set('config', {
+      ...store.get('config'),
+      ...option
+    });
+
+    event.sender.send('config', { ...store.get('config') })
   });
 
   mainWindow.on('closed', () => {

@@ -4,14 +4,14 @@ import { ipcRenderer }from 'electron';
 const useGetConfig = () => {
   const [config, setConfig] = useState(null);
 
-  const initInfoListener = (event, arg) => {
+  const ipcRendererListener = (event, arg) => {
     setConfig(arg);
   };
 
   useEffect(() => {
-    ipcRenderer.send('requestInitInfo');
-    ipcRenderer.on('initInfo', initInfoListener);
-    return () => ipcRenderer.removeListener('initInfo', initInfoListener);
+    ipcRenderer.send('requestConfig');
+    ipcRenderer.on('config', ipcRendererListener);
+    return () => ipcRenderer.removeListener('config', ipcRendererListener);
   }, []);
 
   return [config];
