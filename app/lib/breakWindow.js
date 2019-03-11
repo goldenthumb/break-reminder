@@ -12,7 +12,10 @@ class BreakWindow {
       const window = new BrowserWindow({
         resizable: false,
         show: false,
-        ...size
+        ...size,
+        opacity: 0.96,
+        backgroundColor: '#343434',
+        frame: false
       });
 
       window.loadURL(loadUrl);

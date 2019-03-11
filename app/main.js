@@ -19,10 +19,10 @@ const createWindow = () => {
   const bounds = tray.getBounds();
 
   mainWindow = new BrowserWindow({
-    width: 400,
-    height: 400,
-    x: Math.round(bounds.x + (bounds.width / 2) - 200),
-    y: bounds.y - 400 - 10,
+    width: 300,
+    height: 430,
+    x: Math.round(bounds.x - ((bounds.width / 2) + 150)),
+    y: bounds.y - 430 - 10,
     acceptFirstMouse: true,
     show: false,
     movable: false,
@@ -30,10 +30,6 @@ const createWindow = () => {
   });
 
   mainWindow.loadURL(`${renderPath}?window=main`);
-
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.webContents.openDevTools();
-  }
 
   ipcMain.on('requestInitInfo', (event) => {
     event.sender.send('initInfo', { renderPath })

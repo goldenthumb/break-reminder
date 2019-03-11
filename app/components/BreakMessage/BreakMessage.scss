@@ -1,0 +1,33 @@
+@import '../../styles/variable';
+
+.message-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content {
+  width: 60%;
+  height: 40%;
+}
+
+.title {
+  color: white;
+  text-align: center;
+  font-size: 4vw;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 10%;
+}
+
+.sub-title {
+  color: white;
+  text-align: center;
+  font-size: 1vw;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 10%;
+}
