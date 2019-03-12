@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ipcRenderer }from 'electron';
 import css from './OptionList.scss';
 
 import OptionItem from '../OptionItem';
-import useGetConfig from '../../hooks/useGetConfig';
+import { Context } from '../../contexts';
 
 const OptionList = () => {
-  const [config] = useGetConfig();
+  const { state: { config } } = useContext(Context);
 
   if (!config) return null;
 

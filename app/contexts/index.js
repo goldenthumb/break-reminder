@@ -1,4 +1,7 @@
 import React, { Component, createContext } from 'react';
+import { ipcRenderer }from 'electron';
+
+
 
 const Context = createContext();
 const { Provider: ContextProvider } = Context;
@@ -8,12 +11,16 @@ class Provider extends Component {
     super(props);
 
     this.state = {
+      config: null,
       breakInterval: 20 * 60 * 1000,
       breakDuration: 20 * 1000,
       showBreakWindow: false
     };
 
     this.actions = {
+      setConfig: (config) => {
+        this.setState({ config });
+      },
       setBreakInterval: (breakInterval) => {
         this.setState({ breakInterval });
       },
@@ -32,6 +39,19 @@ class Provider extends Component {
       }
     };
   }
+
+  componentDidMount() {
+    ipcRenderer.send('requestConfig');
+    ipcRenderer.on('config', this.ipcRendererListener);
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeListener('config', this.ipcRendererListener);
+  }
+
+  ipcRendererListener = (event, config) => {
+    this.actions.setConfig(config);
+  };
 
   render() {
     const { state, actions } = this;

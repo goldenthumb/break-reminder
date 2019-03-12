@@ -5,29 +5,22 @@ const { BrowserWindow, screen } = remote;
 class BreakWindow {
   constructor() {
     this._windows = {};
+    this._loadUrl = null;
   }
 
-  open({ isAll = true } = {}) {
+  open() {
     if (!this._isEmpty()) return;
+
+    if (this._loadUrl) {
+      this._openBrowserWindow();
+      return;
+    }
 
     ipcRenderer.send('requestRenderPath');
 
-    ipcRenderer.once('renderPath', (_, renderPath) => {
-      for (const { id, size } of screen.getAllDisplays()) {
-        const window = new BrowserWindow({
-          resizable: false,
-          show: false,
-          ...size,
-          opacity: 0.9,
-          backgroundColor: '#505050'
-        });
-
-        window.loadURL(`${renderPath}?window=break`);
-        window.once('ready-to-show', window.show);
-        this._windows[id] = { id, window };
-
-        if (!isAll) return;
-      }
+    ipcRenderer.once('renderPath', (event, renderPath) => {
+      this._loadUrl = `${renderPath}?window=break`;
+      this._openBrowserWindow();
     });
   }
 
@@ -40,6 +33,22 @@ class BreakWindow {
 
   _isEmpty() {
     return Object.entries(this._windows).length === 0;
+  }
+
+  _openBrowserWindow() {
+    for (const { id, size } of screen.getAllDisplays()) {
+      const window = new BrowserWindow({
+        resizable: false,
+        show: false,
+        ...size,
+        opacity: 0.9,
+        backgroundColor: '#505050'
+      });
+
+      this._windows[id] = { id, window };
+      window.loadURL(this._loadUrl);
+      window.once('ready-to-show', window.show);
+    }
   }
 }
 
