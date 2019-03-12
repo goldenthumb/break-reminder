@@ -11,31 +11,11 @@ class BreakWindow {
   open() {
     if (!this._isEmpty()) return;
 
-    if (this._loadUrl) {
-      this._openBrowserWindow();
-      return;
+    if (!this._loadUrl) {
+      const renderPath = ipcRenderer.sendSync('getRenderPath');
+      this._loadUrl = `${renderPath}?window=break`;
     }
 
-    ipcRenderer.send('requestRenderPath');
-
-    ipcRenderer.once('renderPath', (event, renderPath) => {
-      this._loadUrl = `${renderPath}?window=break`;
-      this._openBrowserWindow();
-    });
-  }
-
-  close() {
-    if (this._isEmpty()) return;
-
-    Object.values(this._windows).map(({ window }) => window.close());
-    this._windows = {};
-  }
-
-  _isEmpty() {
-    return Object.entries(this._windows).length === 0;
-  }
-
-  _openBrowserWindow() {
     for (const { id, size } of screen.getAllDisplays()) {
       const window = new BrowserWindow({
         resizable: false,
@@ -49,6 +29,17 @@ class BreakWindow {
       window.loadURL(this._loadUrl);
       window.once('ready-to-show', window.show);
     }
+  }
+
+  close() {
+    if (this._isEmpty()) return;
+
+    Object.values(this._windows).map(({ window }) => window.close());
+    this._windows = {};
+  }
+
+  _isEmpty() {
+    return Object.entries(this._windows).length === 0;
   }
 }
 

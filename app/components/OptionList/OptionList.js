@@ -8,8 +8,6 @@ import { Context } from '../../contexts';
 const OptionList = () => {
   const { state: { config } } = useContext(Context);
 
-  if (!config) return null;
-
   const optionList = [
     {
       id: 0,

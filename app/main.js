@@ -10,10 +10,12 @@ const renderPath = `file://${__dirname}/index.html`;
 const store = new Store({
   configName: 'preferences',
   defaults: {
+    breakInterval: 20 * 60 * 1000,
+    breakDuration: 20 * 1000,
     config: {
       startAtLogin: false,
       notification: true,
-      sound: true
+      sound: true,
     }
   }
 });
@@ -44,18 +46,22 @@ const createWindow = () => {
 
   mainWindow.loadURL(`${renderPath}?window=main`);
 
-  ipcMain.on('requestRenderPath', (event) => {
-    event.sender.send('renderPath', renderPath);
+  ipcMain.on('getInitialState', (event) => {
+    event.returnValue = {
+      breakInterval: store.get('breakInterval'),
+      breakDuration: store.get('breakDuration'),
+      config: store.get('config'),
+    }
   });
 
-  ipcMain.on('requestConfig', (event) => {
-    event.sender.send('config', { ...store.get('config') })
+  ipcMain.on('getRenderPath', (event) => {
+    event.returnValue = renderPath;
   });
 
-  ipcMain.on('setConfig', (event, option) => {
+  ipcMain.on('setConfig', (event, config) => {
     store.set('config', {
       ...store.get('config'),
-      ...option
+      ...config,
     });
 
     event.sender.send('config', { ...store.get('config') })

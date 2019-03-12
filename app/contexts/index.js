@@ -1,8 +1,6 @@
 import React, { Component, createContext } from 'react';
 import { ipcRenderer }from 'electron';
 
-
-
 const Context = createContext();
 const { Provider: ContextProvider } = Context;
 
@@ -10,10 +8,13 @@ class Provider extends Component {
   constructor(props) {
     super(props);
 
+    const initialState = ipcRenderer.sendSync('getInitialState');
+    const { config, breakInterval, breakDuration } = initialState;
+
     this.state = {
-      config: null,
-      breakInterval: 20 * 60 * 1000,
-      breakDuration: 20 * 1000,
+      config,
+      breakInterval,
+      breakDuration,
       showBreakWindow: false
     };
 
@@ -41,7 +42,6 @@ class Provider extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.send('requestConfig');
     ipcRenderer.on('config', this.ipcRendererListener);
   }
 
