@@ -11,8 +11,8 @@ import Button from '../Button';
 const MINUTE = 60 * 1000;
 
 const TimeBoard = () => {
-  const { state: { breakInterval } } = useContext(Context);
-  const [timeLeft, setTimeLeft] = useState(breakInterval);
+  const { state: { reminderInterval } } = useContext(Context);
+  const [timeLeft, setTimeLeft] = useState(reminderInterval);
   const [hour, min] = msToTime(timeLeft);
 
   const setTimer = async () => {

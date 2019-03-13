@@ -9,21 +9,21 @@ class Provider extends Component {
     super(props);
 
     const initialState = ipcRenderer.sendSync('getInitialState');
-    const { config, breakInterval, breakDuration } = initialState;
+    const { reminderInterval, breakDuration, options } = initialState;
 
     this.state = {
-      config,
-      breakInterval,
+      reminderInterval,
       breakDuration,
+      options,
       showBreakWindow: false
     };
 
     this.actions = {
-      setConfig: (config) => {
-        this.setState({ config });
+      setOptions: (options) => {
+        this.setState({ options });
       },
-      setBreakInterval: (breakInterval) => {
-        this.setState({ breakInterval });
+      setReminderInterval: (reminderInterval) => {
+        this.setState({ reminderInterval });
       },
       setBreakDuration: (breakDuration) => {
         this.setState({ breakDuration });
@@ -42,15 +42,15 @@ class Provider extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('config', this.ipcRendererListener);
+    ipcRenderer.on('updateOptions', this.ipcRendererListener);
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('config', this.ipcRendererListener);
+    ipcRenderer.removeListener('updateOptions', this.ipcRendererListener);
   }
 
-  ipcRendererListener = (event, config) => {
-    this.actions.setConfig(config);
+  ipcRendererListener = (event, options) => {
+    this.actions.setOptions(options);
   };
 
   render() {

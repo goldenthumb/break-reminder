@@ -11,12 +11,12 @@ import OptionList from '../components/OptionList';
 
 const Main = () => {
   const { state, actions } = useContext(Context);
-  const { showBreakWindow, breakInterval, breakDuration } = state;
+  const { showBreakWindow, reminderInterval, breakDuration } = state;
 
-  const setBreakIntervalTimer = async () => {
+  const setReminderIntervalTimer = async () => {
     if (showBreakWindow) return;
 
-    const timer = await delay(breakInterval);
+    const timer = await delay(reminderInterval);
 
     breakWindow.open();
     actions.showBreakWindow();
@@ -36,8 +36,8 @@ const Main = () => {
   };
 
   useEffect(() => {
-    setBreakIntervalTimer();
-  }, [showBreakWindow, breakInterval]);
+    setReminderIntervalTimer();
+  }, [showBreakWindow, reminderInterval]);
 
   useEffect(() => {
     setBreakDurationTimer();

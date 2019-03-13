@@ -10,9 +10,9 @@ const renderPath = `file://${__dirname}/index.html`;
 const store = new Store({
   configName: 'preferences',
   defaults: {
-    breakInterval: 20 * 60 * 1000,
+    reminderInterval: 20 * 60 * 1000,
     breakDuration: 20 * 1000,
-    config: {
+    options: {
       startAtLogin: false,
       notification: true,
       sound: true,
@@ -48,9 +48,9 @@ const createWindow = () => {
 
   ipcMain.on('getInitialState', (event) => {
     event.returnValue = {
-      breakInterval: store.get('breakInterval'),
-      breakDuration: store.get('breakDuration'),
-      config: store.get('config'),
+      reminderInterval: 20 * 60 * 1000,
+      breakDuration: 20 * 1000,
+      options: store.get('options'),
     }
   });
 
@@ -58,13 +58,13 @@ const createWindow = () => {
     event.returnValue = renderPath;
   });
 
-  ipcMain.on('setConfig', (event, config) => {
-    store.set('config', {
-      ...store.get('config'),
-      ...config,
+  ipcMain.on('setOption', (event, option) => {
+    store.set('options', {
+      ...store.get('options'),
+      ...option,
     });
 
-    event.sender.send('config', { ...store.get('config') })
+    event.sender.send('updateOptions', { ...store.get('options') })
   });
 
   mainWindow.on('closed', () => {

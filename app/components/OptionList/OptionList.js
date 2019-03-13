@@ -6,31 +6,31 @@ import OptionItem from '../OptionItem';
 import { Context } from '../../contexts';
 
 const OptionList = () => {
-  const { state: { config } } = useContext(Context);
+  const { state: { options } } = useContext(Context);
 
   const optionList = [
     {
       id: 0,
       name: 'Start at login',
-      isChecked: config.startAtLogin,
+      isChecked: options.startAtLogin,
       action: (checked) => {
-        ipcRenderer.send('setConfig', { startAtLogin: checked });
+        ipcRenderer.send('setOption', { startAtLogin: checked });
       }
     },
     {
       id: 1,
       name: 'Notification',
-      isChecked: config.notification,
+      isChecked: options.notification,
       action: (checked) => {
-        ipcRenderer.send('setConfig', { notification: checked });
+        ipcRenderer.send('setOption', { notification: checked });
       }
     },
     {
       id: 2,
       name: 'Sound',
-      isChecked: config.sound,
+      isChecked: options.sound,
       action: (checked) => {
-        ipcRenderer.send('setConfig', { sound: checked });
+        ipcRenderer.send('setOption', { sound: checked });
       }
     }
   ];
