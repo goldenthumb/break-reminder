@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 
-import delay from 'delay';
-import breakWindow from '../lib/breakWindow';
+import breakPlanner from '../lib/breakPlanner';
 
 import { Context } from '../contexts';
 
@@ -13,34 +12,28 @@ const Main = () => {
   const { state, actions } = useContext(Context);
   const { showBreakWindow, reminderInterval, breakDuration } = state;
 
-  const setReminderIntervalTimer = async () => {
+  useEffect(() => {
     if (showBreakWindow) return;
 
-    const timer = await delay(reminderInterval);
+    breakPlanner.startWorking(reminderInterval);
 
-    breakWindow.open();
-    actions.showBreakWindow();
+    breakPlanner.on('endWorking', () => {
+      actions.showBreakWindow();
+    });
 
-    return () => timer.clear();
-  };
-
-  const setBreakDurationTimer = async () => {
-    if (!showBreakWindow) return;
-
-    const timer = await delay(breakDuration);
-
-    breakWindow.close();
-    actions.closeBreakWindow();
-
-    return () => timer.clear();
-  };
-
-  useEffect(() => {
-    setReminderIntervalTimer();
+    return () => breakPlanner.clearWorkingTimer();
   }, [showBreakWindow, reminderInterval]);
 
   useEffect(() => {
-    setBreakDurationTimer();
+    if (!showBreakWindow) return;
+
+    breakPlanner.startBreak(breakDuration);
+
+    breakPlanner.on('endBreak', () => {
+      actions.closeBreakWindow();
+    });
+
+    return () => breakPlanner.clearBreakTimer();
   }, [showBreakWindow, breakDuration]);
 
   return <>
