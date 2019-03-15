@@ -3,21 +3,21 @@ class TimerStore {
     this.timers = {};
   }
 
-  set(timer) {
-    return this.timers[timer] = timer;
+  set(key, timer) {
+    return this.timers[key] = timer;
   }
 
-  has(timer) {
-    return !!this.timers[timer]
+  has(key) {
+    return !!this.timers[key]
   }
 
-  get(timer) {
-    return this.timers[timer];
+  get(key) {
+    return this.timers[key];
   }
 
-  clear(timer) {
-    if (this.has(timer)) {
-      clearTimeout(this.timers[timer]);
+  clear(key) {
+    if (this.has(key)) {
+      clearTimeout(this.timers[key]);
     }
   }
 }

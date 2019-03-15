@@ -1,8 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { IoIosSquare } from 'react-icons/io';
+import { IoIosPlay, IoIosPause } from 'react-icons/io';
 import css from './TimeBoard.scss';
 
 import timerStore from '../../lib/timerStore';
+import breakPlanner from '../../lib/breakPlanner';
 
 import { Context } from '../../contexts';
 import { msToTime } from '../../lib/utils';
@@ -12,8 +13,9 @@ import Button from '../Button';
 const MINUTE = 60 * 1000;
 
 const TimeBoard = () => {
-  const { state: { reminderInterval, showBreakWindow } } = useContext(Context);
+  const { state: { reminderInterval, showBreakWindow }, actions } = useContext(Context);
   const [timeLeft, setTimeLeft] = useState(reminderInterval);
+  const [play, setPlay] = useState(true);
   const [hour, min] = msToTime(timeLeft);
 
   useEffect(() => {
@@ -24,21 +26,46 @@ const TimeBoard = () => {
   }, [showBreakWindow]);
 
   useEffect(() => {
+    if (!play) return;
+
     const timer = setTimeout(() => {
-      timerStore.set('timeLeft', timer);
-      setTimeLeft(timeLeft - MINUTE);
+      const nextTimeLeft = timeLeft - MINUTE;
+
+      if (nextTimeLeft >= 0) {
+        setTimeLeft(nextTimeLeft);
+      }
     }, MINUTE);
 
+    timerStore.set('timeLeft', timer);
+
     return () => clearTimeout(timer);
-  }, [timeLeft]);
+  }, [play, timeLeft]);
+
+  const togglePlay = () => {
+    if (showBreakWindow) return;
+
+    const nextPlay = !play;
+
+    if (nextPlay) {
+      breakPlanner.startWorking(timeLeft);
+
+      breakPlanner.on('endWorking', () => {
+        actions.showBreakWindow();
+      });
+    } else {
+      breakPlanner.clearWorkingTimer();
+    }
+
+    setPlay(nextPlay);
+  };
 
   return (
     <div className={css['time-board']}>
       <div>
         {`${hour}:${min}`}
       </div>
-      <Button theme='round-red' action={() => {}}>
-        <IoIosSquare />
+      <Button theme='round-red' action={togglePlay}>
+        {play ? <IoIosPause /> : <IoIosPlay />}
       </Button>
     </div>
   );
