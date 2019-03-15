@@ -22,4 +22,5 @@ class TimerStore {
   }
 }
 
-export default TimerStore;
+const timerStore = new TimerStore();
+export default timerStore;

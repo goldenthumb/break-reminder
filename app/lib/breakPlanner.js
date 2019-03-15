@@ -1,12 +1,11 @@
 import EventEmitter from 'event-emitter';
 
-import TimerStore from './TimerStore';
+import timerStore from './timerStore';
 import breakWindow from './breakWindow';
 
 class BreakPlanner {
   constructor() {
     this._emitter = new EventEmitter();
-    this._timerStore = new TimerStore();
   }
 
   on(eventName, listener) {
@@ -14,33 +13,33 @@ class BreakPlanner {
   }
 
   startWorking(ms) {
-    this._timerStore.clear('workingTimer');
+    timerStore.clear('working');
 
     const workingTimer = setTimeout(() => {
       breakWindow.open();
       this._emitter.emit('endWorking');
     }, ms);
 
-    this._timerStore.set('workingTimer', workingTimer);
+    timerStore.set('working', workingTimer);
   }
 
   clearWorkingTimer() {
-    this._timerStore.clear('workingTimer');
+    timerStore.clear('working');
   }
 
   startBreak(ms) {
-    this._timerStore.clear('breakTimer');
+    timerStore.clear('break');
 
     const breakTimer = setTimeout(() => {
       breakWindow.close();
       this._emitter.emit('endBreak');
     }, ms);
 
-    this._timerStore.set('breakTimer', breakTimer);
+    timerStore.set('break', breakTimer);
   }
 
   clearBreakTimer() {
-    this._timerStore.clear('breakTimer');
+    timerStore.clear('break');
   }
 }
 
