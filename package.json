@@ -18,11 +18,11 @@
       "target": [
         "default"
       ],
-      "icon": "./resources/installer/icon.icns"
+      "icon": "./resources/icon.icns"
     },
     "dmg": {
       "title": "HelloElectron",
-      "icon": "./resources/installer/icon.icns",
+      "icon": "./resources/icon.icns",
       "contents": [
         {
           "x": 130,
@@ -41,7 +41,7 @@
         "zip",
         "nsis"
       ],
-      "icon": "./resources/installer/icon.ico"
+      "icon": "./resources/icon.ico"
     },
     "directories": {
       "buildResources": "resources",

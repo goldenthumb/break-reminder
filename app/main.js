@@ -21,7 +21,7 @@ const store = new Store({
 });
 
 const createWindow = () => {
-  tray = new Tray(path.resolve(__dirname, '../resources/icon/tray.png'));
+  tray = new Tray(path.resolve(__dirname, './images/tray.png'));
 
   tray.on('click', () => {
     if (mainWindow.isVisible()) {
