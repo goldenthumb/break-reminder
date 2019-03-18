@@ -1,16 +1,18 @@
 @import '../../styles/variable';
 
-@mixin button {
-  cursor: pointer;
-
+@mixin hover--opacity {
   &:hover {
     opacity: 0.9;
   }
 }
 
-.icon {
-  @include button();
+@mixin hover--red {
+  &:hover {
+    color: #e04644;
+  }
+}
 
+@mixin icon {
   position: relative;
   top: 2px;
   border: 0;
@@ -19,10 +21,21 @@
   font-size: 22px;
   color: $defaultColor;
   outline: none;
+  cursor: pointer;
+}
+
+.icon {
+  @include icon();
+  @include hover--opacity();
+}
+
+.quit-icon {
+  @include icon();
+  @include hover--red();
 }
 
 .round-red {
-  @include button();
+  @include hover--opacity();
 
   font-size: 20px;
   border-radius: 20px;
@@ -33,4 +46,5 @@
   background: #f16b56;
   box-shadow: 0 1px 1px 0 rgba(156, 156, 156, 0.75);
   outline: none;
+  cursor: pointer;
 }

@@ -67,6 +67,10 @@ const createWindow = () => {
     event.sender.send('updateOptions', { ...store.get('options') })
   });
 
+  ipcMain.on('quit', () => {
+    app.quit();
+  });
+
   mainWindow.on('closed', () => {
     app.quit();
   });

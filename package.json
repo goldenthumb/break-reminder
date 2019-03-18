@@ -18,6 +18,9 @@
       "target": [
         "default"
       ],
+      "extendInfo": {
+        "LSUIElement": 1
+      },
       "icon": "./resources/icon.icns"
     },
     "dmg": {
