@@ -16,18 +16,25 @@ class BreakWindow {
       this._loadUrl = `${renderPath}?window=break`;
     }
 
-    for (const { id, size } of screen.getAllDisplays()) {
+    for (const { id, size, bounds } of screen.getAllDisplays()) {
       const window = new BrowserWindow({
         resizable: false,
         show: false,
         ...size,
         opacity: 0.9,
-        backgroundColor: '#505050'
+        x: bounds.x,
+        y: bounds.y,
+        backgroundColor: '#505050',
+        alwaysOnTop: true,
+        frame: false
       });
 
       this._windows[id] = { id, window };
       window.loadURL(this._loadUrl);
-      window.once('ready-to-show', window.show);
+      window.once('ready-to-show', () => {
+        window.show();
+        window.setKiosk(true);
+      });
     }
   }
 
