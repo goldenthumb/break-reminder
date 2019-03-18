@@ -12,6 +12,10 @@ class BreakPlanner {
     this._emitter.on(eventName, listener);
   }
 
+  once(eventName, listener) {
+    this._emitter.once(eventName, listener);
+  }
+
   startWorking(ms) {
     timerStore.clear('working');
 

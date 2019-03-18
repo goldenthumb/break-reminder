@@ -2,6 +2,11 @@ import { remote, ipcRenderer } from 'electron';
 
 const { BrowserWindow, screen } = remote;
 
+const BREAK_WINDOW_STATUS = {
+  OPEN: 'open',
+  CLOSE: 'close'
+};
+
 class BreakWindow {
   constructor() {
     this._windows = {};
@@ -29,12 +34,20 @@ class BreakWindow {
         frame: false
       });
 
-      this._windows[id] = { id, window };
       window.loadURL(this._loadUrl);
       window.once('ready-to-show', () => {
         window.show();
         window.setKiosk(true);
       });
+
+      if (this._isEmpty()) {
+        window.on('closed', () => {
+          this._windows = {};
+          ipcRenderer.send('breakWindow', { status: 'close' });
+        });
+      }
+
+      this._windows[id] = { id, window };
     }
   }
 
@@ -52,3 +65,4 @@ class BreakWindow {
 
 const breakWindow = new BreakWindow();
 export default breakWindow;
+export { BREAK_WINDOW_STATUS };

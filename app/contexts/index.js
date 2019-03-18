@@ -1,5 +1,7 @@
 import React, { Component, createContext } from 'react';
-import { ipcRenderer }from 'electron';
+import { ipcRenderer } from 'electron';
+import breakWindow, { BREAK_WINDOW_STATUS } from '../lib/breakWindow';
+import breakPlanner from '../lib/breakPlanner';
 
 const Context = createContext();
 const { Provider: ContextProvider } = Context;
@@ -42,15 +44,24 @@ class Provider extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('updateOptions', this.ipcRendererListener);
+    ipcRenderer.on('updateOptions', this.optionListener);
+    ipcRenderer.on('breakWindow', this.breakWindowListener);
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('updateOptions', this.ipcRendererListener);
+    ipcRenderer.removeListener('updateOptions', this.optionListener);
+    ipcRenderer.removeListener('breakWindow', this.breakWindowListener);
   }
 
-  ipcRendererListener = (event, options) => {
+  optionListener = (event, options) => {
     this.actions.setOptions(options);
+  };
+
+  breakWindowListener = (event, { status }) => {
+    if (status === BREAK_WINDOW_STATUS.CLOSE) {
+      breakPlanner.clearBreakTimer();
+      this.actions.closeBreakWindow();
+    }
   };
 
   render() {

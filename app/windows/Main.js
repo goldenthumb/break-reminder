@@ -17,7 +17,7 @@ const Main = () => {
 
     breakPlanner.startWorking(reminderInterval);
 
-    breakPlanner.on('endWorking', () => {
+    breakPlanner.once('endWorking', () => {
       actions.showBreakWindow();
     });
 
@@ -29,7 +29,7 @@ const Main = () => {
 
     breakPlanner.startBreak(breakDuration);
 
-    breakPlanner.on('endBreak', () => {
+    breakPlanner.once('endBreak', () => {
       actions.closeBreakWindow();
     });
 
