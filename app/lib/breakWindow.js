@@ -43,7 +43,7 @@ class BreakWindow {
       if (this._isEmpty()) {
         window.on('closed', () => {
           this._windows = {};
-          ipcRenderer.send('breakWindow', { status: 'close' });
+          ipcRenderer.send('breakWindow', { status: BREAK_WINDOW_STATUS.CLOSE });
         });
       }
 
