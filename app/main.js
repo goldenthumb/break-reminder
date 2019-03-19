@@ -58,6 +58,10 @@ const createWindow = () => {
     event.returnValue = renderPath;
   });
 
+  ipcMain.on('getMainWindowId', (event) => {
+    event.returnValue = mainWindow.id;
+  });
+
   ipcMain.on('setOption', (event, option) => {
     store.set('options', {
       ...store.get('options'),

@@ -1,11 +1,10 @@
 import React from 'react';
-import { remote } from 'electron';
+import { remote, ipcRenderer } from 'electron';
 import css from './BreakMessage.scss';
 
 import Button from '../Button';
 
 const { BrowserWindow } = remote;
-const MAIN_WINDOW = 1;
 
 const BreakMessage = () => (
   <div className={css['message-wrap']}>
@@ -19,9 +18,10 @@ const BreakMessage = () => (
       <Button
         theme='skip'
         action={() => {
-          BrowserWindow
-            .getAllWindows()
-            .filter(({ id }) => id !== MAIN_WINDOW)
+          const mainWindowId = ipcRenderer.sendSync('getMainWindowId');
+
+          BrowserWindow.getAllWindows()
+            .filter(({ id }) => id !== mainWindowId)
             .map(window => window.close());
         }}
       >
