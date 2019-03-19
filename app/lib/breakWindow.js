@@ -26,19 +26,17 @@ class BreakWindow {
         resizable: false,
         show: false,
         ...size,
-        opacity: 0.9,
+        opacity: 0.95,
         x: bounds.x,
         y: bounds.y,
         backgroundColor: '#505050',
-        alwaysOnTop: true,
         frame: false
       });
 
+      // TODO: add kiosk
+
       window.loadURL(this._loadUrl);
-      window.once('ready-to-show', () => {
-        window.show();
-        window.setKiosk(true);
-      });
+      window.once('ready-to-show', window.show);
 
       if (this._isEmpty()) {
         window.on('closed', () => {
