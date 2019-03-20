@@ -1,7 +1,6 @@
 import React, { Component, createContext } from 'react';
 import { ipcRenderer } from 'electron';
-import breakWindow, { BREAK_WINDOW_STATUS } from '../lib/breakWindow';
-import breakPlanner from '../lib/breakPlanner';
+import { IPC_EVENT } from '../lib/constants';
 
 const Context = createContext();
 const { Provider: ContextProvider } = Context;
@@ -10,7 +9,7 @@ class Provider extends Component {
   constructor(props) {
     super(props);
 
-    const initialState = ipcRenderer.sendSync('getInitialState');
+    const initialState = ipcRenderer.sendSync(IPC_EVENT.INITIAL_STATE);
     const { reminderInterval, breakDuration, options } = initialState;
 
     this.state = {
@@ -44,13 +43,13 @@ class Provider extends Component {
   }
 
   componentDidMount() {
-    ipcRenderer.on('updateOptions', this.optionListener);
-    ipcRenderer.on('breakWindow', this.breakWindowListener);
+    ipcRenderer.on(IPC_EVENT.OPTION, this.optionListener);
+    ipcRenderer.on(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
   }
 
   componentWillUnmount() {
-    ipcRenderer.removeListener('updateOptions', this.optionListener);
-    ipcRenderer.removeListener('breakWindow', this.breakWindowListener);
+    ipcRenderer.removeListener(IPC_EVENT.OPTION, this.optionListener);
+    ipcRenderer.removeListener(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
   }
 
   optionListener = (event, options) => {
@@ -58,8 +57,11 @@ class Provider extends Component {
   };
 
   breakWindowListener = (event, { status }) => {
-    if (status === BREAK_WINDOW_STATUS.CLOSE) {
-      breakPlanner.clearBreakTimer();
+    if (status === 'open') {
+      this.actions.showBreakWindow();
+    }
+
+    if (status === 'close') {
       this.actions.closeBreakWindow();
     }
   };

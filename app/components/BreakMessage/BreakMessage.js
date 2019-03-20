@@ -1,5 +1,6 @@
 import React from 'react';
 import { remote, ipcRenderer } from 'electron';
+import { IPC_EVENT } from '../../lib/constants';
 import css from './BreakMessage.scss';
 
 import Button from '../Button';
@@ -18,7 +19,7 @@ const BreakMessage = () => (
       <Button
         theme='skip'
         action={() => {
-          const mainWindowId = ipcRenderer.sendSync('getMainWindowId');
+          const mainWindowId = ipcRenderer.sendSync(IPC_EVENT.MAIN_WINDOW);
 
           BrowserWindow.getAllWindows()
             .filter(({ id }) => id !== mainWindowId)

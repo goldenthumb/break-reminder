@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-import { ipcRenderer }from 'electron';
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT } from '../../lib/constants';
 import css from './OptionList.scss';
 
 import OptionItem from '../OptionItem';
@@ -14,7 +15,9 @@ const OptionList = () => {
       name: 'Start at login',
       isChecked: options.startAtLogin,
       action: (checked) => {
-        ipcRenderer.send('setOption', { startAtLogin: checked });
+        ipcRenderer.send(IPC_EVENT.OPTION, {
+          startAtLogin: checked
+        });
       }
     },
     {
@@ -22,7 +25,9 @@ const OptionList = () => {
       name: 'Notification',
       isChecked: options.notification,
       action: (checked) => {
-        ipcRenderer.send('setOption', { notification: checked });
+        ipcRenderer.send(IPC_EVENT.OPTION, {
+          notification: checked
+        });
       }
     },
     {
@@ -30,7 +35,9 @@ const OptionList = () => {
       name: 'Sound',
       isChecked: options.sound,
       action: (checked) => {
-        ipcRenderer.send('setOption', { sound: checked });
+        ipcRenderer.send(IPC_EVENT.OPTION, {
+          sound: checked
+        });
       }
     }
   ];

@@ -1,7 +1,6 @@
 import React, { useEffect, useContext } from 'react';
-
-import breakPlanner from '../lib/breakPlanner';
-
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT } from '../lib/constants';
 import { Context } from '../contexts';
 
 import Header from '../components/Header';
@@ -9,31 +8,27 @@ import TimeBoard from '../components/TimeBoard';
 import OptionList from '../components/OptionList';
 
 const Main = () => {
-  const { state, actions } = useContext(Context);
+  const { state } = useContext(Context);
   const { showBreakWindow, reminderInterval, breakDuration } = state;
 
   useEffect(() => {
     if (showBreakWindow) return;
 
-    breakPlanner.startWorking(reminderInterval);
-
-    breakPlanner.once('endWorking', () => {
-      actions.showBreakWindow();
+    ipcRenderer.send(IPC_EVENT.BREAK_WINDOW, {
+      status: 'open',
+      delay: reminderInterval
     });
 
-    return () => breakPlanner.clearWorkingTimer();
   }, [showBreakWindow, reminderInterval]);
 
   useEffect(() => {
     if (!showBreakWindow) return;
 
-    breakPlanner.startBreak(breakDuration);
-
-    breakPlanner.once('endBreak', () => {
-      actions.closeBreakWindow();
+    ipcRenderer.send(IPC_EVENT.BREAK_WINDOW, {
+      status: 'close',
+      delay: breakDuration
     });
 
-    return () => breakPlanner.clearBreakTimer();
   }, [showBreakWindow, breakDuration]);
 
   return <>

@@ -1,12 +1,9 @@
 const { app, BrowserWindow, Tray, ipcMain } = require('electron');
 const path = require('path');
 const Store = require('./Store');
-
-let mainWindow = null;
-let tray = null;
+const { IPC_EVENT } = require('./lib/constants');
 
 const renderPath = `file://${__dirname}/index.html`;
-
 const store = new Store({
   configName: 'preferences',
   defaults: {
@@ -19,6 +16,12 @@ const store = new Store({
     }
   }
 });
+
+let tray = null;
+let mainWindow = null;
+let breakWindows = [];
+let reminderTimer = null;
+let breakTimer = null;
 
 const createWindow = () => {
   tray = new Tray(path.resolve(__dirname, './images/tray.png'));
@@ -46,33 +49,83 @@ const createWindow = () => {
 
   mainWindow.loadURL(`${renderPath}?window=main`);
 
-  ipcMain.on('getInitialState', (event) => {
+  ipcMain.on(IPC_EVENT.INITIAL_STATE, (event) => {
     event.returnValue = {
-      reminderInterval: 20 * 60 * 1000,
-      breakDuration: 20 * 1000,
+      reminderInterval: 10 * 1000,
+      breakDuration: 3 * 1000,
       options: store.get('options'),
     }
   });
 
-  ipcMain.on('getRenderPath', (event) => {
-    event.returnValue = renderPath;
-  });
-
-  ipcMain.on('getMainWindowId', (event) => {
+  ipcMain.on(IPC_EVENT.MAIN_WINDOW, (event) => {
     event.returnValue = mainWindow.id;
   });
 
-  ipcMain.on('setOption', (event, option) => {
-    store.set('options', {
+  ipcMain.on(IPC_EVENT.OPTION, (event, option) => {
+    const options = {
       ...store.get('options'),
       ...option,
-    });
+    };
 
-    event.sender.send('updateOptions', { ...store.get('options') })
+    store.set('options', options);
+    event.sender.send(IPC_EVENT.OPTION, options);
   });
 
-  ipcMain.on('breakWindow', (event, data) => {
-    event.sender.send('breakWindow', data);
+  ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event, data) => {
+    if (data.status === 'open') {
+      const { screen } = require('electron');
+
+      clearTimeout(reminderTimer);
+
+      reminderTimer = setTimeout(() => {
+        for (const { size, bounds } of screen.getAllDisplays()) {
+          const window = new BrowserWindow({
+            resizable: false,
+            show: false,
+            ...size,
+            opacity: 0.96,
+            x: bounds.x,
+            y: bounds.y,
+            backgroundColor: '#939393',
+            frame: false
+          });
+
+          window.loadURL(`${renderPath}?window=break`);
+          window.once('ready-to-show', window.show);
+
+          // TODO: 수정해야함.
+          // break windows 가 전부 닫혔는지 체크하는 로직인데
+          // 현재는 첫번째 window 가 닫혔는지로 판단하고 있음. 나중에 고쳐야함.
+          if (!breakWindows.length) {
+            window.on('closed', () => {
+              clearTimeout(breakTimer);
+              breakWindows = [];
+              event.sender.send(IPC_EVENT.BREAK_WINDOW, {
+                status: 'close'
+              });
+            });
+          }
+
+          breakWindows.push(window);
+        }
+
+        event.sender.send(IPC_EVENT.BREAK_WINDOW, {
+          status: 'open'
+        });
+      }, data.delay);
+    }
+
+    if (data.status === 'close') {
+      clearTimeout(breakTimer);
+
+      breakTimer = setTimeout(() => {
+        breakWindows.map(window => window.close());
+      }, data.delay)
+    }
+
+    if (data.status === 'pause') {
+      clearTimeout(reminderTimer);
+    }
   });
 
   ipcMain.on('quit', () => {

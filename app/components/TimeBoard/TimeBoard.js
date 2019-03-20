@@ -1,26 +1,26 @@
 import React, { useEffect, useContext, useState } from 'react';
+import { ipcRenderer } from 'electron';
 import { IoIosPlay, IoIosPause } from 'react-icons/io';
 import css from './TimeBoard.scss';
 
-import timerStore from '../../lib/timerStore';
-import breakPlanner from '../../lib/breakPlanner';
-
 import { Context } from '../../contexts';
 import { msToTime } from '../../lib/utils';
+import { IPC_EVENT } from '../../lib/constants';
 
 import Button from '../Button';
 
 const MINUTE = 60 * 1000;
+let timeLeftTimer = null;
 
 const TimeBoard = () => {
-  const { state: { reminderInterval, showBreakWindow }, actions } = useContext(Context);
+  const { state: { reminderInterval, showBreakWindow } } = useContext(Context);
   const [timeLeft, setTimeLeft] = useState(reminderInterval);
   const [play, setPlay] = useState(true);
   const [hour, min] = msToTime(timeLeft);
 
   useEffect(() => {
     if (!showBreakWindow && timeLeft !== reminderInterval) {
-      timerStore.clear('timeLeft');
+      clearTimeout(timeLeftTimer);
       setTimeLeft(reminderInterval);
     }
   }, [showBreakWindow]);
@@ -28,7 +28,7 @@ const TimeBoard = () => {
   useEffect(() => {
     if (!play) return;
 
-    const timer = setTimeout(() => {
+    timeLeftTimer = setTimeout(() => {
       const nextTimeLeft = timeLeft - MINUTE;
 
       if (nextTimeLeft >= 0) {
@@ -36,9 +36,7 @@ const TimeBoard = () => {
       }
     }, MINUTE);
 
-    timerStore.set('timeLeft', timer);
-
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timeLeftTimer);
   }, [play, timeLeft]);
 
   const togglePlay = () => {
@@ -47,13 +45,14 @@ const TimeBoard = () => {
     const nextPlay = !play;
 
     if (nextPlay) {
-      breakPlanner.startWorking(timeLeft);
-
-      breakPlanner.on('endWorking', () => {
-        actions.showBreakWindow();
+      ipcRenderer.send(IPC_EVENT.BREAK_WINDOW, {
+        status: 'open',
+        delay: timeLeft
       });
     } else {
-      breakPlanner.clearWorkingTimer();
+      ipcRenderer.send(IPC_EVENT.BREAK_WINDOW, {
+        status: 'pause'
+      });
     }
 
     setPlay(nextPlay);
