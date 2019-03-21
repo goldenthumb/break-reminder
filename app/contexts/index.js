@@ -23,11 +23,15 @@ class Provider extends Component {
       setOptions: (options) => {
         this.setState({ options });
       },
-      setReminderInterval: (reminderInterval) => {
-        this.setState({ reminderInterval });
+      setReminderInterval: (ms) => {
+        this.setState({
+          reminderInterval: ms
+        });
       },
-      setBreakDuration: (breakDuration) => {
-        this.setState({ breakDuration });
+      setBreakDuration: (ms) => {
+        this.setState({
+          breakDuration: ms
+        });
       },
       showBreakWindow: () => {
         this.setState({
@@ -43,14 +47,26 @@ class Provider extends Component {
   }
 
   componentDidMount() {
+    ipcRenderer.on(IPC_EVENT.REMINDER_INTERVAL, this.reminderTimeListener);
+    ipcRenderer.on(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.on(IPC_EVENT.OPTION, this.optionListener);
     ipcRenderer.on(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
   }
 
   componentWillUnmount() {
+    ipcRenderer.removeListener(IPC_EVENT.REMINDER_INTERVAL, this.reminderTimeListener);
+    ipcRenderer.removeListener(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.removeListener(IPC_EVENT.OPTION, this.optionListener);
     ipcRenderer.removeListener(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
   }
+
+  reminderTimeListener = (event, ms) => {
+    this.actions.setReminderInterval(ms);
+  };
+
+  breakTimeListener = (event, ms) => {
+    this.actions.setBreakDuration(ms);
+  };
 
   optionListener = (event, options) => {
     this.actions.setOptions(options);

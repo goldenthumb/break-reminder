@@ -50,15 +50,21 @@ const createWindow = () => {
   mainWindow.loadURL(`${renderPath}?window=main`);
 
   ipcMain.on(IPC_EVENT.INITIAL_STATE, (event) => {
-    event.returnValue = {
-      reminderInterval: 10 * 1000,
-      breakDuration: 3 * 1000,
-      options: store.get('options'),
-    }
+    event.returnValue = store.all();
   });
 
   ipcMain.on(IPC_EVENT.MAIN_WINDOW, (event) => {
     event.returnValue = mainWindow.id;
+  });
+
+  ipcMain.on(IPC_EVENT.REMINDER_INTERVAL, (event, ms) => {
+    store.set('reminderInterval', ms);
+    event.sender.send(IPC_EVENT.REMINDER_INTERVAL, ms);
+  });
+
+  ipcMain.on(IPC_EVENT.BREAK_DURATION, (event, ms) => {
+    store.set('breakDuration', ms);
+    event.sender.send(IPC_EVENT.BREAK_DURATION, ms);
   });
 
   ipcMain.on(IPC_EVENT.OPTION, (event, option) => {

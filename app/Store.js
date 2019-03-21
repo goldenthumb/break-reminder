@@ -13,8 +13,21 @@ class Store {
     return this.data[key];
   }
 
+  all() {
+    return this.data;
+  }
+
   set(key, val) {
     this.data[key] = val;
+    this._save();
+  }
+
+  remove(key) {
+    delete this.data[key];
+    this._save();
+  }
+
+  _save() {
     fs.writeFileSync(this.path, JSON.stringify(this.data));
   }
 }
