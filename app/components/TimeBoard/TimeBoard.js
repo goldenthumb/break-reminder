@@ -5,13 +5,9 @@ import css from './TimeBoard.scss';
 
 import { Context } from '../../contexts';
 import { msToTime } from '../../lib/utils';
-import { IPC_EVENT } from '../../lib/constants';
+import { IPC_EVENT, MILLISECOND } from '../../lib/constants';
 
 import Button from '../Button';
-
-const HOUR = 60 * 60 * 1000;
-const MIN = 60 * 1000;
-const SEC = 1000;
 
 let timeLeftTimer = null;
 
@@ -32,12 +28,12 @@ const TimeBoard = () => {
     if (!play) return;
 
     timeLeftTimer = setTimeout(() => {
-      const nextTimeLeft = timeLeft - SEC;
+      const nextTimeLeft = timeLeft - MILLISECOND.SEC;
 
       if (nextTimeLeft >= 0) {
         setTimeLeft(nextTimeLeft);
       }
-    }, SEC);
+    }, MILLISECOND.SEC);
 
     return () => clearTimeout(timeLeftTimer);
   }, [play, timeLeft]);
@@ -68,7 +64,16 @@ const TimeBoard = () => {
           <button
             type="button"
             className={css['time-up']}
-            onClick={() => ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, timeLeft + HOUR)}
+            onClick={() => {
+              const [hour] = msToTime(timeLeft);
+
+              if (hour >= 23) return;
+
+              ipcRenderer.send(
+                IPC_EVENT.REMINDER_INTERVAL,
+                timeLeft + MILLISECOND.HOUR
+              );
+            }}
           >
             &#9650;
           </button>
@@ -76,7 +81,16 @@ const TimeBoard = () => {
           <button
             type="button"
             className={css['time-down']}
-            onClick={() => ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, timeLeft - HOUR)}
+            onClick={() => {
+              const [hour] = msToTime(timeLeft);
+
+              if (hour <= 0) return;
+
+              ipcRenderer.send(
+                IPC_EVENT.REMINDER_INTERVAL,
+                timeLeft - MILLISECOND.HOUR
+              );
+            }}
           >
             &#9660;
           </button>
@@ -86,7 +100,16 @@ const TimeBoard = () => {
           <button
             type="button"
             className={css['time-up']}
-            onClick={() => ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, timeLeft + MIN)}
+            onClick={() => {
+              const [,min] = msToTime(timeLeft);
+
+              if (min >= 59) return;
+
+              ipcRenderer.send(
+                IPC_EVENT.REMINDER_INTERVAL,
+                timeLeft + MILLISECOND.MIN
+              );
+            }}
           >
             &#9650;
           </button>
@@ -94,7 +117,16 @@ const TimeBoard = () => {
           <button
             type="button"
             className={css['time-down']}
-            onClick={() => ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, timeLeft - MIN)}
+            onClick={() => {
+              const [,min] = msToTime(timeLeft);
+
+              if (min <= 1) return;
+
+              ipcRenderer.send(
+                IPC_EVENT.REMINDER_INTERVAL,
+                timeLeft - MILLISECOND.MIN
+              );
+            }}
           >
             &#9660;
           </button>

@@ -7,6 +7,13 @@ const IPC_EVENT = {
   OPTION: 'options',
 };
 
+const MILLISECOND = {
+  HOUR: 60 * 60 * 1000,
+  MIN: 60 * 1000,
+  SEC: 1000
+};
+
 module.exports = {
   IPC_EVENT,
+  MILLISECOND
 };
