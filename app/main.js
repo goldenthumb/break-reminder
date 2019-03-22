@@ -1,9 +1,10 @@
 const { app, BrowserWindow, Tray, ipcMain } = require('electron');
 const path = require('path');
 const Store = require('./Store');
-const { IPC_EVENT } = require('./lib/constants');
 
 const renderPath = `file://${__dirname}/index.html`;
+const { IPC_EVENT } = require('./lib/constants');
+
 const store = new Store({
   configName: 'preferences',
   defaults: {

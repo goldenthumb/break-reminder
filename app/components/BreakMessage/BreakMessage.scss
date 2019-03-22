@@ -15,20 +15,35 @@
   width: 60%;
   height: 40%;
   text-align: center;
+  position: relative;
 }
 
 .title {
   color: white;
   text-align: center;
-  font-size: 4vw;
-  color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 10%;
+  font-size: 60px;
+  font-weight: 200;
+  color: white;
+  margin-bottom: 4%;
 }
 
 .sub-title {
   color: white;
   text-align: center;
-  font-size: 1vw;
+  font-size: 20px;
   color: rgba(255, 255, 255, 0.6);
-  margin-bottom: 4%;
+  font-weight: 400;
+  margin-bottom: 10%;
+}
+
+.progress {
+  width: 200px;
+  margin: 40px auto;
+}
+
+.button-wrap {
+  position: absolute;
+  bottom: 20px;
+  width: 100%;
+  text-align: center;
 }
