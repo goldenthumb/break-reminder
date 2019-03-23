@@ -4,7 +4,9 @@ import { IPC_EVENT } from '../lib/constants';
 import { Context } from '../contexts';
 
 import Header from '../components/Header';
+import Body from '../components/Body';
 import TimeBoard from '../components/TimeBoard';
+import BreakTimePicker from '../components/BreakTimePicker';
 import OptionList from '../components/OptionList';
 
 const Main = () => {
@@ -33,8 +35,11 @@ const Main = () => {
 
   return <>
     <Header />
-    <TimeBoard />
-    <OptionList />
+    <Body>
+      <TimeBoard />
+      <BreakTimePicker />
+      <OptionList />
+    </Body>
   </>
 };
 

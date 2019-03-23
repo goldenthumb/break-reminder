@@ -1,13 +1,10 @@
 @import '../../styles/variable';
 
 .option-list {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  background: white;
-  width: calc(100% - 24px);
-  transform: translateX(-50%);
+  width: calc(100% - 30px);
+  margin: 0 15px;
   border-radius: 8px 8px 0 0;
+  background: white;
   overflow: hidden;
   box-shadow: 0px -1px 20px 0px rgba(220, 220, 220, 0.75);
 }
