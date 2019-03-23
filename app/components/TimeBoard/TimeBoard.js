@@ -28,12 +28,12 @@ const TimeBoard = () => {
     if (!play) return;
 
     timeLeftTimer = setTimeout(() => {
-      const nextTimeLeft = timeLeft - MILLISECOND.SEC;
+      const nextTimeLeft = timeLeft - MILLISECOND.MIN;
 
       if (nextTimeLeft >= 0) {
         setTimeLeft(nextTimeLeft);
       }
-    }, MILLISECOND.SEC);
+    }, MILLISECOND.MIN);
 
     return () => clearTimeout(timeLeftTimer);
   }, [play, timeLeft]);
@@ -58,8 +58,8 @@ const TimeBoard = () => {
   };
 
   return (
-    <div className={css['time-board']}>
-      <div className={css['time-wrap']}>
+    <>
+      <div className={css['time-board']}>
         <div className={css['timer-wrap']}>
           <button
             type="button"
@@ -113,7 +113,7 @@ const TimeBoard = () => {
           >
             &#9650;
           </button>
-          <span className={css['min']}>{min}</span>
+          <span className={css['min']}>{min.toString().padStart(2, '0')}</span>
           <button
             type="button"
             className={css['time-down']}
@@ -132,12 +132,13 @@ const TimeBoard = () => {
           </button>
           <span className={css['time-label']}>m</span>
         </div>
-        <span className={css['sec']}>{sec}</span>
       </div>
-      <Button theme='round-red' action={togglePlay}>
-        {play ? <IoIosPause /> : <IoIosPlay />}
-      </Button>
-    </div>
+      <div className={css['pause-btn-wrap']}>
+        <Button theme='round-red' action={togglePlay}>
+          {play ? <IoIosPause /> : <IoIosPlay />}
+        </Button>
+      </div>
+    </>
   );
 };
 

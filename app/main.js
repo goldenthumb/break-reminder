@@ -8,7 +8,7 @@ const { IPC_EVENT } = require('./lib/constants');
 const store = new Store({
   configName: 'preferences',
   defaults: {
-    reminderInterval: 20 * 60 * 1000,
+    reminderInterval: 30 * 60 * 1000,
     breakDuration: 20 * 1000,
     options: {
       startAtLogin: false,
@@ -39,9 +39,9 @@ const createWindow = () => {
 
   mainWindow = new BrowserWindow({
     width: 300,
-    height: 430,
+    height: 500,
     x: Math.round(bounds.x - ((bounds.width / 2) + 150)),
-    y: bounds.y - 430 - 10,
+    y: bounds.y - 500 - 10,
     acceptFirstMouse: true,
     show: false,
     movable: false,

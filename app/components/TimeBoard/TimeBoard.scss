@@ -1,22 +1,12 @@
 @import '../../styles/variable';
 
 .time-board {
-  position: absolute;
-  top: 42px;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   text-align: center;
   padding-top: 24px;
-  font-size: 90px;
-  font-weight: 100;
   letter-spacing: 0.08em;
   background: #f9f9f9;
   color: $defaultColor;
-}
-
-.time-wrap {
-  position: relative;
 }
 
 .timer-wrap {
@@ -24,6 +14,8 @@
   position: relative;
   margin-right: 20px;
   cursor: pointer;
+  font-size: 90px;
+  font-weight: 100;
 
   &:last-child {
     margin: 0;
@@ -91,4 +83,9 @@
   bottom: 13px;
   margin-left: -10px;
   letter-spacing: 0.1em;
+}
+
+.pause-btn-wrap {
+  text-align: center;
+  padding: 60px 0 40px 0;
 }

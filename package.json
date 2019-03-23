@@ -90,8 +90,10 @@
   },
   "dependencies": {
     "event-emitter": "^0.3.5",
+    "moment": "^2.24.0",
     "node-notifier": "^5.4.0",
     "query-string": "^6.3.0",
+    "rc-time-picker": "^3.6.2",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-icons": "^3.5.0",

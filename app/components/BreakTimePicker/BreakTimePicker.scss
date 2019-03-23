@@ -1,0 +1,18 @@
+@import '../../styles/variable';
+
+.time-picker-wrap {
+  background: #f9f9f9;
+  text-align: center;
+  color: $defaultColor;
+  margin-bottom: 23px;
+}
+
+.break-time-picker {
+  width: 74px;
+  margin-left: 10px;
+
+  & input {
+    letter-spacing: 0.1rem;
+    cursor: pointer;
+  }
+}
