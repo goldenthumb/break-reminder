@@ -12,10 +12,10 @@ import Button from '../Button';
 let timeLeftTimer = null;
 
 const TimeBoard = () => {
-  const { state: { reminderInterval, showBreakWindow } } = useContext(Context);
+  const { state: { reminderInterval, showBreakWindow, options } } = useContext(Context);
   const [timeLeft, setTimeLeft] = useState(reminderInterval);
   const [play, setPlay] = useState(true);
-  const [hour, min, sec] = msToTime(timeLeft);
+  const [hour, min] = msToTime(timeLeft);
 
   useEffect(() => {
     if (!showBreakWindow && timeLeft !== reminderInterval) {
@@ -29,6 +29,12 @@ const TimeBoard = () => {
 
     timeLeftTimer = setTimeout(() => {
       const nextTimeLeft = timeLeft - MILLISECOND.MIN;
+
+      if (nextTimeLeft === MILLISECOND.MIN && options.notification) {
+        new Notification('Preparing break ...', {
+          body: 'Break will commence in 60 seconds.'
+        });
+      }
 
       if (nextTimeLeft >= 0) {
         setTimeLeft(nextTimeLeft);

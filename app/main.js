@@ -94,7 +94,7 @@ const createWindow = () => {
             x: bounds.x,
             y: bounds.y,
             backgroundColor: '#939393',
-            frame: false
+            frame: false,
           });
 
           window.loadURL(`${renderPath}?window=break`);
@@ -127,7 +127,7 @@ const createWindow = () => {
 
       breakTimer = setTimeout(() => {
         breakWindows.map(window => window.close());
-      }, data.delay)
+      }, data.delay);
     }
 
     if (data.status === 'pause') {
