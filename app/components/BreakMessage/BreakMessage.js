@@ -1,26 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { remote, ipcRenderer } from 'electron';
 import { Line } from 'rc-progress';
 import css from './BreakMessage.scss';
 
-import { IPC_EVENT, MILLISECOND } from '../../lib/constants';
+import { IPC_EVENT } from '../../lib/constants';
 import Button from '../Button';
 
 const { BrowserWindow } = remote;
 
 const BreakMessage = () => {
-  const { breakDuration } = ipcRenderer.sendSync(IPC_EVENT.INITIAL_STATE);
-  const [timeLeft, setTimeLeft] = useState(breakDuration);
-  const percent = parseInt((breakDuration - timeLeft) / breakDuration * 100);
+  const audio = useRef(null);
+  const { breakDuration, options } = ipcRenderer.sendSync(IPC_EVENT.INITIAL_STATE);
+  const breakTime = breakDuration - 2000;
+  const [timeLeft, setTimeLeft] = useState(breakTime);
+  const percent = parseInt((breakTime - timeLeft) / breakTime * 100);
+
+  useEffect(() => {
+    const endTimer = setTimeout(() => {
+      if (options.sound) {
+        audio.current.play();
+      }
+    }, breakTime);
+
+    return () => clearTimeout(endTimer);
+  }, []);
 
   useEffect(() => {
     const timeLeftTimer = setTimeout(() => {
-      const nextTimeLeft = timeLeft - MILLISECOND.SEC;
+      const nextTimeLeft = timeLeft - 100;
 
       if (nextTimeLeft >= 0) {
         setTimeLeft(nextTimeLeft);
       }
-    }, MILLISECOND.SEC);
+    }, 100);
 
     return () => clearTimeout(timeLeftTimer);
   }, [timeLeft]);
@@ -31,9 +43,11 @@ const BreakMessage = () => {
         <div className={css['title']}>
           Time For a Break
         </div>
-        <div className={css['sub-title']}>
-          {`You'll hear a sound when done`}
-        </div>
+        {options.sound && (
+          <div className={css['sub-title']}>
+            {`You'll hear a sound when done`}
+          </div>
+        )}
         <div className={css['progress']}>
           <Line
             percent={percent}
@@ -57,9 +71,12 @@ const BreakMessage = () => {
             skip
           </Button>
         </div>
+        <audio ref={audio}>
+          <source type="audio/mp3" src='./audio/alarm.wav' />
+        </audio>
       </div>
     </div>
   );
-}
+};
 
 export default BreakMessage;

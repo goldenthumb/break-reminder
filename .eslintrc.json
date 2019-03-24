@@ -17,6 +17,7 @@
     "react/jsx-wrap-multilines": 0,
     "react/jsx-closing-tag-location": 0,
     "no-console": 1,
+    "jsx-a11y/media-has-caption": 0,
     "import/no-extraneous-dependencies": ["error", { "devDependencies": true }]
   },
   "plugins": ["react"]
