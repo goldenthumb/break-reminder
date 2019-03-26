@@ -11,8 +11,8 @@
     "start-main-dev": "cross-env NODE_ENV=development electron ./app/main.js"
   },
   "build": {
-    "productName": "BreakReminder",
-    "appId": "com.electron.BreakReminder",
+    "productName": "BreakReminder1ssss",
+    "appId": "com.electron.BreakReminder1ssss",
     "asar": true,
     "mac": {
       "target": [
@@ -73,7 +73,7 @@
     "cross-spawn": "^6.0.5",
     "css-loader": "^2.1.0",
     "electron": "^4.0.5",
-    "electron-builder": "^20.38.5",
+    "electron-builder": "^20.39.0",
     "electron-debug": "^2.1.0",
     "eslint": "^5.14.1",
     "eslint-config-airbnb": "^17.1.0",
@@ -98,7 +98,7 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-icons": "^3.5.0",
-    "react-router-dom": "^4.3.1",
+    "react-router-dom": "^5.0.0",
     "react-switch": "^4.1.0"
   }
 }

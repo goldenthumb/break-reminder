@@ -27,14 +27,14 @@ const TimeBoard = () => {
   useEffect(() => {
     if (!play) return;
 
+    if (timeLeft === MILLISECOND.MIN && options.notification) {
+      new Notification('Preparing break ...', {
+        body: 'Break will commence in 60 seconds.'
+      });
+    }
+
     timeLeftTimer = setTimeout(() => {
       const nextTimeLeft = timeLeft - MILLISECOND.MIN;
-
-      if (nextTimeLeft === MILLISECOND.MIN && options.notification) {
-        new Notification('Preparing break ...', {
-          body: 'Break will commence in 60 seconds.'
-        });
-      }
 
       if (nextTimeLeft >= 0) {
         setTimeLeft(nextTimeLeft);
