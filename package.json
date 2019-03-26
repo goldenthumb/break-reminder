@@ -11,8 +11,8 @@
     "start-main-dev": "cross-env NODE_ENV=development electron ./app/main.js"
   },
   "build": {
-    "productName": "BreakReminder1ssss",
-    "appId": "com.electron.BreakReminder1ssss",
+    "productName": "BreakReminder",
+    "appId": "com.electron.app.BreakReminder",
     "asar": true,
     "mac": {
       "target": [
