@@ -1,6 +1,7 @@
 const { app, BrowserWindow, Tray, ipcMain } = require('electron');
 const path = require('path');
 const Store = require('./Store');
+const { hasOwn } = require('./lib/utils');
 
 const renderPath = `file://${__dirname}/index.html`;
 const { IPC_EVENT } = require('./lib/constants');
@@ -17,6 +18,11 @@ const store = new Store({
     }
   }
 });
+
+const loginSettings = {
+  openAtLogin: store.get('startAtLogin'),
+  openAsHidden: true,
+};
 
 let tray = null;
 let mainWindow = null;
@@ -69,6 +75,13 @@ const createWindow = () => {
   });
 
   ipcMain.on(IPC_EVENT.OPTION, (event, option) => {
+    if (hasOwn(option, 'startAtLogin')) {
+      app.setLoginItemSettings({
+        ...loginSettings,
+        openAtLogin: option.startAtLogin
+      });
+    }
+
     const options = {
       ...store.get('options'),
       ...option,
@@ -148,6 +161,8 @@ app.commandLine.appendSwitch(
   'autoplay-policy',
   'no-user-gesture-required'
 );
+
+app.setLoginItemSettings(loginSettings);
 
 app.on('ready', createWindow);
 
