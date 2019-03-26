@@ -29,7 +29,8 @@ const TimeBoard = () => {
 
     if (timeLeft === MILLISECOND.MIN && options.notification) {
       new Notification('Preparing break ...', {
-        body: 'Break will commence in 60 seconds.'
+        body: 'Break will commence in 60 seconds.',
+        silent: !options.sound
       });
     }
 
