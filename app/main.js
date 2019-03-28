@@ -12,7 +12,7 @@ const store = new Store({
     reminderInterval: 30 * 60 * 1000,
     breakDuration: 20 * 1000,
     options: {
-      startAtLogin: false,
+      startAtLogin: true,
       notification: true,
       sound: true,
     }
@@ -30,28 +30,51 @@ let breakWindows = [];
 let reminderTimer = null;
 let breakTimer = null;
 
-const createWindow = () => {
+app.dock.hide();
+
+app.commandLine.appendSwitch(
+  'autoplay-policy',
+  'no-user-gesture-required'
+);
+
+app.setLoginItemSettings(loginSettings);
+
+app.on('ready', () => {
+  createTray();
+  createWindow();
+});
+
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
+
+app.on('activate', () => {
+  if (mainWindow === null) {
+    createTray();
+    createWindow();
+  }
+});
+
+const createTray = () => {
   tray = new Tray(path.resolve(__dirname, './images/tray.png'));
+  tray.on('right-click', toggleWindow);
+  tray.on('double-click', toggleWindow);
+  tray.on('click', toggleWindow);
+};
 
-  tray.on('click', () => {
-    if (mainWindow.isVisible()) {
-      mainWindow.hide();
-    } else {
-      mainWindow.show();
-    }
-  });
-
-  const bounds = tray.getBounds();
-
+const createWindow = () => {
   mainWindow = new BrowserWindow({
     width: 300,
     height: 500,
-    x: Math.round(bounds.x - ((bounds.width / 2) + 150)),
-    y: bounds.y - 500 - 10,
     acceptFirstMouse: true,
     show: false,
     movable: false,
     frame: false,
+    webPreferences: {
+      backgroundThrottling: false
+    }
   });
 
   mainWindow.loadURL(`${renderPath}?window=main`);
@@ -113,9 +136,6 @@ const createWindow = () => {
           window.loadURL(`${renderPath}?window=break`);
           window.once('ready-to-show', window.show);
 
-          // TODO: 수정해야함.
-          // break windows 가 전부 닫혔는지 체크하는 로직인데
-          // 현재는 첫번째 window 가 닫혔는지로 판단하고 있음. 나중에 고쳐야함.
           if (!breakWindows.length) {
             window.on('closed', () => {
               clearTimeout(breakTimer);
@@ -148,32 +168,28 @@ const createWindow = () => {
     }
   });
 
-  ipcMain.on('quit', () => {
-    app.quit();
-  });
-
-  mainWindow.on('closed', () => {
-    app.quit();
-  });
+  ipcMain.on('quit', app.quit);
+  mainWindow.on('closed', app.quit);
 };
 
-app.commandLine.appendSwitch(
-  'autoplay-policy',
-  'no-user-gesture-required'
-);
+const toggleWindow = () => {
+  if (mainWindow.isVisible()) {
+    mainWindow.hide();
+  } else {
+    const { x, y } = getMainWindowPosition();
 
-app.setLoginItemSettings(loginSettings);
-
-app.on('ready', createWindow);
-
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
+    mainWindow.setPosition(x, y, false);
+    mainWindow.show();
+    mainWindow.focus();
   }
-});
+};
 
-app.on('activate', () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
+const getMainWindowPosition = () => {
+  const windowBounds = mainWindow.getBounds();
+  const trayBounds = tray.getBounds();
+
+  const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
+  const y = Math.round(trayBounds.y + trayBounds.height + 4);
+
+  return { x, y };
+};

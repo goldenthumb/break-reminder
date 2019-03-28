@@ -1,6 +1,6 @@
 {
   "name": "break-reminder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "app/main.js",
   "scripts": {
@@ -24,7 +24,7 @@
       "icon": "./resources/icon.icns"
     },
     "dmg": {
-      "title": "HelloElectron",
+      "title": "BreakReminder",
       "icon": "./resources/icon.icns",
       "contents": [
         {
@@ -92,7 +92,7 @@
     "event-emitter": "^0.3.5",
     "moment": "^2.24.0",
     "node-notifier": "^5.4.0",
-    "query-string": "^6.3.0",
+    "query-string": "^6.4.2",
     "rc-progress": "^2.3.0",
     "rc-time-picker": "^3.6.2",
     "react": "^16.8.3",
