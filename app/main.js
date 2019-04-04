@@ -12,8 +12,8 @@ const store = new Store({
     reminderInterval: 30 * 60 * 1000,
     breakDuration: 20 * 1000,
     options: {
-      startAtLogin: true,
-      notification: true,
+      startAtLogin: false,
+      notification: false,
       sound: true,
     }
   }
@@ -116,38 +116,26 @@ const createWindow = () => {
 
   ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event, data) => {
     if (data.status === 'open') {
-      const { screen } = require('electron');
-
       clearTimeout(reminderTimer);
 
       reminderTimer = setTimeout(() => {
-        for (const { size, bounds } of screen.getAllDisplays()) {
-          const window = new BrowserWindow({
-            resizable: false,
-            show: false,
-            ...size,
-            opacity: 0.96,
-            x: bounds.x,
-            y: bounds.y,
-            backgroundColor: '#939393',
-            frame: false,
-          });
+        createBreakWindows();
 
-          window.loadURL(`${renderPath}?window=break`);
-          window.once('ready-to-show', window.show);
+        breakWindows.forEach((window) => {
+          window.on('closed', () => {
+            const windows = BrowserWindow.getAllWindows()
+              .filter(window => window.id !== mainWindow.id);
 
-          if (!breakWindows.length) {
-            window.on('closed', () => {
-              clearTimeout(breakTimer);
-              breakWindows = [];
-              event.sender.send(IPC_EVENT.BREAK_WINDOW, {
-                status: 'close'
-              });
+            if (windows.length) return;
+
+            breakWindows = [];
+            clearTimeout(breakTimer);
+
+            event.sender.send(IPC_EVENT.BREAK_WINDOW, {
+              status: 'close'
             });
-          }
-
-          breakWindows.push(window);
-        }
+          });
+        });
 
         event.sender.send(IPC_EVENT.BREAK_WINDOW, {
           status: 'open'
@@ -159,7 +147,7 @@ const createWindow = () => {
       clearTimeout(breakTimer);
 
       breakTimer = setTimeout(() => {
-        breakWindows.map(window => window.close());
+        breakWindows.forEach(window => window.close());
       }, data.delay);
     }
 
@@ -177,19 +165,37 @@ const toggleWindow = () => {
     mainWindow.hide();
   } else {
     const { x, y } = getMainWindowPosition();
-
-    mainWindow.setPosition(x, y, false);
+    mainWindow.setPosition(x, y);
     mainWindow.show();
-    mainWindow.focus();
   }
 };
 
 const getMainWindowPosition = () => {
   const windowBounds = mainWindow.getBounds();
   const trayBounds = tray.getBounds();
-
   const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
   const y = Math.round(trayBounds.y + trayBounds.height + 4);
 
   return { x, y };
+};
+
+const createBreakWindows = () => {
+  const { screen } = require('electron');
+
+  for (const { size, bounds } of screen.getAllDisplays()) {
+    const window = new BrowserWindow({
+      resizable: false,
+      show: false,
+      ...size,
+      opacity: 0.96,
+      x: bounds.x,
+      y: bounds.y,
+      backgroundColor: '#939393',
+      frame: false,
+    });
+
+    window.loadURL(`${renderPath}?window=break`);
+    window.once('ready-to-show', window.show);
+    breakWindows.push(window);
+  }
 };

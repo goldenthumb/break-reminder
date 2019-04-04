@@ -8,6 +8,7 @@ import { msToTime } from '../../lib/utils';
 import { IPC_EVENT, MILLISECOND } from '../../lib/constants';
 
 import Button from '../Button';
+import TimeCounter from '../TimeCounter';
 
 let timeLeftTimer = null;
 
@@ -27,7 +28,7 @@ const TimeBoard = () => {
   useEffect(() => {
     if (!play) return;
 
-    if (timeLeft === MILLISECOND.MIN && options.notification) {
+    if (timeLeft === MILLISECOND.MIN * 2 && options.notification) {
       new Notification('Preparing break ...', {
         body: 'Break will commence in 60 seconds.',
         silent: !options.sound
@@ -67,78 +68,16 @@ const TimeBoard = () => {
   return (
     <>
       <div className={css['time-board']}>
-        <div className={css['timer-wrap']}>
-          <button
-            type="button"
-            className={css['time-up']}
-            onClick={() => {
-              const [hour] = msToTime(timeLeft);
-
-              if (hour >= 23) return;
-
-              ipcRenderer.send(
-                IPC_EVENT.REMINDER_INTERVAL,
-                timeLeft + MILLISECOND.HOUR
-              );
-            }}
-          >
-            &#9650;
-          </button>
-          <span className={css['hour']}>{hour}</span>
-          <button
-            type="button"
-            className={css['time-down']}
-            onClick={() => {
-              const [hour] = msToTime(timeLeft);
-
-              if (hour <= 0) return;
-
-              ipcRenderer.send(
-                IPC_EVENT.REMINDER_INTERVAL,
-                timeLeft - MILLISECOND.HOUR
-              );
-            }}
-          >
-            &#9660;
-          </button>
-          <span className={css['time-label']}>h</span>
-        </div>
-        <div className={css['timer-wrap']}>
-          <button
-            type="button"
-            className={css['time-up']}
-            onClick={() => {
-              const [,min] = msToTime(timeLeft);
-
-              if (min >= 59) return;
-
-              ipcRenderer.send(
-                IPC_EVENT.REMINDER_INTERVAL,
-                timeLeft + MILLISECOND.MIN
-              );
-            }}
-          >
-            &#9650;
-          </button>
-          <span className={css['min']}>{min.toString().padStart(2, '0')}</span>
-          <button
-            type="button"
-            className={css['time-down']}
-            onClick={() => {
-              const [,min] = msToTime(timeLeft);
-
-              if (min <= 1) return;
-
-              ipcRenderer.send(
-                IPC_EVENT.REMINDER_INTERVAL,
-                timeLeft - MILLISECOND.MIN
-              );
-            }}
-          >
-            &#9660;
-          </button>
-          <span className={css['time-label']}>m</span>
-        </div>
+        <TimeCounter
+          type='h'
+          time={hour}
+          timeLeft={timeLeft}
+        />
+        <TimeCounter
+          type='m'
+          time={min.toString().padStart(2, '0')}
+          timeLeft={timeLeft}
+        />
       </div>
       <div className={css['pause-btn-wrap']}>
         <Button theme='round-red' action={togglePlay}>

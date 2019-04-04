@@ -29,7 +29,6 @@ const BreakTimePicker = () => {
         onChange={(time) => {
           const { HOUR, MIN, SEC } = MILLISECOND;
           const ms = time.hours() * HOUR + time.minutes() * MIN + time.seconds() * SEC;
-
           ipcRenderer.send(IPC_EVENT.BREAK_DURATION, ms);
         }}
       />
