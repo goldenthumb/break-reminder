@@ -1,1 +1,3 @@
-app/contexts
+app/contexts/
+dist/
+node_modules/
