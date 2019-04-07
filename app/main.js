@@ -4,7 +4,7 @@ const Store = require('./Store');
 const { hasOwn } = require('./lib/utils');
 
 const renderPath = `file://${__dirname}/index.html`;
-const { IPC_EVENT } = require('./lib/constants');
+const { IPC_EVENT, MILLISECOND } = require('./lib/constants');
 
 const store = new Store({
   configName: 'preferences',
@@ -29,6 +29,7 @@ let mainWindow = null;
 let breakWindows = [];
 let reminderTimer = null;
 let breakTimer = null;
+let notificationTimer = null;
 
 app.dock.hide();
 
@@ -117,6 +118,17 @@ const createWindow = () => {
   ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event, data) => {
     if (data.status === 'open') {
       clearTimeout(reminderTimer);
+      clearTimeout(notificationTimer);
+
+      notificationTimer = setTimeout(() => {
+        event.sender.send(IPC_EVENT.NOTIFICATION, {
+          title: 'Preparing break ...',
+          options: {
+            body: 'Break will commence in 60 seconds.',
+            silent: !store.get('options').sound
+          }
+        });
+      }, data.delay - MILLISECOND.MIN);
 
       reminderTimer = setTimeout(() => {
         createBreakWindows();

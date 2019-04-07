@@ -5,6 +5,7 @@ const IPC_EVENT = {
   REMINDER_INTERVAL: 'reminderInterval',
   BREAK_DURATION: 'breakDuration',
   OPTION: 'options',
+  NOTIFICATION: 'notification',
 };
 
 const MILLISECOND = {

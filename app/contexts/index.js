@@ -16,7 +16,7 @@ class Provider extends Component {
       reminderInterval,
       breakDuration,
       options,
-      showBreakWindow: false
+      showBreakWindow: false,
     };
 
     this.actions = {
@@ -51,6 +51,7 @@ class Provider extends Component {
     ipcRenderer.on(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.on(IPC_EVENT.OPTION, this.optionListener);
     ipcRenderer.on(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
+    ipcRenderer.on(IPC_EVENT.NOTIFICATION, this.notificationListener);
   }
 
   componentWillUnmount() {
@@ -58,6 +59,7 @@ class Provider extends Component {
     ipcRenderer.removeListener(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.removeListener(IPC_EVENT.OPTION, this.optionListener);
     ipcRenderer.removeListener(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
+    ipcRenderer.removeListener(IPC_EVENT.NOTIFICATION, this.notificationListener);
   }
 
   reminderTimeListener = (event, ms) => {
@@ -80,6 +82,10 @@ class Provider extends Component {
     if (status === 'close') {
       this.actions.closeBreakWindow();
     }
+  };
+
+  notificationListener = (event, { title, options }) => {
+    new Notification(title, options);
   };
 
   render() {

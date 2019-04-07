@@ -13,7 +13,7 @@ import TimeCounter from '../TimeCounter';
 let timeLeftTimer = null;
 
 const TimeBoard = () => {
-  const { state: { reminderInterval, showBreakWindow, options } } = useContext(Context);
+  const { state: { reminderInterval, showBreakWindow } } = useContext(Context);
   const [timeLeft, setTimeLeft] = useState(reminderInterval);
   const [play, setPlay] = useState(true);
   const [hour, min] = msToTime(timeLeft);
@@ -27,13 +27,6 @@ const TimeBoard = () => {
 
   useEffect(() => {
     if (!play) return;
-
-    if (timeLeft === MILLISECOND.MIN * 2 && options.notification) {
-      new Notification('Preparing break ...', {
-        body: 'Break will commence in 60 seconds.',
-        silent: !options.sound
-      });
-    }
 
     timeLeftTimer = setTimeout(() => {
       const nextTimeLeft = timeLeft - MILLISECOND.MIN;

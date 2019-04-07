@@ -1,6 +1,6 @@
 {
   "name": "break-reminder",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
   "main": "app/main.js",
   "scripts": {
