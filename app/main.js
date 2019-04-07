@@ -142,7 +142,6 @@ const createWindow = () => {
 
             breakWindows = [];
             clearTimeout(breakTimer);
-
             event.sender.send(IPC_EVENT.BREAK_WINDOW, {
               status: 'close'
             });
@@ -165,6 +164,12 @@ const createWindow = () => {
 
     if (data.status === 'pause') {
       clearTimeout(reminderTimer);
+    }
+
+    if (data.status === 'skip') {
+      BrowserWindow.getAllWindows()
+        .filter(({ id }) => id !== mainWindow.id)
+        .forEach(window => window.close());
     }
   });
 
@@ -195,6 +200,7 @@ const createBreakWindows = () => {
   const { screen } = require('electron');
 
   for (const { size, bounds } of screen.getAllDisplays()) {
+    const windowName = !breakWindows.length ? 'break' : 'overlay';
     const window = new BrowserWindow({
       resizable: false,
       show: false,
@@ -206,7 +212,7 @@ const createBreakWindows = () => {
       frame: false,
     });
 
-    window.loadURL(`${renderPath}?window=break`);
+    window.loadURL(`${renderPath}?window=${windowName}`);
     window.once('ready-to-show', window.show);
     breakWindows.push(window);
   }
