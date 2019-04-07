@@ -4,7 +4,7 @@ import { IPC_EVENT } from '../../lib/constants';
 import css from './BreakTitle.scss';
 
 const BreakTitle = () => {
-  const { options } = ipcRenderer.sendSync(IPC_EVENT.INITIAL_STATE);
+  const { options } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
 
   return (
     <>

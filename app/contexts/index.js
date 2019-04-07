@@ -9,8 +9,8 @@ class Provider extends Component {
   constructor(props) {
     super(props);
 
-    const initialState = ipcRenderer.sendSync(IPC_EVENT.INITIAL_STATE);
-    const { reminderInterval, breakDuration, options } = initialState;
+    const preferences = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
+    const { reminderInterval, breakDuration, options } = preferences;
 
     this.state = {
       reminderInterval,

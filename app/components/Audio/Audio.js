@@ -4,7 +4,7 @@ import { IPC_EVENT } from '../../lib/constants';
 
 const Audio = () => {
   const audio = useRef(null);
-  const { breakDuration, options } = ipcRenderer.sendSync(IPC_EVENT.INITIAL_STATE);
+  const { breakDuration, options } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
 
   useEffect(() => {
     const endTimer = setTimeout(() => {

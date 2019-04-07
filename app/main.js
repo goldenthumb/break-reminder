@@ -80,7 +80,7 @@ const createWindow = () => {
 
   mainWindow.loadURL(`${renderPath}?window=main`);
 
-  ipcMain.on(IPC_EVENT.INITIAL_STATE, (event) => {
+  ipcMain.on(IPC_EVENT.PREFERENCES, (event) => {
     event.returnValue = store.all();
   });
 

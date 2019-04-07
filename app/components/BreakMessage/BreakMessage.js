@@ -9,7 +9,7 @@ import Skip from '../Skip';
 import Audio from '../Audio';
 
 const BreakMessage = () => {
-  const { breakDuration } = ipcRenderer.sendSync(IPC_EVENT.INITIAL_STATE);
+  const { breakDuration } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
   const breakTime = breakDuration - 2000;
   const [timeLeft, setTimeLeft] = useState(breakTime);
   const percent = parseInt((breakTime - timeLeft) / breakTime * 100);

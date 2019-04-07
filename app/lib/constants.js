@@ -1,5 +1,5 @@
 const IPC_EVENT = {
-  INITIAL_STATE: 'getInitialState',
+  PREFERENCES: 'preferences',
   MAIN_WINDOW: 'getMainWindowId',
   BREAK_WINDOW: 'breakWindow',
   REMINDER_INTERVAL: 'reminderInterval',
