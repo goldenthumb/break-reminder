@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/constants';
 import css from './BreakMessage.scss';
+
+import useTimer from '../../hooks/useTimer';
 
 import BreakTitle from '../BreakTitle';
 import Progress from '../Progress';
@@ -11,20 +13,7 @@ import Audio from '../Audio';
 const BreakMessage = () => {
   const { breakDuration } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
   const breakTime = breakDuration - 2000;
-  const [timeLeft, setTimeLeft] = useState(breakTime);
-  const percent = parseInt((breakTime - timeLeft) / breakTime * 100);
-
-  useEffect(() => {
-    const timeLeftTimer = setTimeout(() => {
-      const nextTimeLeft = timeLeft - 100;
-
-      if (nextTimeLeft >= 0) {
-        setTimeLeft(nextTimeLeft);
-      }
-    }, 100);
-
-    return () => clearTimeout(timeLeftTimer);
-  }, [timeLeft]);
+  const { percent } = useTimer({ time: breakTime, interval: 100 });
 
   return (
     <div className={css['message-wrap']}>

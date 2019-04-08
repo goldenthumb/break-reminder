@@ -7,42 +7,31 @@ import { Context } from '../../contexts';
 import { msToTime } from '../../lib/utils';
 import { IPC_EVENT, MILLISECOND } from '../../lib/constants';
 
+import useTimer from '../../hooks/useTimer';
+
 import Button from '../Button';
 import TimeCounter from '../TimeCounter';
 
-let timeLeftTimer = null;
-
 const TimeBoard = () => {
   const { state: { reminderInterval, showBreakWindow } } = useContext(Context);
-  const [timeLeft, setTimeLeft] = useState(reminderInterval);
-  const [play, setPlay] = useState(true);
+  const { timeLeft, play, pause, reset } = useTimer({ time: reminderInterval, interval: MILLISECOND.MIN });
+  const [isPlay, setPlayStatus] = useState(true);
   const [hour, min] = msToTime(timeLeft);
 
   useEffect(() => {
     if (!showBreakWindow && timeLeft !== reminderInterval) {
-      clearTimeout(timeLeftTimer);
-      setTimeLeft(reminderInterval);
+      reset(reminderInterval);
     }
   }, [showBreakWindow, reminderInterval]);
 
   useEffect(() => {
-    if (!play) return;
-
-    timeLeftTimer = setTimeout(() => {
-      const nextTimeLeft = timeLeft - MILLISECOND.MIN;
-
-      if (nextTimeLeft >= 0) {
-        setTimeLeft(nextTimeLeft);
-      }
-    }, MILLISECOND.MIN);
-
-    return () => clearTimeout(timeLeftTimer);
-  }, [play, timeLeft]);
+    isPlay ? play() : pause();
+  }, [isPlay]);
 
   const togglePlay = () => {
     if (showBreakWindow) return;
 
-    const nextPlay = !play;
+    const nextPlay = !isPlay;
 
     if (nextPlay) {
       ipcRenderer.send(IPC_EVENT.BREAK_WINDOW, {
@@ -55,7 +44,7 @@ const TimeBoard = () => {
       });
     }
 
-    setPlay(nextPlay);
+    setPlayStatus(nextPlay);
   };
 
   return (
@@ -74,7 +63,7 @@ const TimeBoard = () => {
       </div>
       <div className={css['pause-btn-wrap']}>
         <Button theme='round-red' action={togglePlay}>
-          {play ? <IoIosPause /> : <IoIosPlay />}
+          {isPlay ? <IoIosPause /> : <IoIosPlay />}
         </Button>
       </div>
     </>
