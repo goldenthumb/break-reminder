@@ -1,6 +1,6 @@
 {
   "name": "break-reminder",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "",
   "main": "app/main.js",
   "scripts": {
@@ -11,8 +11,8 @@
     "start-main-dev": "cross-env NODE_ENV=development electron ./app/main.js"
   },
   "build": {
-    "productName": "BreakReminderqwe",
-    "appId": "com.electron.app.BreakReminderqwe",
+    "productName": "BreakReminder",
+    "appId": "com.electron.app.BreakReminder",
     "asar": true,
     "mac": {
       "target": [
