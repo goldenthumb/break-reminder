@@ -1,4 +1,6 @@
-node_modules/
-.idea/
-dist/
-release/
+node_modules
+.idea
+dist
+release
+package-lock.json
+yarn.lock

@@ -13,7 +13,7 @@ const store = new Store({
     breakDuration: 20 * 1000,
     options: {
       startAtLogin: false,
-      notification: false,
+      notification: true,
       sound: true,
     }
   }
@@ -74,7 +74,8 @@ const createWindow = () => {
     movable: false,
     frame: false,
     webPreferences: {
-      backgroundThrottling: false
+      backgroundThrottling: false,
+      nodeIntegration: true
     }
   });
 
@@ -210,6 +211,9 @@ const createBreakWindows = () => {
       y: bounds.y,
       backgroundColor: '#939393',
       frame: false,
+      webPreferences: {
+        nodeIntegration: true
+      }
     });
 
     window.loadURL(`${renderPath}?window=${windowName}`);
