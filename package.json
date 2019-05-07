@@ -99,6 +99,9 @@
     "react-dom": "^16.8.3",
     "react-icons": "^3.5.0",
     "react-router-dom": "^5.0.0",
-    "react-switch": "^4.1.0"
+    "react-switch": "^4.1.0",
+    "ts-loader": "^6.0.0",
+    "tslint": "^5.16.0",
+    "typescript": "^3.4.5"
   }
 }
