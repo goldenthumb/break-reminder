@@ -1,3 +1,5 @@
 app/contexts/
 dist/
 node_modules/
+*.ts
+*.tsx

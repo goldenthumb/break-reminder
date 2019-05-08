@@ -2,8 +2,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es6",
-    "outDir": "app/dist",
     "sourceMap": false,
     "moduleResolution": "node"
-  }
+  },
+  "include": [
+    "app/**/*"
+  ]
 }

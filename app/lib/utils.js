@@ -1,5 +1,3 @@
-const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
-
 const msToTime = (duration) => {
   let seconds = parseInt((duration / 1000) % 60);
   let minutes = parseInt((duration / (1000 * 60)) % 60);
@@ -8,4 +6,4 @@ const msToTime = (duration) => {
   return [hours, minutes, seconds];
 };
 
-module.exports = { msToTime, hasOwn };
+module.exports = { msToTime };

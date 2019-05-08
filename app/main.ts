@@ -1,22 +1,38 @@
-const { app, BrowserWindow, Tray, ipcMain } = require('electron');
-const path = require('path');
-const Store = require('./Store');
-const { hasOwn } = require('./lib/utils');
+import { app, BrowserWindow, Tray, ipcMain } from 'electron';
+import * as path from 'path';
+import Store from './Store';
+import { IPC_EVENT, MILLISECOND } from './lib/constants';
 
 const renderPath = `file://${__dirname}/index.html`;
-const { IPC_EVENT, MILLISECOND } = require('./lib/constants');
+
+interface Preferences {
+  reminderInterval: number;
+  breakDuration: number;
+  options: {
+    startAtLogin: boolean;
+    notification: boolean;
+    sound: boolean;
+  };
+}
+
+interface BreakWindowEventMessage {
+  status: string;
+  delay?: number;
+}
+
+const defaultPreferences: Preferences = {
+  reminderInterval: 30 * 60 * 1000,
+  breakDuration: 20 * 1000,
+  options: {
+    startAtLogin: false,
+    notification: true,
+    sound: true,
+  }
+};
 
 const store = new Store({
   configName: 'preferences',
-  defaults: {
-    reminderInterval: 30 * 60 * 1000,
-    breakDuration: 20 * 1000,
-    options: {
-      startAtLogin: false,
-      notification: true,
-      sound: true,
-    }
-  }
+  defaults: defaultPreferences
 });
 
 const loginSettings = {
@@ -81,29 +97,29 @@ const createWindow = () => {
 
   mainWindow.loadURL(`${renderPath}?window=main`);
 
-  ipcMain.on(IPC_EVENT.PREFERENCES, (event) => {
+  ipcMain.on(IPC_EVENT.PREFERENCES, (event: Electron.IpcMessageEvent) => {
     event.returnValue = store.all();
   });
 
-  ipcMain.on(IPC_EVENT.MAIN_WINDOW, (event) => {
+  ipcMain.on(IPC_EVENT.MAIN_WINDOW, (event: Electron.IpcMessageEvent) => {
     event.returnValue = mainWindow.id;
   });
 
-  ipcMain.on(IPC_EVENT.REMINDER_INTERVAL, (event, ms) => {
+  ipcMain.on(IPC_EVENT.REMINDER_INTERVAL, (event: Electron.IpcMessageEvent, ms: number) => {
     store.set('reminderInterval', ms);
     event.sender.send(IPC_EVENT.REMINDER_INTERVAL, ms);
   });
 
-  ipcMain.on(IPC_EVENT.BREAK_DURATION, (event, ms) => {
+  ipcMain.on(IPC_EVENT.BREAK_DURATION, (event: Electron.IpcMessageEvent, ms: number) => {
     store.set('breakDuration', ms);
     event.sender.send(IPC_EVENT.BREAK_DURATION, ms);
   });
 
-  ipcMain.on(IPC_EVENT.OPTION, (event, option) => {
-    if (hasOwn(option, 'startAtLogin')) {
+  ipcMain.on(IPC_EVENT.OPTION, (event: Electron.IpcMessageEvent, option: Preferences) => {
+    if (option.hasOwnProperty('startAtLogin')) {
       app.setLoginItemSettings({
         ...loginSettings,
-        openAtLogin: option.startAtLogin
+        openAtLogin: option['startAtLogin']
       });
     }
 
@@ -116,7 +132,7 @@ const createWindow = () => {
     event.sender.send(IPC_EVENT.OPTION, options);
   });
 
-  ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event, data) => {
+  ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, data: BreakWindowEventMessage) => {
     if (data.status === 'open') {
       clearTimeout(reminderTimer);
       clearTimeout(notificationTimer);
@@ -143,15 +159,16 @@ const createWindow = () => {
 
             breakWindows = [];
             clearTimeout(breakTimer);
-            event.sender.send(IPC_EVENT.BREAK_WINDOW, {
-              status: 'close'
-            });
+
+            event.sender.send(
+              IPC_EVENT.BREAK_WINDOW,
+              { status: 'close' }
+            );
+
           });
         });
 
-        event.sender.send(IPC_EVENT.BREAK_WINDOW, {
-          status: 'open'
-        });
+        event.sender.send(IPC_EVENT.BREAK_WINDOW, { status: 'open' });
       }, data.delay);
     }
 
