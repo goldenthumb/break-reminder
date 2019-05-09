@@ -83,10 +83,9 @@ class MainWindow extends BrowserWindow {
 
           this._breakWindows.forEach((browserWindow: Electron.BrowserWindow) => {
             browserWindow.on('closed', () => {
-              const browserWindows = BrowserWindow.getAllWindows()
-                .filter(browserWindow => browserWindow.id !== this.id);
+              this._breakWindows.pop();
 
-              if (browserWindows.length) return;
+              if (this._breakWindows.length) return;
 
               this._breakWindows = [];
 
@@ -96,7 +95,6 @@ class MainWindow extends BrowserWindow {
                 IPC_EVENT.BREAK_WINDOW,
                 { status: 'close' }
               );
-
             });
           });
 
