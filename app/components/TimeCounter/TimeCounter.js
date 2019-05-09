@@ -9,41 +9,43 @@ const TimeCounter = ({ type, time, timeLeft }) => {
   const actions = {
     h: {
       up: () => {
-        const [hour] = msToTime(timeLeft);
+        const [hour, min] = msToTime(timeLeft);
+
         if (hour >= 23) return;
 
         ipcRenderer.send(
           IPC_EVENT.REMINDER_INTERVAL,
-          timeLeft + MILLISECOND.HOUR
+          ((hour + 1) * MILLISECOND.HOUR) + (min * MILLISECOND.MIN)
         );
       },
       down: () => {
-        const [hour] = msToTime(timeLeft);
-        if (hour <= 0) return;
+        const [hour, min] = msToTime(timeLeft);
+
+        if (hour < 0) return;
 
         ipcRenderer.send(
           IPC_EVENT.REMINDER_INTERVAL,
-          timeLeft - MILLISECOND.HOUR
+          (hour === 0 ? 0 : ((hour - 1) * MILLISECOND.HOUR)) + (min * MILLISECOND.MIN)
         );
       }
     },
     m: {
       up: () => {
-        const [,min] = msToTime(timeLeft);
+        const [hour, min] = msToTime(timeLeft);
         if (min >= 59) return;
 
         ipcRenderer.send(
           IPC_EVENT.REMINDER_INTERVAL,
-          timeLeft + MILLISECOND.MIN
+          (hour * MILLISECOND.HOUR) + ((min + 1) * MILLISECOND.MIN)
         );
       },
       down: () => {
-        const [,min] = msToTime(timeLeft);
-        if (min <= 1) return;
+        const [hour, min] = msToTime(timeLeft);
+        if (hour === 0 && min <= 1) return;
 
         ipcRenderer.send(
           IPC_EVENT.REMINDER_INTERVAL,
-          timeLeft - MILLISECOND.MIN
+          (hour * MILLISECOND.HOUR) + (min === 0 ? 0 : ((min - 1) * MILLISECOND.MIN))
         );
       }
     }
