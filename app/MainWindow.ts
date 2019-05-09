@@ -23,6 +23,7 @@ class MainWindow extends BrowserWindow {
       }
     });
 
+    this._breakWindows = [];
     this.loadURL(`${renderPath}?window=main`);
 
     ipcMain.on(IPC_EVENT.PREFERENCES, (event: Electron.IpcMessageEvent) => {
@@ -65,15 +66,17 @@ class MainWindow extends BrowserWindow {
         clearTimeout(this._reminderTimer);
         clearTimeout(this._notificationTimer);
 
-        this._notificationTimer = global.setTimeout(() => {
-          event.sender.send(IPC_EVENT.NOTIFICATION, {
-            title: 'Preparing break ...',
-            options: {
-              body: 'Break will commence in 60 seconds.',
-              silent: !store.get('options').sound
-            }
-          });
-        }, data.delay - MILLISECOND.MIN);
+        if (data.delay - MILLISECOND.MIN > 0) {
+          this._notificationTimer = global.setTimeout(() => {
+            event.sender.send(IPC_EVENT.NOTIFICATION, {
+              title: 'Preparing break ...',
+              options: {
+                body: 'Break will commence in 60 seconds.',
+                silent: !store.get('options').sound
+              }
+            });
+          }, data.delay - MILLISECOND.MIN);
+        }
 
         this._reminderTimer = global.setTimeout(() => {
           this.createBreakWindows();
@@ -114,9 +117,7 @@ class MainWindow extends BrowserWindow {
       }
 
       if (data.status === 'skip') {
-        BrowserWindow.getAllWindows()
-          .filter(({ id }) => id !== this.id)
-          .forEach(browserWindow => browserWindow.close());
+        this._breakWindows.forEach(browserWindow => browserWindow.close());
       }
     });
 
