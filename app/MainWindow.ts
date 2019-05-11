@@ -1,8 +1,13 @@
 import { app, screen, BrowserWindow, ipcMain } from 'electron';
 import { IPC_EVENT, MILLISECOND } from './lib/constants';
-import { renderPath, store, loginSettings } from './main';
+import { RENDER_PATH, store, loginSettings } from './main';
 import { Options } from './store';
-import BreakWindow, { BreakWindowEventMessage } from './BreakWindow';
+import BreakWindow from './BreakWindow';
+
+interface BreakWindowMessage {
+  status: string;
+  delay: number;
+}
 
 class MainWindow extends BrowserWindow {
   private _reminderTimer: NodeJS.Timeout;
@@ -24,7 +29,7 @@ class MainWindow extends BrowserWindow {
       }
     });
 
-    this.loadURL(`${renderPath}?window=main`);
+    this.loadURL(`${RENDER_PATH}?window=main`);
 
     ipcMain.on(IPC_EVENT.PREFERENCES, (event: Electron.IpcMessageEvent) => {
       event.returnValue = store.all();
@@ -61,7 +66,7 @@ class MainWindow extends BrowserWindow {
       event.sender.send(IPC_EVENT.OPTION, options);
     });
 
-    ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, data: BreakWindowEventMessage) => {
+    ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, data: BreakWindowMessage) => {
       if (data.status === 'open') {
         global.clearTimeout(this._reminderTimer);
         global.clearTimeout(this._notificationTimer);
@@ -81,35 +86,26 @@ class MainWindow extends BrowserWindow {
         }
 
         this._reminderTimer = global.setTimeout(() => {
-          this.createBreakWindows();
+          this._createBreakWindows();
 
-          this._breakWindows.forEach((browserWindow: Electron.BrowserWindow) => {
+          for (const browserWindow of this._breakWindows) {
             browserWindow.on('closed', () => {
               this._breakWindows.pop();
 
               if (this._breakWindows.length) return;
 
-              this._breakWindows = [];
-
               global.clearTimeout(this._breakTimer);
-
-              event.sender.send(
-                IPC_EVENT.BREAK_WINDOW,
-                { status: 'close' }
-              );
+              event.sender.send(IPC_EVENT.BREAK_WINDOW, {status: 'close'});
             });
-          });
+          }
 
-          event.sender.send(IPC_EVENT.BREAK_WINDOW, { status: 'open' });
+          event.sender.send(IPC_EVENT.BREAK_WINDOW, {status: 'open'});
         }, data.delay);
       }
 
       if (data.status === 'close') {
         global.clearTimeout(this._breakTimer);
-
-        this._breakTimer = global.setTimeout(() => {
-          this._breakWindows.forEach((browserWindow: Electron.BrowserWindow) => browserWindow.close());
-        }, data.delay);
+        this._breakTimer = global.setTimeout(this._closeBreakWindows, data.delay);
       }
 
       if (data.status === 'pause') {
@@ -117,7 +113,7 @@ class MainWindow extends BrowserWindow {
       }
 
       if (data.status === 'skip') {
-        this._breakWindows.forEach(browserWindow => browserWindow.close());
+        this._closeBreakWindows();
       }
     });
 
@@ -125,13 +121,19 @@ class MainWindow extends BrowserWindow {
     this.on('closed', app.quit);
   }
 
-  createBreakWindows() {
+  _createBreakWindows(): void {
     for (const display of screen.getAllDisplays()) {
       const windowName: string = !this._breakWindows.length ? 'break' : 'overlay';
-      const loadURL: string = `${renderPath}?window=${windowName}`;
+      const loadURL: string = `${RENDER_PATH}?window=${windowName}`;
       const window: Electron.BrowserWindow = new BreakWindow(loadURL, display);
 
       this._breakWindows.push(window);
+    }
+  }
+
+  _closeBreakWindows = (): void => {
+    for (const browserWindow of this._breakWindows) {
+      browserWindow.close();
     }
   }
 }

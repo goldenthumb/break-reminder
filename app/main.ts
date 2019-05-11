@@ -3,11 +3,14 @@ import * as path from 'path';
 import Store, { Preferences } from './Store';
 import MainWindow from './MainWindow';
 
-export const renderPath = `file://${__dirname}/index.html`;
-
 interface LoginSettings {
   openAtLogin: boolean;
   openAsHidden: boolean;
+}
+
+interface MainWindowPosition {
+  x: number;
+  y: number;
 }
 
 const defaultPreferences: Preferences = {
@@ -19,6 +22,8 @@ const defaultPreferences: Preferences = {
     sound: true,
   }
 };
+
+export const RENDER_PATH = `file://${__dirname}/index.html`;
 
 export const store = new Store({
   configName: 'preferences',
@@ -60,16 +65,18 @@ app.on('activate', () => {
   }
 });
 
-const createTray = () => {
+const createMainWindow = (): void => {
+  mainWindow = new MainWindow();
+};
+
+const createTray = (): void => {
   tray = new Tray(path.resolve(__dirname, './images/tray.png'));
   tray.on('right-click', toggleWindow);
   tray.on('double-click', toggleWindow);
   tray.on('click', toggleWindow);
 };
 
-const createMainWindow = (): MainWindow => mainWindow = new MainWindow();
-
-const toggleWindow = () => {
+const toggleWindow = (): void => {
   if (mainWindow.isVisible()) {
     mainWindow.hide();
   } else {
@@ -79,11 +86,12 @@ const toggleWindow = () => {
   }
 };
 
-const getMainWindowPosition = () => {
+const getMainWindowPosition = (): MainWindowPosition => {
   const windowBounds = mainWindow.getBounds();
   const trayBounds = tray.getBounds();
   const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
   const y = Math.round(trayBounds.y + trayBounds.height + 4);
+  const position: MainWindowPosition = { x, y };
 
-  return { x, y };
+  return position;
 };

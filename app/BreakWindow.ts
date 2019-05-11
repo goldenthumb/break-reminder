@@ -1,10 +1,5 @@
 import { BrowserWindow } from 'electron';
 
-export interface BreakWindowEventMessage {
-  status: string;
-  delay: number;
-}
-
 class BreakWindow extends BrowserWindow {
   constructor(loadURL: string, display: Electron.Display) {
     super({
