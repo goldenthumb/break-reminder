@@ -1,13 +1,14 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, screen, BrowserWindow, ipcMain } from 'electron';
 import { IPC_EVENT, MILLISECOND } from './lib/constants';
-import { renderPath, Preferences, store, loginSettings, BreakWindowEventMessage } from './main';
-import BreakWindow from './BreakWindow';
+import { renderPath, store, loginSettings } from './main';
+import { Options } from './store';
+import BreakWindow, { BreakWindowEventMessage } from './BreakWindow';
 
 class MainWindow extends BrowserWindow {
-  private _reminderTimer: NodeJS.Timer;
-  private _breakTimer: NodeJS.Timer;
-  private _notificationTimer: NodeJS.Timer;
-  private _breakWindows: [Electron.BrowserWindow?];
+  private _reminderTimer: NodeJS.Timeout;
+  private _breakTimer: NodeJS.Timeout;
+  private _notificationTimer: NodeJS.Timeout;
+  private _breakWindows: [Electron.BrowserWindow?] = [];
 
   constructor() {
     super({
@@ -23,7 +24,6 @@ class MainWindow extends BrowserWindow {
       }
     });
 
-    this._breakWindows = [];
     this.loadURL(`${renderPath}?window=main`);
 
     ipcMain.on(IPC_EVENT.PREFERENCES, (event: Electron.IpcMessageEvent) => {
@@ -44,17 +44,17 @@ class MainWindow extends BrowserWindow {
       event.sender.send(IPC_EVENT.BREAK_DURATION, ms);
     });
 
-    ipcMain.on(IPC_EVENT.OPTION, (event: Electron.IpcMessageEvent, option: Preferences) => {
-      if (option.hasOwnProperty('startAtLogin')) {
+    ipcMain.on(IPC_EVENT.OPTION, (event: Electron.IpcMessageEvent, options: Options) => {
+      if (options.hasOwnProperty('startAtLogin')) {
         app.setLoginItemSettings({
           ...loginSettings,
-          openAtLogin: option['startAtLogin']
+          openAtLogin: options.startAtLogin
         });
       }
 
-      const options = {
-        ...store.get('options'),
-        ...option,
+      options = {
+        ...store.getOptions(),
+        ...options,
       };
 
       store.set('options', options);
@@ -63,16 +63,18 @@ class MainWindow extends BrowserWindow {
 
     ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, data: BreakWindowEventMessage) => {
       if (data.status === 'open') {
-        clearTimeout(this._reminderTimer);
-        clearTimeout(this._notificationTimer);
+        global.clearTimeout(this._reminderTimer);
+        global.clearTimeout(this._notificationTimer);
 
         if (data.delay - MILLISECOND.MIN > 0) {
+          const options = store.getOptions();
+
           this._notificationTimer = global.setTimeout(() => {
             event.sender.send(IPC_EVENT.NOTIFICATION, {
               title: 'Preparing break ...',
               options: {
                 body: 'Break will commence in 60 seconds.',
-                silent: !store.get('options').sound
+                silent: !options.sound
               }
             });
           }, data.delay - MILLISECOND.MIN);
@@ -89,7 +91,7 @@ class MainWindow extends BrowserWindow {
 
               this._breakWindows = [];
 
-              clearTimeout(this._breakTimer);
+              global.clearTimeout(this._breakTimer);
 
               event.sender.send(
                 IPC_EVENT.BREAK_WINDOW,
@@ -103,7 +105,7 @@ class MainWindow extends BrowserWindow {
       }
 
       if (data.status === 'close') {
-        clearTimeout(this._breakTimer);
+        global.clearTimeout(this._breakTimer);
 
         this._breakTimer = global.setTimeout(() => {
           this._breakWindows.forEach((browserWindow: Electron.BrowserWindow) => browserWindow.close());
@@ -111,7 +113,7 @@ class MainWindow extends BrowserWindow {
       }
 
       if (data.status === 'pause') {
-        clearTimeout(this._reminderTimer);
+        global.clearTimeout(this._reminderTimer);
       }
 
       if (data.status === 'skip') {
@@ -124,11 +126,10 @@ class MainWindow extends BrowserWindow {
   }
 
   createBreakWindows() {
-    const { screen } = require('electron');
-
     for (const display of screen.getAllDisplays()) {
       const windowName: string = !this._breakWindows.length ? 'break' : 'overlay';
-      const window: Electron.BrowserWindow = new BreakWindow(`${renderPath}?window=${windowName}`, display);
+      const loadURL: string = `${renderPath}?window=${windowName}`;
+      const window: Electron.BrowserWindow = new BreakWindow(loadURL, display);
 
       this._breakWindows.push(window);
     }

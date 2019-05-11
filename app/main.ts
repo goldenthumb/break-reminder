@@ -1,23 +1,13 @@
 import { app, Tray } from 'electron';
 import * as path from 'path';
-import Store from './Store';
+import Store, { Preferences } from './Store';
 import MainWindow from './MainWindow';
 
 export const renderPath = `file://${__dirname}/index.html`;
 
-export interface Preferences {
-  reminderInterval: number;
-  breakDuration: number;
-  options: {
-    startAtLogin: boolean;
-    notification: boolean;
-    sound: boolean;
-  };
-}
-
-export interface BreakWindowEventMessage {
-  status: string;
-  delay?: number;
+interface LoginSettings {
+  openAtLogin: boolean;
+  openAsHidden: boolean;
 }
 
 const defaultPreferences: Preferences = {
@@ -35,13 +25,13 @@ export const store = new Store({
   defaults: defaultPreferences
 });
 
-export const loginSettings = {
-  openAtLogin: store.get('startAtLogin'),
+export const loginSettings: LoginSettings = {
+  openAtLogin: store.getOptions().startAtLogin,
   openAsHidden: true,
 };
 
-let tray = null;
-let mainWindow: Electron.BrowserWindow = null;
+let tray: Electron.Tray;
+let mainWindow: Electron.BrowserWindow;
 
 app.dock.hide();
 
@@ -54,7 +44,7 @@ app.setLoginItemSettings(loginSettings);
 
 app.on('ready', () => {
   createTray();
-  mainWindow = new MainWindow();
+  createMainWindow();
 });
 
 app.on('window-all-closed', () => {
@@ -66,7 +56,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (mainWindow === null) {
     createTray();
-    mainWindow = new MainWindow();
+    createMainWindow();
   }
 });
 
@@ -76,6 +66,8 @@ const createTray = () => {
   tray.on('double-click', toggleWindow);
   tray.on('click', toggleWindow);
 };
+
+const createMainWindow = (): MainWindow => mainWindow = new MainWindow();
 
 const toggleWindow = () => {
   if (mainWindow.isVisible()) {

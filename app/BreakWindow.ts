@@ -1,7 +1,12 @@
 import { BrowserWindow } from 'electron';
 
+export interface BreakWindowEventMessage {
+  status: string;
+  delay: number;
+}
+
 class BreakWindow extends BrowserWindow {
-  constructor(renderPath, display) {
+  constructor(loadURL: string, display: Electron.Display) {
     super({
       resizable: false,
       show: false,
@@ -16,7 +21,7 @@ class BreakWindow extends BrowserWindow {
       }
     });
 
-    this.loadURL(renderPath);
+    this.loadURL(loadURL);
     this.once('ready-to-show', this.show);
   }
 }
