@@ -20,7 +20,7 @@ const store = new Store({
 });
 
 const loginSettings = {
-  openAtLogin: store.get('startAtLogin'),
+  openAtLogin: store.get('options').startAtLogin,
   openAsHidden: true,
 };
 
