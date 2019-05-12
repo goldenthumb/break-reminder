@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../lib/constants';
+import { IPC_EVENT } from '../../../lib/constants';
 
 const Audio = () => {
   const audio = useRef(null);

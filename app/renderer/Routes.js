@@ -1,5 +1,5 @@
 import React from 'react';
-import qs from 'query-string';
+import qs from 'query-string/index';
 
 import { Main, Break, Overlay } from './windows';
 

@@ -2,8 +2,8 @@ import React from 'react';
 import { ipcRenderer } from 'electron';
 import css from './TimeCounter.scss';
 
-import { msToTime } from '../../lib/utils';
-import { IPC_EVENT, MILLISECOND } from '../../lib/constants';
+import { msToTime } from '../../../lib/utils';
+import { IPC_EVENT, MILLISECOND } from '../../../lib/constants';
 
 const TimeCounter = ({ type, time, timeLeft }) => {
   const actions = {

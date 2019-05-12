@@ -6,10 +6,10 @@ module.exports = {
   devtool: 'inline-source-map',
   mode: 'development',
   target: 'electron-renderer',
-  entry: [resolve(__dirname, '../app/index.js')],
+  entry: [resolve(__dirname, '../app/renderer/index.js')],
   output: {
-    path: resolve(__dirname, '../app/dist'),
-    publicPath: `http://localhost:${port}/app/dist/`,
+    path: resolve(__dirname, '../app/renderer/dist'),
+    publicPath: `http://localhost:${port}/app/renderer/dist/`,
     filename: 'app.min.js'
   },
   module: {

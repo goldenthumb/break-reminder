@@ -4,8 +4,8 @@ import { IoIosPlay, IoIosPause } from 'react-icons/io';
 import css from './TimeBoard.scss';
 
 import { Context } from '../../contexts';
-import { msToTime } from '../../lib/utils';
-import { IPC_EVENT, MILLISECOND } from '../../lib/constants';
+import { msToTime } from '../../../lib/utils';
+import { IPC_EVENT, MILLISECOND } from '../../../lib/constants';
 
 import useTimer from '../../hooks/useTimer';
 

@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { ipcRenderer } from 'electron';
-import moment from 'moment';
+import moment from 'moment/moment';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
 import css from './BreakTimePicker.scss';
 
 import { Context } from '../../contexts';
-import { IPC_EVENT, MILLISECOND } from '../../lib/constants';
-import { msToTime } from '../../lib/utils';
+import { IPC_EVENT, MILLISECOND } from '../../../lib/constants';
+import { msToTime } from '../../../lib/utils';
 
 const time = moment();
 
