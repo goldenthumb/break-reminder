@@ -12,8 +12,18 @@ module.exports = {
     publicPath: `http://localhost:${port}/app/renderer/dist/`,
     filename: 'app.min.js'
   },
+  resolve: {
+    extensions: [".ts", ".tsx", ".js", ".json"]
+  },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        exclude: [/node_modules/],
+        use: [{
+          loader: 'ts-loader'
+        }]
+      },
       {
         test: /\.js$/,
         use: {

@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
     "strict": true,
-    "alwaysStrict": true,
-    "strictNullChecks": false,
     "module": "commonjs",
     "target": "es6",
     "sourceMap": false,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "jsx": "react"
   },
   "include": [
     "app/**/*"

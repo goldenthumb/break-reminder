@@ -1,7 +1,6 @@
 import { app, screen, BrowserWindow, ipcMain } from 'electron';
 import { IPC_EVENT, MILLISECOND } from './lib/constants';
-import { RENDER_PATH, store, loginSettings } from './main';
-import { Options } from './store';
+import { RENDER_PATH, store, loginSettings, Options } from './main';
 import BreakWindow from './BreakWindow';
 
 interface BreakWindowMessage {
@@ -10,10 +9,10 @@ interface BreakWindowMessage {
 }
 
 class MainWindow extends BrowserWindow {
-  private _reminderTimer: NodeJS.Timeout;
-  private _breakTimer: NodeJS.Timeout;
-  private _notificationTimer: NodeJS.Timeout;
-  private _breakWindows: [Electron.BrowserWindow?] = [];
+  private _reminderTimer: NodeJS.Timeout | null = null;
+  private _breakTimer: NodeJS.Timeout | null = null;
+  private _notificationTimer: NodeJS.Timeout | null = null;
+  private _breakWindows: Electron.BrowserWindow[] = [];
 
   constructor() {
     super({
@@ -58,7 +57,7 @@ class MainWindow extends BrowserWindow {
       }
 
       options = {
-        ...store.getOptions(),
+        ...store.get('options'),
         ...options,
       };
 
@@ -68,11 +67,16 @@ class MainWindow extends BrowserWindow {
 
     ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, data: BreakWindowMessage) => {
       if (data.status === 'open') {
-        global.clearTimeout(this._reminderTimer);
-        global.clearTimeout(this._notificationTimer);
+        if (this._reminderTimer) {
+          global.clearTimeout(this._reminderTimer);
+        }
+
+        if (this._notificationTimer) {
+          global.clearTimeout(this._notificationTimer);
+        }
 
         if (data.delay - MILLISECOND.MIN > 0) {
-          const options = store.getOptions();
+          const options = store.get('options');
 
           this._notificationTimer = global.setTimeout(() => {
             event.sender.send(IPC_EVENT.NOTIFICATION, {
@@ -94,7 +98,10 @@ class MainWindow extends BrowserWindow {
 
               if (this._breakWindows.length) return;
 
-              global.clearTimeout(this._breakTimer);
+              if (this._breakTimer) {
+                global.clearTimeout(this._breakTimer);
+              }
+
               event.sender.send(IPC_EVENT.BREAK_WINDOW, {status: 'close'});
             });
           }
@@ -104,12 +111,17 @@ class MainWindow extends BrowserWindow {
       }
 
       if (data.status === 'close') {
-        global.clearTimeout(this._breakTimer);
+        if (this._breakTimer) {
+          global.clearTimeout(this._breakTimer);
+        }
+
         this._breakTimer = global.setTimeout(this._closeBreakWindows, data.delay);
       }
 
       if (data.status === 'pause') {
-        global.clearTimeout(this._reminderTimer);
+        if (this._reminderTimer) {
+          global.clearTimeout(this._reminderTimer);
+        }
       }
 
       if (data.status === 'skip') {
@@ -121,7 +133,7 @@ class MainWindow extends BrowserWindow {
     this.on('closed', app.quit);
   }
 
-  _createBreakWindows(): void {
+  _createBreakWindows() {
     for (const display of screen.getAllDisplays()) {
       const windowName: string = !this._breakWindows.length ? 'break' : 'overlay';
       const loadURL: string = `${RENDER_PATH}?window=${windowName}`;
@@ -131,7 +143,7 @@ class MainWindow extends BrowserWindow {
     }
   }
 
-  _closeBreakWindows = (): void => {
+  _closeBreakWindows = () => {
     for (const browserWindow of this._breakWindows) {
       browserWindow.close();
     }

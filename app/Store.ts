@@ -2,47 +2,35 @@ import { app, remote } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 
-interface StoreOptions {
+interface StoreOptions<Default> {
   configName: string;
-  defaults: Preferences;
+  defaults: Default;
 }
 
-export interface Preferences {
-  reminderInterval: number;
-  breakDuration: number;
-  options: Options;
-}
-
-export interface Options {
-  startAtLogin: boolean;
-  notification: boolean;
-  sound: boolean;
-}
-
-class Store {
+class Store<T extends object> {
   private _path: string;
-  private _data: Preferences;
+  private _data: T;
 
-  constructor(opts: StoreOptions) {
+  constructor(opts: StoreOptions<T>) {
     const userDataPath = (app || remote.app).getPath('userData');
     this._path = path.join(userDataPath, opts.configName + '.json');
-    this._data = parseDataFile(this._path, opts.defaults);
+    this._data = this._parseDataFile(this._path, opts.defaults);
   }
 
-  all(): Preferences {
+  all() {
     return this._data;
   }
 
-  getOptions(): Options {
-    return this._data['options'];
+  get<K extends keyof T>(key: K) {
+    return this._data[key];
   }
 
-  set(key: keyof Preferences, val: number | Options) {
+  set<K extends keyof T>(key: K, val: T[K]) {
     this._data[key] = val;
     this._save();
   }
 
-  remove(key: keyof Preferences) {
+  remove(key: keyof T) {
     delete this._data[key];
     this._save();
   }
@@ -50,14 +38,14 @@ class Store {
   _save() {
     fs.writeFileSync(this._path, JSON.stringify(this._data));
   }
-}
 
-const parseDataFile = (filePath: string, defaults: Preferences) => {
-  try {
-    return JSON.parse(fs.readFileSync(filePath).toString());
-  } catch (error) {
-    return defaults;
+  _parseDataFile = (filePath: string, defaults: T) => {
+    try {
+      return JSON.parse(fs.readFileSync(filePath).toString());
+    } catch (error) {
+      return defaults;
+    }
   }
-};
+}
 
 export default Store;
