@@ -3,9 +3,19 @@ import { IPC_EVENT, MILLISECOND } from './lib/constants';
 import { RENDER_PATH, store, loginSettings, Options } from './main';
 import BreakWindow from './BreakWindow';
 
-interface BreakWindowMessage {
+export interface BreakWindowMessage {
   status: string;
   delay: number;
+}
+
+export interface Notification {
+  title: string;
+  options: NotificationOptions;
+}
+
+interface NotificationOptions {
+  body: string;
+  silent: boolean;
 }
 
 class MainWindow extends BrowserWindow {
@@ -77,15 +87,16 @@ class MainWindow extends BrowserWindow {
 
         if (data.delay - MILLISECOND.MIN > 0) {
           const options = store.get('options');
+          const notification: Notification = {
+            title: 'Preparing break ...',
+            options: {
+              body: 'Break will commence in 60 seconds.',
+              silent: !options.sound
+            }
+          };
 
           this._notificationTimer = global.setTimeout(() => {
-            event.sender.send(IPC_EVENT.NOTIFICATION, {
-              title: 'Preparing break ...',
-              options: {
-                body: 'Break will commence in 60 seconds.',
-                silent: !options.sound
-              }
-            });
+            event.sender.send(IPC_EVENT.NOTIFICATION, notification);
           }, data.delay - MILLISECOND.MIN);
         }
 
