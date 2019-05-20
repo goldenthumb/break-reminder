@@ -1,12 +1,36 @@
-import React, { Component, createContext } from 'react';
+import * as React from 'react';
+import { Component, createContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/constants';
 
-const Context = createContext();
+import { Preferences, Options } from '../../main';
+import { BreakWindowMessage, Notification } from '../../MainWindow';
+
+interface AppContext {
+  state: ContextState;
+  actions: ContextActions;
+}
+
+interface ContextState extends Preferences {
+  showBreakWindow: boolean;
+}
+
+interface ContextActions {
+  setOptions: (options: Options) => void;
+  setReminderInterval: (ms: number) => void;
+  setBreakDuration: (ms: number) => void;
+  showBreakWindow: () => void;
+  closeBreakWindow: () => void;
+}
+
+const Context = createContext({});
 const { Provider: ContextProvider } = Context;
 
 class Provider extends Component {
-  constructor(props) {
+  public state: ContextState;
+  public actions: ContextActions;
+
+  constructor(props: {}) {
     super(props);
 
     const preferences = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
@@ -16,19 +40,19 @@ class Provider extends Component {
       reminderInterval,
       breakDuration,
       options,
-      showBreakWindow: false,
+      showBreakWindow: false
     };
 
     this.actions = {
-      setOptions: (options) => {
+      setOptions: (options: Options) => {
         this.setState({ options });
       },
-      setReminderInterval: (ms) => {
+      setReminderInterval: (ms: number) => {
         this.setState({
           reminderInterval: ms
         });
       },
-      setBreakDuration: (ms) => {
+      setBreakDuration: (ms: number) => {
         this.setState({
           breakDuration: ms
         });
@@ -62,19 +86,19 @@ class Provider extends Component {
     ipcRenderer.removeListener(IPC_EVENT.NOTIFICATION, this.notificationListener);
   }
 
-  reminderTimeListener = (event, ms) => {
+  reminderTimeListener = (event: Electron.IpcMessageEvent, ms: number) => {
     this.actions.setReminderInterval(ms);
-  };
+  }
 
-  breakTimeListener = (event, ms) => {
+  breakTimeListener = (event: Electron.IpcMessageEvent, ms: number) => {
     this.actions.setBreakDuration(ms);
-  };
+  }
 
-  optionListener = (event, options) => {
+  optionListener = (event: Electron.IpcMessageEvent, options: Options) => {
     this.actions.setOptions(options);
-  };
+  }
 
-  breakWindowListener = (event, { status }) => {
+  breakWindowListener = (event: Electron.IpcMessageEvent, { status }: BreakWindowMessage) => {
     if (status === 'open') {
       this.actions.showBreakWindow();
     }
@@ -82,16 +106,16 @@ class Provider extends Component {
     if (status === 'close') {
       this.actions.closeBreakWindow();
     }
-  };
+  }
 
-  notificationListener = (event, { title, options }) => {
+  notificationListener = (event: Electron.IpcMessageEvent, { title, options }: Notification) => {
     new Notification(title, options);
-  };
+  }
 
   render() {
     const { state, actions } = this;
     const { children } = this.props;
-    const value = { state, actions };
+    const value: AppContext = { state, actions };
 
     return (
       <ContextProvider value={value}>
