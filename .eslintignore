@@ -1,4 +1,4 @@
-app/contexts/
+app/renderer/contexts/
 dist/
 node_modules/
 *.ts
