@@ -4,6 +4,7 @@
     "module": "commonjs",
     "target": "es6",
     "sourceMap": false,
+    "typeRoots": ["./types"],
     "moduleResolution": "node",
     "jsx": "react"
   },

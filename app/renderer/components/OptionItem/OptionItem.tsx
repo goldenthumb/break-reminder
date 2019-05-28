@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import Switch from 'react-switch';
-import css from './OptionItem.scss';
+const css = require('./OptionItem.scss');
 
-const OptionItem = ({ name, isChecked, action }) => {
+export interface OptionItemProps {
+  name: string;
+  isChecked: boolean;
+  action: (checked: boolean) => void;
+}
+
+const OptionItem = ({ name, isChecked, action }: OptionItemProps) => {
   const [option, setOption] = useState(isChecked);
 
   const handleToggle = () => {

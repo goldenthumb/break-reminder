@@ -1,18 +1,20 @@
-import React, { useContext } from 'react';
+import * as React from 'react';
+import { useContext } from 'react';
 import { ipcRenderer } from 'electron';
-import moment from 'moment/moment';
+import * as moment from 'moment';
 import TimePicker from 'rc-time-picker';
 import 'rc-time-picker/assets/index.css';
-import css from './BreakTimePicker.scss';
+const css = require('./BreakTimePicker.scss');
 
-import { Context } from '../../contexts';
+import { Context, AppContext } from '../../contexts';
 import { IPC_EVENT, MILLISECOND } from '../../../lib/constants';
 import { msToTime } from '../../../lib/utils';
+import { Moment } from 'moment';
 
 const time = moment();
 
 const BreakTimePicker = () => {
-  const { state: { breakDuration } } = useContext(Context);
+  const { state: { breakDuration } } = useContext(Context) as AppContext;
   const [hour, min, sec] = msToTime(breakDuration);
   time.set({ h: hour, m: min, s: sec });
 
@@ -26,7 +28,7 @@ const BreakTimePicker = () => {
         showSecond
         allowEmpty={false}
         defaultValue={time}
-        onChange={(time) => {
+        onChange={(time: Moment) => {
           const { HOUR, MIN, SEC } = MILLISECOND;
           const ms = time.hours() * HOUR + time.minutes() * MIN + time.seconds() * SEC;
           ipcRenderer.send(IPC_EVENT.BREAK_DURATION, ms);

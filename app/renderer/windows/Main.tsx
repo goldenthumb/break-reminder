@@ -1,7 +1,8 @@
-import React, { useEffect, useContext } from 'react';
+import * as React from 'react';
+import { useEffect, useContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/constants';
-import { Context } from '../contexts';
+import { Context, AppContext } from '../contexts';
 
 import Header from '../components/Header';
 import Body from '../components/Body';
@@ -10,7 +11,7 @@ import BreakTimePicker from '../components/BreakTimePicker';
 import OptionList from '../components/OptionList';
 
 const Main = () => {
-  const { state } = useContext(Context);
+  const { state } = useContext(Context) as AppContext;
   const { showBreakWindow, reminderInterval, breakDuration } = state;
 
   useEffect(() => {
@@ -40,7 +41,7 @@ const Main = () => {
       <BreakTimePicker />
       <OptionList />
     </Body>
-  </>
+  </>;
 };
 
 export default Main;

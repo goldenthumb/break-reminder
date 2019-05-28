@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-
 import './index.scss';
 
 import { Provider } from './contexts';
@@ -15,6 +14,7 @@ const App = () => (
   </Provider>
 );
 
-ReactDOM.render(<App />, document.getElementById('root'));
-
-if (module.hot) module.hot.accept();
+ReactDOM.render(
+  <App />,
+  document.getElementById('root') as HTMLElement
+);

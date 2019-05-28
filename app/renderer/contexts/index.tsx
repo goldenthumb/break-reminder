@@ -6,7 +6,7 @@ import { IPC_EVENT } from '../../lib/constants';
 import { Preferences, Options } from '../../main';
 import { BreakWindowMessage, Notification } from '../../MainWindow';
 
-interface AppContext {
+export interface AppContext {
   state: ContextState;
   actions: ContextActions;
 }

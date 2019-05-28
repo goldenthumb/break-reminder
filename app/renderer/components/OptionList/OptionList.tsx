@@ -1,20 +1,21 @@
-import React, { useContext } from 'react';
+import * as React from 'react';
+import { useContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/constants';
-import css from './OptionList.scss';
+const css = require('./OptionList.scss');
 
 import OptionItem from '../OptionItem';
-import { Context } from '../../contexts';
+import { Context, AppContext } from '../../contexts';
 
 const OptionList = () => {
-  const { state: { options } } = useContext(Context);
+  const { state: { options } } = useContext(Context) as AppContext;
 
   const optionList = [
     {
       id: 0,
       name: 'Start at login',
       isChecked: options.startAtLogin,
-      action: (checked) => {
+      action: (checked: boolean) => {
         ipcRenderer.send(IPC_EVENT.OPTION, {
           startAtLogin: checked
         });
@@ -24,7 +25,7 @@ const OptionList = () => {
       id: 1,
       name: 'Notification',
       isChecked: options.notification,
-      action: (checked) => {
+      action: (checked: boolean) => {
         ipcRenderer.send(IPC_EVENT.OPTION, {
           notification: checked
         });
@@ -34,7 +35,7 @@ const OptionList = () => {
       id: 2,
       name: 'Sound',
       isChecked: options.sound,
-      action: (checked) => {
+      action: (checked: boolean) => {
         ipcRenderer.send(IPC_EVENT.OPTION, {
           sound: checked
         });

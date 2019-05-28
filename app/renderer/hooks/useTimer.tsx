@@ -5,11 +5,17 @@ const STATUS = {
   PAUSE: 'pause',
 };
 
-const useTimer = ({ time, interval, autoPlay = true }) => {
+export interface UseTimerProps {
+  time: number;
+  interval: number;
+  autoPlay?: boolean;
+}
+
+const useTimer = ({ time, interval, autoPlay = true }: UseTimerProps) => {
   const { PLAY, PAUSE } = STATUS;
   const [timeLeft, setTimeLeft] = useState(time);
   const [status, setStatus] = useState(autoPlay ? PLAY : PAUSE);
-  const percent = parseInt((time - timeLeft) / time * 100);
+  const percent = Math.round((time - timeLeft) / time * 100);
 
   useEffect(() => {
     if (status !== PLAY) return;

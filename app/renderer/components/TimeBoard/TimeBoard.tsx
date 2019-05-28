@@ -1,9 +1,10 @@
-import React, { useEffect, useContext, useState } from 'react';
+import * as React from 'react';
+import { useEffect, useContext, useState } from 'react';
 import { ipcRenderer } from 'electron';
 import { IoIosPlay, IoIosPause } from 'react-icons/io';
-import css from './TimeBoard.scss';
+const css = require('./TimeBoard.scss');
 
-import { Context } from '../../contexts';
+import { Context, AppContext } from '../../contexts';
 import { msToTime } from '../../../lib/utils';
 import { IPC_EVENT, MILLISECOND } from '../../../lib/constants';
 
@@ -13,7 +14,7 @@ import Button from '../Button';
 import TimeCounter from '../TimeCounter';
 
 const TimeBoard = () => {
-  const { state: { reminderInterval, showBreakWindow } } = useContext(Context);
+  const { state: { reminderInterval, showBreakWindow } } = useContext(Context) as AppContext;
   const { timeLeft, play, pause, reset } = useTimer({ time: reminderInterval, interval: MILLISECOND.MIN });
   const [isPlay, setPlayStatus] = useState(true);
   const [hour, min] = msToTime(timeLeft);
