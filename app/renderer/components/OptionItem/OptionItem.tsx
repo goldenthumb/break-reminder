@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import Switch from 'react-switch';
+import * as Switch from 'react-switch';
 const css = require('./OptionItem.scss');
 
 export interface OptionItemProps {
