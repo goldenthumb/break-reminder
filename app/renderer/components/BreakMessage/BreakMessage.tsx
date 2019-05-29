@@ -1,10 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/constants';
-import css from './BreakMessage.scss';
+const css = require('./BreakMessage.scss');
 
 import useTimer from '../../hooks/useTimer';
-
 import BreakTitle from '../BreakTitle';
 import Progress from '../Progress';
 import Skip from '../Skip';

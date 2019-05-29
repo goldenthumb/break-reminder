@@ -1,7 +1,7 @@
-import React from 'react';
+import * as React from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/constants';
-import css from './Skip.scss';
+const css = require('./Skip.scss');
 
 import Button from '../Button';
 

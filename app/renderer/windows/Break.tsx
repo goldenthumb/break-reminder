@@ -1,4 +1,5 @@
-import React from 'react';
+import * as React from 'react';
+
 import Overlay from '../components/Overlay';
 import BreakMessage from '../components/BreakMessage';
 

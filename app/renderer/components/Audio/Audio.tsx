@@ -1,14 +1,15 @@
-import React, { useRef, useEffect } from 'react';
+import * as React from 'react';
+import { useRef, useEffect } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/constants';
 
 const Audio = () => {
-  const audio = useRef(null);
+  const audio = useRef<HTMLAudioElement>(null);
   const { breakDuration, options } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
 
   useEffect(() => {
     const endTimer = setTimeout(() => {
-      if (options.sound) {
+      if (options.sound && audio && audio.current) {
         audio.current.play();
       }
     }, breakDuration - 2000);

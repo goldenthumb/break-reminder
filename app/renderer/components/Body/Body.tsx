@@ -1,7 +1,7 @@
 import * as React from 'react';
 const css = require('./Body.scss');
 
-interface BodyProps {
+export interface BodyProps {
   children: React.ReactNode;
 }
 

@@ -1,8 +1,12 @@
-import React from 'react';
+import * as React from 'react';
 import { Line } from 'rc-progress';
-import css from './Progress.scss';
+const css = require('./Progress.scss');
 
-const Progress = ({ percent }) => (
+export interface ProgressProps {
+  percent: number;
+}
+
+const Progress = ({ percent }: ProgressProps) => (
   <div className={css['progress']}>
     <Line
       percent={percent}
