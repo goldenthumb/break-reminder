@@ -54,12 +54,42 @@ const TimeBoard = () => {
         <TimeCounter
           type='h'
           time={hour}
-          timeLeft={timeLeft}
+          onIncrease={() => {
+            if (hour >= 23) return;
+
+            ipcRenderer.send(
+              IPC_EVENT.REMINDER_INTERVAL,
+              ((hour + 1) * MILLISECOND.HOUR) + (min * MILLISECOND.MIN)
+            );
+          }}
+          onDecrease={() => {
+            if (hour < 0) return;
+
+            ipcRenderer.send(
+              IPC_EVENT.REMINDER_INTERVAL,
+              (hour === 0 ? 0 : ((hour - 1) * MILLISECOND.HOUR)) + (min * MILLISECOND.MIN)
+            );
+          }}
         />
         <TimeCounter
           type='m'
           time={min.toString().padStart(2, '0')}
-          timeLeft={timeLeft}
+          onIncrease={() => {
+            if (min >= 59) return;
+
+            ipcRenderer.send(
+              IPC_EVENT.REMINDER_INTERVAL,
+              (hour * MILLISECOND.HOUR) + ((min + 1) * MILLISECOND.MIN)
+            );
+          }}
+          onDecrease={() => {
+            if (hour === 0 && min <= 1) return;
+
+            ipcRenderer.send(
+              IPC_EVENT.REMINDER_INTERVAL,
+              (hour * MILLISECOND.HOUR) + (min === 0 ? 0 : ((min - 1) * MILLISECOND.MIN))
+            );
+          }}
         />
       </div>
       <div className={css['pause-btn-wrap']}>
