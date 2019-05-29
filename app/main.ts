@@ -47,11 +47,6 @@ let mainWindow: Electron.BrowserWindow;
 
 app.dock.hide();
 
-app.commandLine.appendSwitch(
-  'autoplay-policy',
-  'no-user-gesture-required'
-);
-
 app.setLoginItemSettings(loginSettings);
 
 app.on('ready', () => {

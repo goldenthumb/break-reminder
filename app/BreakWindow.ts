@@ -12,7 +12,8 @@ class BreakWindow extends BrowserWindow {
       backgroundColor: '#939393',
       frame: false,
       webPreferences: {
-        nodeIntegration: true
+        nodeIntegration: true,
+        autoplayPolicy: 'no-user-gesture-required'
       }
     });
 

@@ -34,7 +34,8 @@ class MainWindow extends BrowserWindow {
       frame: false,
       webPreferences: {
         backgroundThrottling: false,
-        nodeIntegration: true
+        nodeIntegration: true,
+        autoplayPolicy: 'no-user-gesture-required'
       }
     });
 
