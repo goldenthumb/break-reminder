@@ -88,6 +88,9 @@ class MainWindow extends BrowserWindow {
 
         if (data.delay - MILLISECOND.MIN > 0) {
           const options = store.get('options');
+
+          if (!options.notification) return;
+
           const notification: Notification = {
             title: 'Preparing break ...',
             options: {
