@@ -21,7 +21,7 @@ const Audio = () => {
     <audio ref={audio}>
       <source
         type="audio/mp3"
-        src='./renderer/audio/alarm.wav'
+        src="./audio/alarm.wav"
       />
     </audio>
   );
