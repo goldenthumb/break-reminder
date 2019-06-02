@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
-const path = require("path");
+const path_1 = require("path");
 const Store_1 = require("./Store");
 const MainWindow_1 = require("./MainWindow");
 const defaultPreferences = {
@@ -45,7 +45,7 @@ const createMainWindow = () => {
     mainWindow = new MainWindow_1.default();
 };
 const createTray = () => {
-    tray = new electron_1.Tray(path.resolve(__dirname, './images/tray.png'));
+    tray = new electron_1.Tray(path_1.resolve(__dirname, './images/tray.png'));
     tray.on('right-click', toggleWindow);
     tray.on('double-click', toggleWindow);
     tray.on('click', toggleWindow);

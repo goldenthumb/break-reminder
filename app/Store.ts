@@ -1,6 +1,6 @@
 import { app, remote } from 'electron';
-import * as path from 'path';
-import * as fs from 'fs';
+import { join } from 'path';
+import { writeFileSync, readFileSync } from 'fs';
 
 interface StoreOptions<Default> {
   configName: string;
@@ -13,7 +13,7 @@ class Store<T extends object> {
 
   constructor(opts: StoreOptions<T>) {
     const userDataPath = (app || remote.app).getPath('userData');
-    this._path = path.join(userDataPath, opts.configName + '.json');
+    this._path = join(userDataPath, opts.configName + '.json');
     this._data = this._parseDataFile(this._path, opts.defaults);
   }
 
@@ -36,12 +36,12 @@ class Store<T extends object> {
   }
 
   _save() {
-    fs.writeFileSync(this._path, JSON.stringify(this._data));
+    writeFileSync(this._path, JSON.stringify(this._data));
   }
 
   _parseDataFile = (filePath: string, defaults: T) => {
     try {
-      return JSON.parse(fs.readFileSync(filePath).toString());
+      return JSON.parse(readFileSync(filePath).toString());
     } catch (error) {
       return defaults;
     }

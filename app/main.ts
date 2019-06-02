@@ -1,5 +1,5 @@
 import { app, Tray } from 'electron';
-import * as path from 'path';
+import { resolve } from 'path';
 import Store from './Store';
 import MainWindow from './MainWindow';
 
@@ -72,7 +72,7 @@ const createMainWindow = () => {
 };
 
 const createTray = () => {
-  tray = new Tray(path.resolve(__dirname, './images/tray.png'));
+  tray = new Tray(resolve(__dirname, './images/tray.png'));
   tray.on('right-click', toggleWindow);
   tray.on('double-click', toggleWindow);
   tray.on('click', toggleWindow);

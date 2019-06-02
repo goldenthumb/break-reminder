@@ -1,20 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
-const path = require("path");
-const fs = require("fs");
+const path_1 = require("path");
+const fs_1 = require("fs");
 class Store {
     constructor(opts) {
         this._parseDataFile = (filePath, defaults) => {
             try {
-                return JSON.parse(fs.readFileSync(filePath).toString());
+                return JSON.parse(fs_1.readFileSync(filePath).toString());
             }
             catch (error) {
                 return defaults;
             }
         };
         const userDataPath = (electron_1.app || electron_1.remote.app).getPath('userData');
-        this._path = path.join(userDataPath, opts.configName + '.json');
+        this._path = path_1.join(userDataPath, opts.configName + '.json');
         this._data = this._parseDataFile(this._path, opts.defaults);
     }
     all() {
@@ -32,7 +32,7 @@ class Store {
         this._save();
     }
     _save() {
-        fs.writeFileSync(this._path, JSON.stringify(this._data));
+        fs_1.writeFileSync(this._path, JSON.stringify(this._data));
     }
 }
 exports.default = Store;
