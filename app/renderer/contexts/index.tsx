@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { Component, createContext } from 'react';
+import React, { Component, createContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/constants';
 

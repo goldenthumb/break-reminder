@@ -1,5 +1,4 @@
-import * as React from 'react';
-import { useEffect, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/constants';
 import { Context, AppContext } from '../contexts';

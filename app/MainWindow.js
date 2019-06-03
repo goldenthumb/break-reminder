@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const electron_1 = require("electron");
 const constants_1 = require("./lib/constants");
 const main_1 = require("./main");
-const BreakWindow_1 = require("./BreakWindow");
+const BreakWindow_1 = __importDefault(require("./BreakWindow"));
 class MainWindow extends electron_1.BrowserWindow {
     constructor() {
         super({

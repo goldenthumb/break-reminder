@@ -1,7 +1,13 @@
 "use strict";
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const React = require("react");
-const react_1 = require("react");
+const react_1 = __importStar(require("react"));
 const electron_1 = require("electron");
 const constants_1 = require("../../lib/constants");
 const Context = react_1.createContext({});
@@ -82,7 +88,7 @@ class Provider extends react_1.Component {
         const { state, actions } = this;
         const { children } = this.props;
         const value = { state, actions };
-        return (React.createElement(ContextProvider, { value: value }, children));
+        return (react_1.default.createElement(ContextProvider, { value: value }, children));
     }
 }
 exports.Provider = Provider;
