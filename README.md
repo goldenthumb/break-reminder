@@ -18,7 +18,7 @@ By default, it runs in your tray and displays a reminder window for 20 seconds e
 
 The user will be notified one minute before the break.
 <br>
-<img src="https://raw.githubusercontent.com/goldenthumb/break-reminder/master/notification.png">
+<img src="https://raw.githubusercontent.com/goldenthumb/break-reminder/master/break-notification.png">
 <br>
 
 ### Starting Development
