@@ -1,8 +1,9 @@
 {
   "name": "break-reminder",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "",
   "main": "app/main.js",
+  "types": "app/main.ts",
   "scripts": {
     "dev": "tsc && cross-env NODE_ENV=development webpack-dev-server --config configs/devserver.js",
     "start": "npm run build && electron ./app/main.js cross-env NODE_ENV=production electron ./app/main.js",
@@ -12,7 +13,7 @@
   },
   "build": {
     "productName": "BreakReminder",
-    "appId": "com.electron.app.BreakReminder",
+    "appId": "electron.app.BreakReminder",
     "asar": true,
     "mac": {
       "target": [
@@ -55,9 +56,14 @@
     "type": "git",
     "url": "git+https://github.com/goldenthumb/break-reminder.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "electron",
+    "break",
+    "time",
+    "reminder"
+  ],
+  "author": "goldenthumb <cyh8914@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/goldenthumb/break-reminder/issues"
   },
