@@ -1,5 +1,5 @@
 # break-reminder
-> break time reminder app
+> break time reminder app made using electron and react.
 
 Simple timers that remind you to take breaks from your computer. <br />
 <img src="https://raw.githubusercontent.com/goldenthumb/break-reminder/master/break-reminder.png">
