@@ -5,7 +5,7 @@ const css = require('./TimeBoard.scss');
 
 import { Context, AppContext } from '../../contexts';
 import { msToTime } from '../../../lib/utils';
-import { IPC_EVENT, MILLISECOND } from '../../../lib/constants';
+import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
 
 import useTimer from '../../hooks/useTimer';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../../lib/constants';
+import { IPC_EVENT } from '../../../lib/enums';
 const css = require('./BreakMessage.scss');
 
 import useTimer from '../../hooks/useTimer';

@@ -1,6 +1,7 @@
-import { app, screen, BrowserWindow, ipcMain } from 'electron';
-import { IPC_EVENT, MILLISECOND } from './lib/constants';
-import { RENDER_PATH, store, loginSettings, Options } from './main';
+import { resolve } from 'path';
+import { app, screen, BrowserWindow, ipcMain, Tray } from 'electron';
+import { IPC_EVENT, MILLISECOND } from '../lib/enums';
+import { store, Options } from '../store';
 import BreakWindow from './BreakWindow';
 
 export interface BreakWindowMessage {
@@ -22,6 +23,7 @@ class MainWindow extends BrowserWindow {
   private _reminderTimer: NodeJS.Timeout | null = null;
   private _breakTimer: NodeJS.Timeout | null = null;
   private _notificationTimer: NodeJS.Timeout | null = null;
+  private _tray: Electron.Tray = new Tray(resolve(__dirname, '../assets/images/tray.png'));
   private _breakWindows: Electron.BrowserWindow[] = [];
 
   constructor() {
@@ -33,20 +35,23 @@ class MainWindow extends BrowserWindow {
       movable: false,
       frame: false,
       webPreferences: {
-        backgroundThrottling: false,
         nodeIntegration: true,
         autoplayPolicy: 'no-user-gesture-required'
       }
     });
 
-    this.loadURL(`${RENDER_PATH}?window=main`);
+    this.loadURL(`file://${__dirname}/window.html?window=main`);
+    this.on('closed', app.quit);
 
+    this._tray.on('right-click', this._toggleWindow);
+    this._tray.on('click', this._toggleWindow);
+
+    this._handleIpcEvents();
+  }
+
+  private _handleIpcEvents() {
     ipcMain.on(IPC_EVENT.PREFERENCES, (event: Electron.IpcMessageEvent) => {
       event.returnValue = store.all();
-    });
-
-    ipcMain.on(IPC_EVENT.MAIN_WINDOW, (event: Electron.IpcMessageEvent) => {
-      event.returnValue = this.id;
     });
 
     ipcMain.on(IPC_EVENT.REMINDER_INTERVAL, (event: Electron.IpcMessageEvent, ms: number) => {
@@ -60,20 +65,12 @@ class MainWindow extends BrowserWindow {
     });
 
     ipcMain.on(IPC_EVENT.OPTION, (event: Electron.IpcMessageEvent, options: Options) => {
-      if (options.hasOwnProperty('startAtLogin')) {
-        app.setLoginItemSettings({
-          ...loginSettings,
-          openAtLogin: options.startAtLogin
-        });
-      }
-
-      options = {
+      store.set('options', {
         ...store.get('options'),
         ...options,
-      };
+      });
 
-      store.set('options', options);
-      event.sender.send(IPC_EVENT.OPTION, options);
+      event.sender.send(IPC_EVENT.OPTION, store.get('options'));
     });
 
     ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, data: BreakWindowMessage) => {
@@ -145,23 +142,41 @@ class MainWindow extends BrowserWindow {
     });
 
     ipcMain.on('quit', app.quit);
-    this.on('closed', app.quit);
   }
 
-  _createBreakWindows() {
+  private _createBreakWindows() {
     for (const display of screen.getAllDisplays()) {
       const windowName: string = !this._breakWindows.length ? 'break' : 'overlay';
-      const loadURL: string = `${RENDER_PATH}?window=${windowName}`;
-      const window: Electron.BrowserWindow = new BreakWindow(loadURL, display);
+      const loadURL: string = `file://${__dirname}/window.html?window=${windowName}`;
+      const window = new BreakWindow(loadURL, display);
 
       this._breakWindows.push(window);
     }
   }
 
-  _closeBreakWindows = () => {
+  private _closeBreakWindows = () => {
     for (const browserWindow of this._breakWindows) {
       browserWindow.close();
     }
+  }
+
+  private _toggleWindow = () => {
+    if (this.isVisible()) {
+      this.hide();
+    } else {
+      const { x, y } = this._getPosition();
+      this.setPosition(x, y);
+      this.show();
+    }
+  }
+
+  private _getPosition() {
+    const window = this.getBounds();
+    const tray = this._tray.getBounds();
+    const x = Math.round(tray.x + (tray.width / 2) - (window.width / 2));
+    const y = Math.round(tray.y + tray.height + 4);
+
+    return { x, y };
   }
 }
 

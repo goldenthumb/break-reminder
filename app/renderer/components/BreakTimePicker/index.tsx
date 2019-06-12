@@ -6,7 +6,7 @@ import 'rc-time-picker/assets/index.css';
 const css = require('./BreakTimePicker.scss');
 
 import { Context, AppContext } from '../../contexts';
-import { IPC_EVENT, MILLISECOND } from '../../../lib/constants';
+import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
 import { msToTime } from '../../../lib/utils';
 
 const BreakTimePicker = () => {

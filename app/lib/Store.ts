@@ -1,4 +1,4 @@
-import { app, remote } from 'electron';
+import { app } from 'electron';
 import { join } from 'path';
 import { writeFileSync, readFileSync } from 'fs';
 
@@ -12,8 +12,7 @@ class Store<T extends object> {
   private _data: T;
 
   constructor(opts: StoreOptions<T>) {
-    const userDataPath = (app || remote.app).getPath('userData');
-    this._path = join(userDataPath, opts.configName + '.json');
+    this._path = join(app.getPath('userData'), opts.configName + '.json');
     this._data = this._parseDataFile(this._path, opts.defaults);
   }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../lib/constants';
+import { IPC_EVENT } from '../../lib/enums';
 import { Context, AppContext } from '../contexts';
 
 import Header from '../components/Header';

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../../lib/constants';
+import { IPC_EVENT } from '../../../lib/enums';
 
 const Audio = () => {
   const audio = useRef<HTMLAudioElement>(null);
@@ -20,7 +20,7 @@ const Audio = () => {
     <audio ref={audio}>
       <source
         type="audio/mp3"
-        src="./audio/alarm.wav"
+        src="../assets/audio/alarm.wav"
       />
     </audio>
   );

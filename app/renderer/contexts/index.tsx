@@ -1,9 +1,9 @@
 import React, { Component, createContext } from 'react';
 import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../lib/constants';
+import { IPC_EVENT } from '../../lib/enums';
 
-import { Preferences, Options } from '../../main';
-import { BreakWindowMessage, Notification } from '../../MainWindow';
+import { Preferences, Options } from '../../store';
+import { BreakWindowMessage, Notification } from '../../windows/MainWindow';
 
 export interface AppContext {
   state: ContextState;
