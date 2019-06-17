@@ -1,8 +1,42 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, screen } from 'electron';
+import { EventEmitter } from 'events';
 
-class BreakWindow extends BrowserWindow {
-  constructor(loadURL: string, display: Electron.Display) {
-    super({
+// TODO: emit type...
+export enum BREAK_WINDOW {
+  OPEN = 'open',
+  CLOSE = 'close',
+  SKIP = 'skip',
+}
+
+class BreakWindow extends EventEmitter {
+  private _windows: Electron.BrowserWindow[] = [];
+
+  open() {
+    for (const display of screen.getAllDisplays()) {
+      const windowName: string = !this._windows.length ? 'break' : 'overlay';
+      const loadURL: string = `file://${__dirname}/window.html?window=${windowName}`;
+
+      this._windows.push(BreakWindow._createWindow(loadURL, display));
+    }
+
+    this.emit(BREAK_WINDOW.OPEN);
+  }
+
+  async close() {
+    for (const window of this._windows) {
+      window.close();
+      window.on('closed', () => {
+        this._windows.pop();
+
+        if (this._windows.length) return;
+
+        this.emit(BREAK_WINDOW.CLOSE);
+      });
+    }
+  }
+
+  private static _createWindow(loadURL: string, display: Electron.Display) {
+    const window = new BrowserWindow({
       resizable: false,
       show: false,
       ...display.size,
@@ -17,8 +51,10 @@ class BreakWindow extends BrowserWindow {
       }
     });
 
-    this.loadURL(loadURL);
-    this.once('ready-to-show', this.show);
+    window.loadURL(loadURL);
+    window.once('ready-to-show', window.show);
+
+    return window;
   }
 }
 

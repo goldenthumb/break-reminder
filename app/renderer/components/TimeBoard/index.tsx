@@ -6,11 +6,13 @@ const css = require('./TimeBoard.scss');
 import { Context, AppContext } from '../../contexts';
 import { msToTime } from '../../../lib/utils';
 import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
+import { BREAK_WINDOW } from '../../../windows/BreakWindow';
 
 import useTimer from '../../hooks/useTimer';
 
 import Button from '../Button';
 import TimeCounter from '../TimeCounter';
+import scheduler, { SCHEDULER } from '../../../lib/scheduler';
 
 const TimeBoard = () => {
   const { state: { reminderInterval, showBreakWindow } } = useContext(Context) as AppContext;
@@ -31,20 +33,21 @@ const TimeBoard = () => {
   const togglePlay = () => {
     if (showBreakWindow) return;
 
-    const nextPlay = !isPlay;
+    setPlayStatus(!isPlay);
 
-    if (nextPlay) {
-      ipcRenderer.send(IPC_EVENT.BREAK_WINDOW, {
-        status: 'open',
-        delay: timeLeft
-      });
-    } else {
-      ipcRenderer.send(IPC_EVENT.BREAK_WINDOW, {
-        status: 'pause'
-      });
+    if (isPlay) {
+      scheduler.clearWorkingDuration();
+      return;
     }
 
-    setPlayStatus(nextPlay);
+    scheduler.setWorkingDuration(timeLeft);
+    scheduler.once(SCHEDULER.FINISH_WORKING, () => {
+      // TODO: 수정해야함 두개 등록 되어 있어서 이벤트가 두번 발생함...
+      ipcRenderer.send(
+        IPC_EVENT.BREAK_WINDOW,
+        BREAK_WINDOW.OPEN
+      );
+    });
   };
 
   return (

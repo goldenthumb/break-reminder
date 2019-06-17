@@ -1,9 +1,10 @@
 import React, { Component, createContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/enums';
+import { BREAK_WINDOW } from '../../windows/BreakWindow';
+import notifier from '../../lib/notifier';
 
 import { Preferences, Options } from '../../store';
-import { BreakWindowMessage, Notification } from '../../windows/MainWindow';
 
 export interface AppContext {
   state: ContextState;
@@ -74,7 +75,6 @@ class Provider extends Component {
     ipcRenderer.on(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.on(IPC_EVENT.OPTION, this.optionListener);
     ipcRenderer.on(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
-    ipcRenderer.on(IPC_EVENT.NOTIFICATION, this.notificationListener);
   }
 
   componentWillUnmount() {
@@ -82,7 +82,6 @@ class Provider extends Component {
     ipcRenderer.removeListener(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.removeListener(IPC_EVENT.OPTION, this.optionListener);
     ipcRenderer.removeListener(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
-    ipcRenderer.removeListener(IPC_EVENT.NOTIFICATION, this.notificationListener);
   }
 
   reminderTimeListener = (event: Electron.IpcMessageEvent, ms: number) => {
@@ -95,20 +94,22 @@ class Provider extends Component {
 
   optionListener = (event: Electron.IpcMessageEvent, options: Options) => {
     this.actions.setOptions(options);
+
+    notifier.setNotification({
+      options: {
+        silent: !options.sound
+      }
+    });
   }
 
-  breakWindowListener = (event: Electron.IpcMessageEvent, { status }: BreakWindowMessage) => {
-    if (status === 'open') {
+  breakWindowListener = (event: Electron.IpcMessageEvent, status: BREAK_WINDOW) => {
+    if (status === BREAK_WINDOW.OPEN) {
       this.actions.showBreakWindow();
     }
 
-    if (status === 'close') {
+    if (status === BREAK_WINDOW.CLOSE) {
       this.actions.closeBreakWindow();
     }
-  }
-
-  notificationListener = (event: Electron.IpcMessageEvent, { title, options }: Notification) => {
-    new Notification(title, options);
   }
 
   render() {

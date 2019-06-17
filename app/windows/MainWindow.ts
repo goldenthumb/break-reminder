@@ -1,30 +1,12 @@
 import { resolve } from 'path';
-import { app, screen, BrowserWindow, ipcMain, Tray } from 'electron';
-import { IPC_EVENT, MILLISECOND } from '../lib/enums';
+import { app, ipcMain, BrowserWindow, Tray } from 'electron';
+import { IPC_EVENT } from '../lib/enums';
 import { store, Options } from '../store';
-import BreakWindow from './BreakWindow';
-
-export interface BreakWindowMessage {
-  status: string;
-  delay: number;
-}
-
-export interface Notification {
-  title: string;
-  options: NotificationOptions;
-}
-
-interface NotificationOptions {
-  body: string;
-  silent: boolean;
-}
+import BreakWindow, { BREAK_WINDOW } from './BreakWindow';
 
 class MainWindow extends BrowserWindow {
-  private _reminderTimer: NodeJS.Timeout | null = null;
-  private _breakTimer: NodeJS.Timeout | null = null;
-  private _notificationTimer: NodeJS.Timeout | null = null;
   private _tray: Electron.Tray = new Tray(resolve(__dirname, '../assets/images/tray.png'));
-  private _breakWindows: Electron.BrowserWindow[] = [];
+  private _breakWindow = new BreakWindow();
 
   constructor() {
     super({
@@ -73,91 +55,36 @@ class MainWindow extends BrowserWindow {
       event.sender.send(IPC_EVENT.OPTION, store.get('options'));
     });
 
-    ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, data: BreakWindowMessage) => {
-      if (data.status === 'open') {
-        if (this._reminderTimer) {
-          global.clearTimeout(this._reminderTimer);
-        }
+    ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, status: BREAK_WINDOW) => {
+      // TODO: 수정해야함
+      if (status === BREAK_WINDOW.OPEN) {
+        this._breakWindow.once(BREAK_WINDOW.OPEN, () => {
+          event.sender.send(
+            IPC_EVENT.BREAK_WINDOW,
+            BREAK_WINDOW.OPEN
+          );
+        });
 
-        if (this._notificationTimer) {
-          global.clearTimeout(this._notificationTimer);
-        }
+        this._breakWindow.once(BREAK_WINDOW.CLOSE, () => {
+          event.sender.send(
+            IPC_EVENT.BREAK_WINDOW,
+            BREAK_WINDOW.CLOSE
+          );
+        });
 
-        if (data.delay - MILLISECOND.MIN > 0) {
-          const options = store.get('options');
-
-          if (!options.notification) return;
-
-          const notification: Notification = {
-            title: 'Preparing break ...',
-            options: {
-              body: 'Break will commence in 60 seconds.',
-              silent: !options.sound
-            }
-          };
-
-          this._notificationTimer = global.setTimeout(() => {
-            event.sender.send(IPC_EVENT.NOTIFICATION, notification);
-          }, data.delay - MILLISECOND.MIN);
-        }
-
-        this._reminderTimer = global.setTimeout(() => {
-          this._createBreakWindows();
-
-          for (const browserWindow of this._breakWindows) {
-            browserWindow.on('closed', () => {
-              this._breakWindows.pop();
-
-              if (this._breakWindows.length) return;
-
-              if (this._breakTimer) {
-                global.clearTimeout(this._breakTimer);
-              }
-
-              event.sender.send(IPC_EVENT.BREAK_WINDOW, {status: 'close'});
-            });
-          }
-
-          event.sender.send(IPC_EVENT.BREAK_WINDOW, {status: 'open'});
-        }, data.delay);
+        this._breakWindow.open();
       }
 
-      if (data.status === 'close') {
-        if (this._breakTimer) {
-          global.clearTimeout(this._breakTimer);
-        }
-
-        this._breakTimer = global.setTimeout(this._closeBreakWindows, data.delay);
+      if (status === BREAK_WINDOW.CLOSE) {
+        this._breakWindow.close();
       }
 
-      if (data.status === 'pause') {
-        if (this._reminderTimer) {
-          global.clearTimeout(this._reminderTimer);
-        }
-      }
-
-      if (data.status === 'skip') {
-        this._closeBreakWindows();
+      if (status === BREAK_WINDOW.SKIP) {
+        this._breakWindow.close();
       }
     });
 
     ipcMain.on('quit', app.quit);
-  }
-
-  private _createBreakWindows() {
-    for (const display of screen.getAllDisplays()) {
-      const windowName: string = !this._breakWindows.length ? 'break' : 'overlay';
-      const loadURL: string = `file://${__dirname}/window.html?window=${windowName}`;
-      const window = new BreakWindow(loadURL, display);
-
-      this._breakWindows.push(window);
-    }
-  }
-
-  private _closeBreakWindows = () => {
-    for (const browserWindow of this._breakWindows) {
-      browserWindow.close();
-    }
   }
 
   private _toggleWindow = () => {
