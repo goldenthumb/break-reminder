@@ -1,32 +1,51 @@
 import React from 'react';
 const css = require('./TimeCounter.scss');
 
-export interface TimeCounterProps {
-  type: string;
-  time: number | string;
-  onIncrease: () => void;
-  onDecrease: () => void;
+import { increase, decrease, TimeType } from '../../../lib/timeConter';
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT } from '../../../lib/enums';
+import { msToTime } from '../../../lib/utils';
+
+enum timeKeyword {
+  hour = 'h',
+  minute = 'm'
 }
 
-const TimeCounter = ({ type, time, onIncrease, onDecrease }: TimeCounterProps) => {
+const TimeCounter = ({ type, time }: TimeType) => {
+  const [hour, min] = msToTime(time);
+
   return (
     <div className={css['wrap']}>
       <button
         type="button"
         className={css['up']}
-        onClick={onIncrease}
+        onClick={() => {
+          const nextTime = increase({ type, time: Number(time) });
+
+          if (nextTime) {
+            ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, nextTime);
+          }
+        }}
       >
         &#9650;
       </button>
-      <span className={css[type]}>{time}</span>
+      <span className={css[type]}>
+        {type === 'minute' ? min.toString().padStart(2, '0') : hour}
+      </span>
       <button
         type="button"
         className={css['down']}
-        onClick={onDecrease}
+        onClick={() => {
+          const nextTime = decrease({ type, time: Number(time) });
+
+          if (nextTime) {
+            ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, nextTime);
+          }
+        }}
       >
         &#9660;
       </button>
-      <span className={css['label']}>{type}</span>
+      <span className={css['label']}>{timeKeyword[type]}</span>
     </div>
   );
 };
