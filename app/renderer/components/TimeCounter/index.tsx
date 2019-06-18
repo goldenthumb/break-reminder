@@ -1,17 +1,17 @@
 import React from 'react';
 const css = require('./TimeCounter.scss');
 
-import { increase, decrease, TimeType } from '../../../lib/timeConter';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';
 import { msToTime } from '../../../lib/utils';
+import { increase, decrease, TimeType } from './timeConter';
 
 enum timeKeyword {
   hour = 'h',
   minute = 'm'
 }
 
-const TimeCounter = ({ type, time }: TimeType) => {
+const TimeCounter = ({ type, time }: TimeCounterProps) => {
   const [hour, min] = msToTime(time);
 
   return (
@@ -20,7 +20,7 @@ const TimeCounter = ({ type, time }: TimeType) => {
         type="button"
         className={css['up']}
         onClick={() => {
-          const nextTime = increase({ type, time: Number(time) });
+          const nextTime = increase({ type, time });
 
           if (nextTime) {
             ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, nextTime);
@@ -36,7 +36,7 @@ const TimeCounter = ({ type, time }: TimeType) => {
         type="button"
         className={css['down']}
         onClick={() => {
-          const nextTime = decrease({ type, time: Number(time) });
+          const nextTime = decrease({ type, time });
 
           if (nextTime) {
             ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, nextTime);
@@ -51,3 +51,4 @@ const TimeCounter = ({ type, time }: TimeType) => {
 };
 
 export default TimeCounter;
+export type TimeCounterProps = TimeType;

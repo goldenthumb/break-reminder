@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-const STATUS = {
-  PLAY: 'play',
-  PAUSE: 'pause',
-};
+enum STATUS {
+  PLAY,
+  PAUSE
+}
 
 export interface UseTimerProps {
   time: number;
@@ -12,13 +12,12 @@ export interface UseTimerProps {
 }
 
 const useTimer = ({ time, interval, autoPlay = true }: UseTimerProps) => {
-  const { PLAY, PAUSE } = STATUS;
   const [timeLeft, setTimeLeft] = useState(time);
-  const [status, setStatus] = useState(autoPlay ? PLAY : PAUSE);
+  const [status, setStatus] = useState(autoPlay ? STATUS.PLAY : STATUS.PAUSE);
   const percent = Math.round((time - timeLeft) / time * 100);
 
   useEffect(() => {
-    if (status !== PLAY) return;
+    if (status !== STATUS.PLAY) return;
 
     const timeLeftTimer = setTimeout(() => {
       const nextTimeLeft = timeLeft - interval;
@@ -31,8 +30,8 @@ const useTimer = ({ time, interval, autoPlay = true }: UseTimerProps) => {
     return () => clearTimeout(timeLeftTimer);
   }, [status, timeLeft]);
 
-  const play = () => setStatus(PLAY);
-  const pause = () => setStatus(PAUSE);
+  const play = () => setStatus(STATUS.PLAY);
+  const pause = () => setStatus(STATUS.PAUSE);
   const reset = (updateTime = time) => setTimeLeft(updateTime);
 
   return { timeLeft, percent, play, pause, reset };

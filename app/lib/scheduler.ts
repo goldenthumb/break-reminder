@@ -1,12 +1,9 @@
-import { EventEmitter } from 'events';
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT } from './enums';
+import { BREAK_WINDOW } from '../windows/BreakWindow';
 import notifier from './notifier';
 
-export enum SCHEDULER {
-  FINISH_WORKING = 'finish.working.duration',
-  FINISH_BREAK = 'finish.break',
-}
-
-class Scheduler extends EventEmitter {
+class Scheduler {
   public workingDuration: number = 0;
   public breakDuration: number = 0;
   private _workingTimer: NodeJS.Timer | null = null;
@@ -19,10 +16,13 @@ class Scheduler extends EventEmitter {
 
     this.workingDuration = duration;
     this._workingTimer = setTimeout(() => {
-      this.emit(SCHEDULER.FINISH_WORKING);
+      ipcRenderer.send(
+        IPC_EVENT.BREAK_WINDOW,
+        BREAK_WINDOW.OPEN
+      );
     }, duration);
 
-    // TODO: 고민 필요...
+    // TODO: 고민 중...
     notifier.run(duration);
   }
 
@@ -39,7 +39,10 @@ class Scheduler extends EventEmitter {
 
     this.breakDuration = duration;
     this._breakTimer = setTimeout(() => {
-      this.emit(SCHEDULER.FINISH_BREAK);
+      ipcRenderer.send(
+        IPC_EVENT.BREAK_WINDOW,
+        BREAK_WINDOW.CLOSE
+      );
     }, duration);
   }
 

@@ -1,10 +1,7 @@
 import React from 'react';
-import { Line } from 'rc-progress';
 const css = require('./Progress.scss');
 
-export interface ProgressProps {
-  percent: number;
-}
+import { Line } from 'rc-progress';
 
 const Progress = ({ percent }: ProgressProps) => (
   <div className={css['progress']}>
@@ -19,3 +16,6 @@ const Progress = ({ percent }: ProgressProps) => (
 );
 
 export default Progress;
+export type ProgressProps = {
+  percent: number;
+}

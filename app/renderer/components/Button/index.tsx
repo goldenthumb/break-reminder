@@ -1,12 +1,6 @@
 import React from 'react';
 const css = require('./Button.scss');
 
-export interface ButtonProps {
-  theme: string;
-  action: () => void;
-  children: React.ReactNode;
-}
-
 const Button = ({ theme, action, children }: ButtonProps) => (
   <button
     type='button'
@@ -18,3 +12,8 @@ const Button = ({ theme, action, children }: ButtonProps) => (
 );
 
 export default Button;
+export type ButtonProps = {
+  theme: string;
+  action: () => void;
+  children: React.ReactNode;
+}

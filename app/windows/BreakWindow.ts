@@ -1,11 +1,9 @@
 import { BrowserWindow, screen } from 'electron';
 import { EventEmitter } from 'events';
 
-// TODO: emit type...
 export enum BREAK_WINDOW {
   OPEN = 'open',
   CLOSE = 'close',
-  SKIP = 'skip',
 }
 
 class BreakWindow extends EventEmitter {
@@ -22,7 +20,7 @@ class BreakWindow extends EventEmitter {
     this.emit(BREAK_WINDOW.OPEN);
   }
 
-  async close() {
+  close() {
     for (const window of this._windows) {
       window.close();
       window.on('closed', () => {

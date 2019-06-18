@@ -1,5 +1,5 @@
-import { msToTime } from './utils';
-import { MILLISECOND } from './enums';
+import { msToTime } from '../../../lib/utils';
+import { MILLISECOND } from '../../../lib/enums';
 
 const MAX_HOUR = 23;
 const MIN_HOUR = 0;

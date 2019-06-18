@@ -1,13 +1,15 @@
 import React, { useContext }  from 'react';
-import { ipcRenderer } from 'electron';
-import moment, { Moment } from 'moment';
-import TimePicker from 'rc-time-picker';
-import 'rc-time-picker/assets/index.css';
 const css = require('./BreakTimePicker.scss');
 
-import { Context, AppContext } from '../../contexts';
+import TimePicker from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css';
+
+import { ipcRenderer } from 'electron';
+import moment, { Moment } from 'moment';
 import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
 import { msToTime } from '../../../lib/utils';
+
+import { Context, AppContext } from '../../contexts';
 
 const BreakTimePicker = () => {
   const { state: { breakDuration } } = useContext(Context) as AppContext;

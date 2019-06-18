@@ -1,9 +1,11 @@
 import React from 'react';
-import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../../lib/enums';
 const css = require('./BreakMessage.scss');
 
+import { ipcRenderer } from 'electron';
+import { IPC_EVENT } from '../../../lib/enums';
+
 import useTimer from '../../hooks/useTimer';
+
 import BreakTitle from '../BreakTitle';
 import Progress from '../Progress';
 import Skip from '../Skip';

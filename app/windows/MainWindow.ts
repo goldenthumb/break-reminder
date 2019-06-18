@@ -4,8 +4,10 @@ import { IPC_EVENT } from '../lib/enums';
 import { store, Options } from '../store';
 import BreakWindow, { BREAK_WINDOW } from './BreakWindow';
 
+const TRAY_ICON_PATH = resolve(__dirname, '../assets/images/tray.png');
+
 class MainWindow extends BrowserWindow {
-  private _tray: Electron.Tray = new Tray(resolve(__dirname, '../assets/images/tray.png'));
+  private _tray: Electron.Tray = new Tray(TRAY_ICON_PATH);
   private _breakWindow = new BreakWindow();
 
   constructor() {
@@ -76,10 +78,6 @@ class MainWindow extends BrowserWindow {
       }
 
       if (status === BREAK_WINDOW.CLOSE) {
-        this._breakWindow.close();
-      }
-
-      if (status === BREAK_WINDOW.SKIP) {
         this._breakWindow.close();
       }
     });

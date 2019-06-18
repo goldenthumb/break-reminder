@@ -1,7 +1,8 @@
 import React from 'react';
+const css = require('./BreakTitle.scss');
+
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';
-const css = require('./BreakTitle.scss');
 
 const BreakTitle = () => {
   const { options } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
