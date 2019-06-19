@@ -1,10 +1,10 @@
 import React, { Component, createContext } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/enums';
-import { BREAK_WINDOW } from '../../windows/BreakWindow';
+import { BLOCKER_STATUS } from '../../mainProcess/Blocker';
 import notifier from '../../lib/notifier';
 
-import { Preferences, Options } from '../../store';
+import { Preferences, Options } from '../../mainProcess/store';
 
 export interface AppContext {
   state: ContextState;
@@ -12,15 +12,14 @@ export interface AppContext {
 }
 
 interface ContextState extends Preferences {
-  showBreakWindow: boolean;
+  isWorkingDuration: boolean;
 }
 
 interface ContextActions {
   setOptions: (options: Options) => void;
   setReminderInterval: (ms: number) => void;
   setBreakDuration: (ms: number) => void;
-  showBreakWindow: () => void;
-  closeBreakWindow: () => void;
+  setWorkingDuration: (active: boolean) => void;
 }
 
 const Context = createContext({});
@@ -40,7 +39,7 @@ class Provider extends Component {
       reminderInterval,
       breakDuration,
       options,
-      showBreakWindow: false
+      isWorkingDuration: true
     };
 
     this.actions = {
@@ -57,16 +56,11 @@ class Provider extends Component {
           breakDuration: ms
         });
       },
-      showBreakWindow: () => {
+      setWorkingDuration: (active: boolean) => {
         this.setState({
-          showBreakWindow: true
+          isWorkingDuration: active
         });
       },
-      closeBreakWindow: () => {
-        this.setState({
-          showBreakWindow: false
-        });
-      }
     };
   }
 
@@ -74,14 +68,14 @@ class Provider extends Component {
     ipcRenderer.on(IPC_EVENT.REMINDER_INTERVAL, this.reminderTimeListener);
     ipcRenderer.on(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.on(IPC_EVENT.OPTION, this.optionListener);
-    ipcRenderer.on(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
+    ipcRenderer.on(IPC_EVENT.BLOCKER, this.blockerListener);
   }
 
   componentWillUnmount() {
     ipcRenderer.removeListener(IPC_EVENT.REMINDER_INTERVAL, this.reminderTimeListener);
     ipcRenderer.removeListener(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
     ipcRenderer.removeListener(IPC_EVENT.OPTION, this.optionListener);
-    ipcRenderer.removeListener(IPC_EVENT.BREAK_WINDOW, this.breakWindowListener);
+    ipcRenderer.removeListener(IPC_EVENT.BLOCKER, this.blockerListener);
   }
 
   reminderTimeListener = (event: Electron.IpcMessageEvent, ms: number) => {
@@ -102,13 +96,13 @@ class Provider extends Component {
     });
   }
 
-  breakWindowListener = (event: Electron.IpcMessageEvent, status: BREAK_WINDOW) => {
-    if (status === BREAK_WINDOW.OPEN) {
-      this.actions.showBreakWindow();
+  blockerListener = (event: Electron.IpcMessageEvent, status: BLOCKER_STATUS) => {
+    if (status === BLOCKER_STATUS.OPEN) {
+      this.actions.setWorkingDuration(false);
     }
 
-    if (status === BREAK_WINDOW.CLOSE) {
-      this.actions.closeBreakWindow();
+    if (status === BLOCKER_STATUS.CLOSE) {
+      this.actions.setWorkingDuration(true);
     }
   }
 

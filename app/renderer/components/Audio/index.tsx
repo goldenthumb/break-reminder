@@ -19,8 +19,8 @@ const Audio = () => {
   return (
     <audio ref={audio}>
       <source
-        type="audio/mp3"
-        src="../assets/audio/alarm.wav"
+        type='audio/mp3'
+        src='../assets/audio/alarm.wav'
       />
     </audio>
   );

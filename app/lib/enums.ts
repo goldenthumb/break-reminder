@@ -1,10 +1,11 @@
 export enum IPC_EVENT {
   PREFERENCES = 'preferences',
-  BREAK_WINDOW = 'breakWindow',
+  BLOCKER = 'blocker',
   REMINDER_INTERVAL = 'reminderInterval',
   BREAK_DURATION = 'breakDuration',
   OPTION = 'options',
   NOTIFICATION = 'notification',
+  QUIT = 'quit',
 }
 
 export enum MILLISECOND {

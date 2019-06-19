@@ -1,17 +1,17 @@
 import React from 'react';
-const css = require('./BreakMessage.scss');
+const css = require('./BlockMessage.scss');
 
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';
 
 import useTimer from '../../hooks/useTimer';
 
-import BreakTitle from '../BreakTitle';
+import BlockTitle from '../BlockTitle';
 import Progress from '../Progress';
 import Skip from '../Skip';
 import Audio from '../Audio';
 
-const BreakMessage = () => {
+const BlockMessage = () => {
   const { breakDuration } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
   const breakTime = breakDuration - 2000;
   const { percent } = useTimer({ time: breakTime, interval: 100 });
@@ -19,7 +19,7 @@ const BreakMessage = () => {
   return (
     <div className={css['message-wrap']}>
       <div className={css['content']}>
-        <BreakTitle />
+        <BlockTitle />
         <Progress percent={percent} />
         <Skip />
         <Audio />
@@ -28,4 +28,4 @@ const BreakMessage = () => {
   );
 };
 
-export default BreakMessage;
+export default BlockMessage;

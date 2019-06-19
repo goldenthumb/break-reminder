@@ -1,14 +1,14 @@
 import { resolve } from 'path';
 import { app, ipcMain, BrowserWindow, Tray } from 'electron';
 import { IPC_EVENT } from '../lib/enums';
-import { store, Options } from '../store';
-import BreakWindow, { BREAK_WINDOW } from './BreakWindow';
+import { store, Options } from './store';
+import Blocker, { BLOCKER_STATUS } from './Blocker';
 
 const TRAY_ICON_PATH = resolve(__dirname, '../assets/images/tray.png');
 
 class MainWindow extends BrowserWindow {
   private _tray: Electron.Tray = new Tray(TRAY_ICON_PATH);
-  private _breakWindow = new BreakWindow();
+  private _blocker = new Blocker();
 
   constructor() {
     super({
@@ -30,10 +30,11 @@ class MainWindow extends BrowserWindow {
     this._tray.on('right-click', this._toggleWindow);
     this._tray.on('click', this._toggleWindow);
 
-    this._handleIpcEvents();
+    this._attachIpcEvents();
+    this._attachBlockerEvents();
   }
 
-  private _handleIpcEvents() {
+  private _attachIpcEvents() {
     ipcMain.on(IPC_EVENT.PREFERENCES, (event: Electron.IpcMessageEvent) => {
       event.returnValue = store.all();
     });
@@ -57,32 +58,17 @@ class MainWindow extends BrowserWindow {
       event.sender.send(IPC_EVENT.OPTION, store.get('options'));
     });
 
-    ipcMain.on(IPC_EVENT.BREAK_WINDOW, (event: Electron.IpcMessageEvent, status: BREAK_WINDOW) => {
-      // TODO: 수정해야함
-      if (status === BREAK_WINDOW.OPEN) {
-        this._breakWindow.once(BREAK_WINDOW.OPEN, () => {
-          event.sender.send(
-            IPC_EVENT.BREAK_WINDOW,
-            BREAK_WINDOW.OPEN
-          );
-        });
+    ipcMain.on(IPC_EVENT.QUIT, app.quit);
+  }
 
-        this._breakWindow.once(BREAK_WINDOW.CLOSE, () => {
-          event.sender.send(
-            IPC_EVENT.BREAK_WINDOW,
-            BREAK_WINDOW.CLOSE
-          );
-        });
-
-        this._breakWindow.open();
-      }
-
-      if (status === BREAK_WINDOW.CLOSE) {
-        this._breakWindow.close();
-      }
+  private _attachBlockerEvents() {
+    this._blocker.onOpen(() => {
+      this.webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
     });
 
-    ipcMain.on('quit', app.quit);
+    this._blocker.onClose(() => {
+      this.webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.CLOSE);
+    });
   }
 
   private _toggleWindow = () => {

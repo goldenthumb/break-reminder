@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from './enums';
-import { BREAK_WINDOW } from '../windows/BreakWindow';
+import { BLOCKER_STATUS } from '../mainProcess/Blocker';
 import notifier from './notifier';
 
 class Scheduler {
@@ -16,10 +16,7 @@ class Scheduler {
 
     this.workingDuration = duration;
     this._workingTimer = setTimeout(() => {
-      ipcRenderer.send(
-        IPC_EVENT.BREAK_WINDOW,
-        BREAK_WINDOW.OPEN
-      );
+      ipcRenderer.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
     }, duration);
 
     // TODO: 고민 중...
@@ -39,10 +36,7 @@ class Scheduler {
 
     this.breakDuration = duration;
     this._breakTimer = setTimeout(() => {
-      ipcRenderer.send(
-        IPC_EVENT.BREAK_WINDOW,
-        BREAK_WINDOW.CLOSE
-      );
+      ipcRenderer.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.CLOSE);
     }, duration);
   }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 const css = require('./Header.scss');
 
-import { ipcRenderer }from 'electron';
+import { ipcRenderer } from 'electron';
 import { IoIosPower } from 'react-icons/io';
 
 import Button from '../Button';

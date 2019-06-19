@@ -13,7 +13,7 @@ import TimeCounter from '../TimeCounter';
 
 const TimeBoard = () => {
   const { state } = useContext(Context) as AppContext;
-  const { reminderInterval, showBreakWindow } = state;
+  const { reminderInterval, isWorkingDuration } = state;
   const [isPlay, setPlayStatus] = useState(true);
   const { timeLeft, play, pause, reset } = useTimer({
     time: reminderInterval,
@@ -21,17 +21,17 @@ const TimeBoard = () => {
   });
 
   useEffect(() => {
-    if (!showBreakWindow && timeLeft !== reminderInterval) {
+    if (isWorkingDuration && timeLeft !== reminderInterval) {
       reset(reminderInterval);
     }
-  }, [showBreakWindow, reminderInterval]);
+  }, [isWorkingDuration, reminderInterval]);
 
   useEffect(() => {
     isPlay ? play() : pause();
   }, [isPlay]);
 
   const togglePlay = () => {
-    if (showBreakWindow) return;
+    if (!isWorkingDuration) return;
 
     const nextPlay = !isPlay;
     setPlayStatus(nextPlay);

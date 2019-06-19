@@ -1,5 +1,6 @@
 import React from 'react';
-const css = require('./BreakTitle.scss');
+
+const css = require('./BlockTitle.scss');
 
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';

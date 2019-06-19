@@ -3,7 +3,7 @@ const css = require('./Skip.scss');
 
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';
-import { BREAK_WINDOW } from '../../../windows/BreakWindow';
+import { BLOCKER_STATUS } from '../../../mainProcess/Blocker';
 
 import Button from '../Button';
 
@@ -13,8 +13,8 @@ const Skip = () => (
       theme='skip'
       action={() => {
         ipcRenderer.send(
-          IPC_EVENT.BREAK_WINDOW,
-          BREAK_WINDOW.CLOSE
+          IPC_EVENT.BLOCKER,
+          BLOCKER_STATUS.CLOSE
         )
       }}
     >

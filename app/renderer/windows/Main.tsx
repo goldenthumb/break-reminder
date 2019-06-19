@@ -10,21 +10,21 @@ import OptionList from '../components/OptionList';
 
 const Main = () => {
   const { state } = useContext(Context) as AppContext;
-  const { showBreakWindow, reminderInterval, breakDuration } = state;
+  const { isWorkingDuration, reminderInterval, breakDuration } = state;
 
   useEffect(() => {
-    if (showBreakWindow) return;
+    if (!isWorkingDuration) return;
 
     scheduler.setWorkingDuration(reminderInterval);
     return () => scheduler.clearWorkingDuration();
-  }, [showBreakWindow, reminderInterval]);
+  }, [isWorkingDuration, reminderInterval]);
 
   useEffect(() => {
-    if (!showBreakWindow) return;
+    if (isWorkingDuration) return;
 
     scheduler.setBreakDuration(breakDuration);
     return () => scheduler.clearBreakDuration();
-  }, [showBreakWindow, breakDuration]);
+  }, [isWorkingDuration, breakDuration]);
 
   return <>
     <Header />

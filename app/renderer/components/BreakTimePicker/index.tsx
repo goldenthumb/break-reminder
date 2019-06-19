@@ -1,4 +1,4 @@
-import React, { useContext }  from 'react';
+import React, { useContext } from 'react';
 const css = require('./BreakTimePicker.scss');
 
 import TimePicker from 'rc-time-picker';

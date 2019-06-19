@@ -3,7 +3,7 @@ import { parse } from 'query-string';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Main from './windows/Main';
-import Break from './windows/Break';
+import Block from './windows/Block';
 import Overlay from './windows/Overlay';
 
 const Routes = ({ location: { search } }: RouteComponentProps) => {
@@ -12,7 +12,7 @@ const Routes = ({ location: { search } }: RouteComponentProps) => {
   const { window } = parse(search);
 
   if (window === 'main') return <Main />;
-  if (window === 'break') return <Break />;
+  if (window === 'block') return <Block />;
   if (window === 'overlay') return <Overlay />;
 
   return null;

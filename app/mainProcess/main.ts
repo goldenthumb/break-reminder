@@ -1,6 +1,6 @@
 import { app } from 'electron';
 import { store } from './store';
-import MainWindow from './windows/MainWindow';
+import MainWindow from './MainWindow';
 
 interface LoginSettings {
   openAtLogin: boolean;
