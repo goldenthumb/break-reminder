@@ -9,10 +9,10 @@ import moment, { Moment } from 'moment';
 import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
 import { msToTime } from '../../../lib/utils';
 
-import { Context, AppContext } from '../../contexts';
+import { Context } from '../../contexts';
 
 const BreakTimePicker = () => {
-  const { state: { breakDuration } } = useContext(Context) as AppContext;
+  const { state: { breakDuration } } = useContext(Context);
   const [hour, min, sec] = msToTime(breakDuration);
   const time = moment({ h: hour, m: min, s: sec });
 

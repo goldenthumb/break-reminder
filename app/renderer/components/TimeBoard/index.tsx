@@ -5,14 +5,14 @@ import { IoIosPlay, IoIosPause } from 'react-icons/io';
 import { MILLISECOND } from '../../../lib/enums';
 import scheduler from '../../../lib/scheduler';
 
-import { Context, AppContext } from '../../contexts';
+import { Context } from '../../contexts';
 import useTimer from '../../hooks/useTimer';
 
 import Button from '../Button';
 import TimeCounter from '../TimeCounter';
 
 const TimeBoard = () => {
-  const { state } = useContext(Context) as AppContext;
+  const { state } = useContext(Context);
   const { reminderInterval, isWorkingDuration } = state;
   const [isPlay, setPlayStatus] = useState(true);
   const { timeLeft, play, pause, reset } = useTimer({

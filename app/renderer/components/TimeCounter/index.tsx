@@ -11,7 +11,7 @@ enum timeKeyword {
   minute = 'm'
 }
 
-const TimeCounter = ({ type, time }: TimeCounterProps) => {
+const TimeCounter = ({ type, time }: TimeType) => {
   const [hour, min] = msToTime(time);
 
   return (
@@ -51,4 +51,4 @@ const TimeCounter = ({ type, time }: TimeCounterProps) => {
 };
 
 export default TimeCounter;
-export type TimeCounterProps = TimeType;
+

@@ -4,11 +4,11 @@ const css = require('./OptionList.scss');
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';
 
-import { Context, AppContext } from '../../contexts';
+import { Context } from '../../contexts';
 import OptionItem from '../OptionItem';
 
 const OptionList = () => {
-  const { state: { options } } = useContext(Context) as AppContext;
+  const { state: { options } } = useContext(Context);
 
   const optionList = [
     {

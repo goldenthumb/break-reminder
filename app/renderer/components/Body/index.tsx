@@ -1,6 +1,10 @@
 import React from 'react';
 const css = require('./Body.scss');
 
+type BodyProps = {
+  children: React.ReactNode;
+};
+
 const Body = ({ children }: BodyProps) => (
   <div className={css['body']}>
     {children}
@@ -8,6 +12,4 @@ const Body = ({ children }: BodyProps) => (
 );
 
 export default Body;
-export type BodyProps = {
-  children: React.ReactNode;
-}
+

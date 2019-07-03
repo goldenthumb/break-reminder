@@ -3,6 +3,12 @@ const css = require('./OptionItem.scss');
 
 import Switch from 'react-switch';
 
+type OptionItemProps = {
+  name: string;
+  isChecked: boolean;
+  action: (checked: boolean) => void;
+};
+
 const OptionItem = ({ name, isChecked, action }: OptionItemProps) => {
   const [option, setOption] = useState(isChecked);
 
@@ -36,8 +42,3 @@ const OptionItem = ({ name, isChecked, action }: OptionItemProps) => {
 };
 
 export default OptionItem;
-export type OptionItemProps = {
-  name: string;
-  isChecked: boolean;
-  action: (checked: boolean) => void;
-}

@@ -3,6 +3,10 @@ const css = require('./Progress.scss');
 
 import { Line } from 'rc-progress';
 
+type ProgressProps = {
+  percent: number;
+};
+
 const Progress = ({ percent }: ProgressProps) => (
   <div className={css['progress']}>
     <Line
@@ -16,6 +20,3 @@ const Progress = ({ percent }: ProgressProps) => (
 );
 
 export default Progress;
-export type ProgressProps = {
-  percent: number;
-}

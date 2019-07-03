@@ -6,7 +6,7 @@ import notifier from '../../lib/notifier';
 
 import { Preferences, Options } from '../../mainProcess/store';
 
-export interface AppContext {
+interface AppContext {
   state: ContextState;
   actions: ContextActions;
 }
@@ -22,7 +22,7 @@ interface ContextActions {
   setWorkingDuration: (active: boolean) => void;
 }
 
-const Context = createContext({});
+const Context = createContext<AppContext>(null!);
 const { Provider: ContextProvider } = Context;
 
 class Provider extends Component {
@@ -109,10 +109,9 @@ class Provider extends Component {
   render() {
     const { state, actions } = this;
     const { children } = this.props;
-    const value: AppContext = { state, actions };
 
     return (
-      <ContextProvider value={value}>
+      <ContextProvider value={{ state, actions }}>
         {children}
       </ContextProvider>
     );

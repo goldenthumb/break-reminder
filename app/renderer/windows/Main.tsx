@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import scheduler from '../../lib/scheduler';
-import { Context, AppContext } from '../contexts';
+import { Context } from '../contexts';
 
 import Header from '../components/Header';
 import Body from '../components/Body';
@@ -9,7 +9,7 @@ import BreakTimePicker from '../components/BreakTimePicker';
 import OptionList from '../components/OptionList';
 
 const Main = () => {
-  const { state } = useContext(Context) as AppContext;
+  const { state } = useContext(Context);
   const { isWorkingDuration, reminderInterval, breakDuration } = state;
 
   useEffect(() => {

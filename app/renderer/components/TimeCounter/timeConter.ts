@@ -10,7 +10,7 @@ const MIN_MINUTE = 1;
 export type TimeType = {
   type: 'hour' | 'minute',
   time: number
-}
+};
 
 export function increase({ type, time }: TimeType) {
   const [hour, minute] = msToTime(time);
