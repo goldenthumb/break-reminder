@@ -9,7 +9,7 @@
     "start": "npm run build && electron app/mainProcess/main.js cross-env NODE_ENV=production electron ./app/main.js",
     "package": "rimraf release && npm run build && electron-builder build --publish never",
     "build": "tsc && cross-env NODE_ENV=production webpack --config configs/build",
-    "start-main-dev": "cross-env NODE_ENV=development electron app/mainProcess/main.js"
+    "start-main-dev": "tsc && cross-env NODE_ENV=production electron app/mainProcess/main.js"
   },
   "build": {
     "productName": "BreakReminder",
