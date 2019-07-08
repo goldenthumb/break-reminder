@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsc && cross-env NODE_ENV=development webpack-dev-server --config configs/devserver.js",
     "start": "npm run build && electron app/mainProcess/main.js cross-env NODE_ENV=production electron ./app/main.js",
-    "package": "npm run build && electron-builder build --publish never",
+    "package": "rimraf release && npm run build && electron-builder build --publish never",
     "build": "tsc && cross-env NODE_ENV=production webpack --config configs/build",
     "start-main-dev": "cross-env NODE_ENV=development electron app/mainProcess/main.js"
   },
@@ -105,7 +105,6 @@
     "@types/rc-progress": "^2.2.1",
     "delay": "^4.3.0",
     "event-emitter": "^0.3.5",
-    "file-loader": "^4.0.0",
     "moment": "^2.24.0",
     "node-notifier": "^5.4.0",
     "query-string": "^6.4.2",
@@ -116,9 +115,9 @@
     "react-icons": "^3.5.0",
     "react-router-dom": "^5.0.0",
     "react-switch": "^4.1.0",
+    "rimraf": "^2.6.3",
     "ts-loader": "^6.0.0",
     "tslint": "^5.16.0",
-    "typescript": "^3.4.5",
-    "url-loader": "^2.0.1"
+    "typescript": "^3.4.5"
   }
 }
