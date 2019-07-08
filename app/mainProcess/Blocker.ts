@@ -37,15 +37,14 @@ class Blocker extends EventEmitter {
       }
 
       if (status === BLOCKER_STATUS.CLOSE) {
+        if (!this._windows.length) return;
+
         for (const window of this._windows) {
           window.close();
-
-          window.once('closed', () => {
-            this._windows = this._windows.filter(win => win !== window);
-            if (this._windows.length) return;
-            this.emit(BLOCKER_STATUS.CLOSE);
-          });
         }
+
+        this._windows = [];
+        this.emit(BLOCKER_STATUS.CLOSE);
       }
     });
   }
