@@ -8,7 +8,7 @@ Simple timers that remind you to take breaks from your computer.
 <br>
 
 ### Download
-- MacOS : [BreakReminder.dmg](https://dev.goldenthumb.net:9001/download/break-reminder/mac/BreakReminder.dmg)
+- MacOS : [BreakReminder.dmg](https://dev.goldenthumb.net:9001/download/break-reminder/mac/?file=BreakReminder.dmg)
 
 <br><br>
 
