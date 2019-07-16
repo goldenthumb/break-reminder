@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, globalShortcut } from 'electron';
 import { store } from './store';
 import MainWindow from './MainWindow';
 
@@ -19,6 +19,10 @@ app.dock.hide();
 app.setLoginItemSettings(loginSettings);
 
 app.once('ready', () => {
+  globalShortcut.register('CommandOrControl+R', () => false);
+  globalShortcut.register('CommandOrControl+Shift+R', () => false);
+  globalShortcut.register('F5', () => false);
+
   mainWindow = new MainWindow();
 });
 

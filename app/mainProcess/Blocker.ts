@@ -60,6 +60,7 @@ class Blocker extends EventEmitter {
       backgroundColor: '#939393',
       frame: false,
       webPreferences: {
+        devTools: process.env.NODE_ENV === 'development',
         nodeIntegration: true,
         autoplayPolicy: 'no-user-gesture-required'
       }

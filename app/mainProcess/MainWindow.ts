@@ -19,6 +19,7 @@ class MainWindow extends BrowserWindow {
       movable: false,
       frame: false,
       webPreferences: {
+        devTools: process.env.NODE_ENV === 'development',
         nodeIntegration: true,
         autoplayPolicy: 'no-user-gesture-required'
       }
