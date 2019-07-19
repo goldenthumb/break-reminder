@@ -23,7 +23,7 @@ module.exports = () => {
         poll: 100
       },
       before() {
-        spawn('npm', ['run', 'start-main-dev'], {
+        spawn('npm', ['run', 'dev-main'], {
           shell: true,
           env: process.env,
           stdio: 'inherit'

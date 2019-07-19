@@ -3,13 +3,13 @@ const css = require('./OptionItem.scss');
 
 import Switch from 'react-switch';
 
-type OptionItemProps = {
+interface OptionItemProps {
   name: string;
   isChecked: boolean;
   action: (checked: boolean) => void;
-};
+}
 
-const OptionItem = ({ name, isChecked, action }: OptionItemProps) => {
+export default function OptionItem({ name, isChecked, action }: OptionItemProps) {
   const [option, setOption] = useState(isChecked);
 
   const handleToggle = () => {
@@ -40,5 +40,3 @@ const OptionItem = ({ name, isChecked, action }: OptionItemProps) => {
     </div>
   );
 };
-
-export default OptionItem;

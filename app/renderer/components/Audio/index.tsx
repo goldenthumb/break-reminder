@@ -1,17 +1,17 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';
 
-const Audio = () => {
+export default function Audio() {
   const audio = useRef<HTMLAudioElement>(null);
-  const { breakDuration, options } = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
+  const { breakDuration } = useMemo(() => ipcRenderer.sendSync(IPC_EVENT.GET_PREFERENCES), []);
 
   useEffect(() => {
     const endTimer = setTimeout(() => {
-      if (options.sound && audio && audio.current) {
+      if (audio && audio.current) {
         audio.current.play();
       }
-    }, breakDuration - 2000);
+    }, breakDuration - 1500);
 
     return () => clearTimeout(endTimer);
   }, []);
@@ -25,5 +25,3 @@ const Audio = () => {
     </audio>
   );
 };
-
-export default Audio;

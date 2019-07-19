@@ -2,14 +2,14 @@
   "name": "break-reminder",
   "version": "0.1.0",
   "description": "",
-  "main": "app/mainProcess/main.js",
-  "types": "app/mainProcess/main.ts",
+  "main": "app/main/index.js",
+  "types": "app/main/index.ts",
   "scripts": {
     "dev": "tsc && cross-env NODE_ENV=development webpack-dev-server --config configs/devserver.js",
-    "start": "npm run build && electron app/mainProcess/main.js cross-env NODE_ENV=production electron ./app/main.js",
+    "start": "npm run build && cross-env NODE_ENV=production electron app/main/index.js",
     "package": "rimraf release && npm run build && electron-builder build --publish never",
     "build": "tsc && cross-env NODE_ENV=production webpack --config configs/build",
-    "start-main-dev": "tsc && cross-env NODE_ENV=production electron app/mainProcess/main.js"
+    "dev-main": "tsc && cross-env NODE_ENV=development electron app/main/index.js"
   },
   "build": {
     "productName": "BreakReminder",

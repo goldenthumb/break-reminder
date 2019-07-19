@@ -13,11 +13,16 @@ class Store<T extends object> {
 
   constructor(opts: StoreOptions<T>) {
     this._path = join(app.getPath('userData'), opts.configName + '.json');
-    this._data = this._parseDataFile(this._path, opts.defaults);
+    this._data = this._loadFile(this._path, opts.defaults);
   }
 
-  all() {
+  load() {
     return this._data;
+  }
+
+  save(data: T) {
+    this._data = data;
+    this._save();
   }
 
   get<K extends keyof T>(key: K) {
@@ -33,15 +38,15 @@ class Store<T extends object> {
     delete this._data[key];
     this._save();
   }
-
+  
   _save() {
     writeFileSync(this._path, JSON.stringify(this._data));
   }
 
-  _parseDataFile = (filePath: string, defaults: T) => {
+  _loadFile = (filePath: string, defaults: T) => {
     try {
       return JSON.parse(readFileSync(filePath).toString());
-    } catch (error) {
+    } catch {
       return defaults;
     }
   }

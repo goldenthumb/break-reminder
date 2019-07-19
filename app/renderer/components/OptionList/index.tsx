@@ -1,14 +1,11 @@
 import React, { useContext } from 'react';
 const css = require('./OptionList.scss');
 
-import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../../lib/enums';
-
 import { Context } from '../../contexts';
 import OptionItem from '../OptionItem';
 
-const OptionList = () => {
-  const { state: { options } } = useContext(Context);
+export default function OptionList() {
+  const { state: { options }, actions } = useContext(Context);
 
   const optionList = [
     {
@@ -16,7 +13,8 @@ const OptionList = () => {
       name: 'Start at login',
       isChecked: options.startAtLogin,
       action: (checked: boolean) => {
-        ipcRenderer.send(IPC_EVENT.OPTION, {
+        actions.setOptions({
+          ...options,
           startAtLogin: checked
         });
       }
@@ -26,7 +24,8 @@ const OptionList = () => {
       name: 'Notification',
       isChecked: options.notification,
       action: (checked: boolean) => {
-        ipcRenderer.send(IPC_EVENT.OPTION, {
+        actions.setOptions({
+          ...options,
           notification: checked
         });
       }
@@ -36,7 +35,8 @@ const OptionList = () => {
       name: 'Sound',
       isChecked: options.sound,
       action: (checked: boolean) => {
-        ipcRenderer.send(IPC_EVENT.OPTION, {
+        actions.setOptions({
+          ...options,
           sound: checked
         });
       }
@@ -56,5 +56,3 @@ const OptionList = () => {
     </div>
   );
 };
-
-export default OptionList;

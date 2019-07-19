@@ -1,12 +1,13 @@
 import { resolve } from 'path';
 import { app, ipcMain, BrowserWindow, Tray } from 'electron';
 import { IPC_EVENT } from '../lib/enums';
-import { store, Options } from './store';
+import * as shortcuts from '../lib/shortcuts';
+import { store, Preferences } from './store';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
 
 const TRAY_ICON_PATH = resolve(__dirname, '../assets/images/tray.png');
 
-class MainWindow extends BrowserWindow {
+export default class MainWindow extends BrowserWindow {
   private _tray: Electron.Tray = new Tray(TRAY_ICON_PATH);
   private _blocker = new Blocker();
 
@@ -26,7 +27,11 @@ class MainWindow extends BrowserWindow {
     });
 
     this.loadURL(`file://${__dirname}/window.html?window=main`);
-    this.on('closed', app.quit);
+    this.webContents.on('did-finish-load', shortcuts.start);
+    this.on('closed', () => {
+      shortcuts.stop();
+      app.quit();
+    });
 
     this._tray.on('right-click', this._toggleWindow);
     this._tray.on('click', this._toggleWindow);
@@ -36,28 +41,19 @@ class MainWindow extends BrowserWindow {
   }
 
   private _attachIpcEvents() {
-    ipcMain.on(IPC_EVENT.PREFERENCES, (event: Electron.IpcMessageEvent) => {
-      event.returnValue = store.all();
-    });
+    ipcMain.on(
+      IPC_EVENT.GET_PREFERENCES,
+      (event: Electron.IpcMessageEvent) => {
+        event.returnValue = store.load();
+      }
+    );
 
-    ipcMain.on(IPC_EVENT.REMINDER_INTERVAL, (event: Electron.IpcMessageEvent, ms: number) => {
-      store.set('reminderInterval', ms);
-      event.sender.send(IPC_EVENT.REMINDER_INTERVAL, ms);
-    });
-
-    ipcMain.on(IPC_EVENT.BREAK_DURATION, (event: Electron.IpcMessageEvent, ms: number) => {
-      store.set('breakDuration', ms);
-      event.sender.send(IPC_EVENT.BREAK_DURATION, ms);
-    });
-
-    ipcMain.on(IPC_EVENT.OPTION, (event: Electron.IpcMessageEvent, options: Options) => {
-      store.set('options', {
-        ...store.get('options'),
-        ...options,
-      });
-
-      event.sender.send(IPC_EVENT.OPTION, store.get('options'));
-    });
+    ipcMain.on(
+      IPC_EVENT.SET_PREFERENCES,
+      (event: Electron.IpcMessageEvent, preferences: Preferences) => {
+        store.save(preferences);
+      }
+    );
 
     ipcMain.on(IPC_EVENT.QUIT, app.quit);
   }
@@ -91,5 +87,3 @@ class MainWindow extends BrowserWindow {
     return { x, y };
   }
 }
-
-export default MainWindow;

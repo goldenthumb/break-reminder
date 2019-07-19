@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 const css = require('./TimeCounter.scss');
 
-import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../../lib/enums';
 import { msToTime } from '../../../lib/utils';
 import { increase, decrease, TimeType } from './timeConter';
+import { Context } from '../../contexts';
 
 enum timeKeyword {
   hour = 'h',
   minute = 'm'
 }
 
-const TimeCounter = ({ type, time }: TimeType) => {
+export default function TimeCounter({ type, time }: TimeType) {
   const [hour, min] = msToTime(time);
+  const { actions } = useContext(Context);
 
   return (
     <div className={css['wrap']}>
@@ -23,7 +23,7 @@ const TimeCounter = ({ type, time }: TimeType) => {
           const nextTime = increase({ type, time });
 
           if (nextTime) {
-            ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, nextTime);
+            actions.setReminderInterval(nextTime);
           }
         }}
       >
@@ -39,7 +39,7 @@ const TimeCounter = ({ type, time }: TimeType) => {
           const nextTime = decrease({ type, time });
 
           if (nextTime) {
-            ipcRenderer.send(IPC_EVENT.REMINDER_INTERVAL, nextTime);
+            actions.setReminderInterval(nextTime);
           }
         }}
       >
@@ -48,7 +48,4 @@ const TimeCounter = ({ type, time }: TimeType) => {
       <span className={css['label']}>{timeKeyword[type]}</span>
     </div>
   );
-};
-
-export default TimeCounter;
-
+}

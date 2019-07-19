@@ -1,12 +1,10 @@
 import React from 'react';
 import Overlay from '../components/Overlay';
-import BlockMessage from '../components/BlockMessage';
+import BlockBoard from '../components/BlockBoard';
 
-const Block = () => (
-  <>
+export default function Block() {
+  return <>
     <Overlay />
-    <BlockMessage />
-  </>
-);
-
-export default Block;
+    <BlockBoard />
+  </>;
+}

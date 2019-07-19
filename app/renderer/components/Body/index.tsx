@@ -1,15 +1,15 @@
 import React from 'react';
 const css = require('./Body.scss');
 
-type BodyProps = {
+interface BodyProps {
   children: React.ReactNode;
-};
+}
 
-const Body = ({ children }: BodyProps) => (
-  <div className={css['body']}>
-    {children}
-  </div>
-);
-
-export default Body;
+export default function Body({ children }: BodyProps) {
+  return (
+    <div className={css['body']}>
+      {children}
+    </div>
+  );
+}
 

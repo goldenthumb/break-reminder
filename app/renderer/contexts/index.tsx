@@ -1,14 +1,18 @@
-import React, { Component, createContext } from 'react';
+import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/enums';
-import { BLOCKER_STATUS } from '../../mainProcess/Blocker';
-import notifier from '../../lib/notifier';
-
-import { Preferences, Options } from '../../mainProcess/store';
+import { BLOCKER_STATUS } from '../../main/Blocker';
+import { Preferences, Options } from '../../main/store';
+import BlockerOpenScheduler from '../../lib/BlockerOpenScheduler';
+import Duration from '../../lib/Duration';
+import Notifier from '../../lib/Notifier';
 
 interface AppContext {
   state: ContextState;
   actions: ContextActions;
+  services: {
+    blockerOpenScheduler: BlockerOpenScheduler
+  };
 }
 
 interface ContextState extends Preferences {
@@ -19,103 +23,71 @@ interface ContextActions {
   setOptions: (options: Options) => void;
   setReminderInterval: (ms: number) => void;
   setBreakDuration: (ms: number) => void;
-  setWorkingDuration: (active: boolean) => void;
+}
+
+interface ViewerProps {
+  children: React.ReactNode;
 }
 
 const Context = createContext<AppContext>(null!);
 const { Provider: ContextProvider } = Context;
 
-class Provider extends Component {
-  public state: ContextState;
-  public actions: ContextActions;
+function Provider({ children }: ViewerProps) {
+  const preferences: Preferences = ipcRenderer.sendSync(IPC_EVENT.GET_PREFERENCES);
+  const [reminderInterval, setReminderInterval] = useState(preferences.reminderInterval);
+  const [breakDuration, setBreakDuration] = useState(preferences.breakDuration);
+  const [options, setOptions] = useState(preferences.options);
+  const [isWorkingDuration, setWorkingDuration] = useState(true);
+  const duration = useMemo(() => new Duration(), []);
+  const notifier = useMemo(() => new Notifier('Preparing break ...', {
+    body: 'Break will commence in 60 seconds.',
+    silent: !preferences.options.sound
+  }), []);
+  const blockerOpenScheduler = useMemo(() => new BlockerOpenScheduler(duration, notifier), []);
 
-  constructor(props: {}) {
-    super(props);
+  useEffect(() => {
+    ipcRenderer.on(IPC_EVENT.BLOCKER, blockerListener);
 
-    const preferences = ipcRenderer.sendSync(IPC_EVENT.PREFERENCES);
-    const { reminderInterval, breakDuration, options } = preferences;
+    return () => {
+      ipcRenderer.removeListener(IPC_EVENT.BLOCKER, blockerListener);
+    }
+  }, []);
 
-    this.state = {
-      reminderInterval,
-      breakDuration,
-      options,
-      isWorkingDuration: true
-    };
+  useEffect(() => {
+    notifier.setActive(options.notification);
+    notifier.setOption({ silent: !options.sound });
+  }, [options]);
 
-    this.actions = {
-      setOptions: (options: Options) => {
-        this.setState({ options });
-      },
-      setReminderInterval: (ms: number) => {
-        this.setState({
-          reminderInterval: ms
-        });
-      },
-      setBreakDuration: (ms: number) => {
-        this.setState({
-          breakDuration: ms
-        });
-      },
-      setWorkingDuration: (active: boolean) => {
-        this.setState({
-          isWorkingDuration: active
-        });
-      },
-    };
-  }
-
-  componentDidMount() {
-    ipcRenderer.on(IPC_EVENT.REMINDER_INTERVAL, this.reminderTimeListener);
-    ipcRenderer.on(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
-    ipcRenderer.on(IPC_EVENT.OPTION, this.optionListener);
-    ipcRenderer.on(IPC_EVENT.BLOCKER, this.blockerListener);
-  }
-
-  componentWillUnmount() {
-    ipcRenderer.removeListener(IPC_EVENT.REMINDER_INTERVAL, this.reminderTimeListener);
-    ipcRenderer.removeListener(IPC_EVENT.BREAK_DURATION, this.breakTimeListener);
-    ipcRenderer.removeListener(IPC_EVENT.OPTION, this.optionListener);
-    ipcRenderer.removeListener(IPC_EVENT.BLOCKER, this.blockerListener);
-  }
-
-  reminderTimeListener = (event: Electron.IpcMessageEvent, ms: number) => {
-    this.actions.setReminderInterval(ms);
-  }
-
-  breakTimeListener = (event: Electron.IpcMessageEvent, ms: number) => {
-    this.actions.setBreakDuration(ms);
-  }
-
-  optionListener = (event: Electron.IpcMessageEvent, options: Options) => {
-    this.actions.setOptions(options);
-
-    notifier.setNotification({
-      options: {
-        silent: !options.sound
-      }
+  useEffect(() => {
+    ipcRenderer.send(IPC_EVENT.SET_PREFERENCES, {
+      reminderInterval, breakDuration, options
     });
-  }
+  }, [reminderInterval, breakDuration, options]);
 
-  blockerListener = (event: Electron.IpcMessageEvent, status: BLOCKER_STATUS) => {
-    if (status === BLOCKER_STATUS.OPEN) {
-      this.actions.setWorkingDuration(false);
+  const blockerListener = (
+    event: Electron.IpcMessageEvent,
+    status: BLOCKER_STATUS
+  ) => {
+    const isWorkingMode = status === BLOCKER_STATUS.CLOSE;
+
+    if (isWorkingMode) {
+      const { reminderInterval } = ipcRenderer.sendSync(IPC_EVENT.GET_PREFERENCES);
+      setReminderInterval(reminderInterval);
     }
 
-    if (status === BLOCKER_STATUS.CLOSE) {
-      this.actions.setWorkingDuration(true);
-    }
-  }
+    setWorkingDuration(isWorkingMode);
+  };
 
-  render() {
-    const { state, actions } = this;
-    const { children } = this.props;
-
-    return (
-      <ContextProvider value={{ state, actions }}>
-        {children}
-      </ContextProvider>
-    );
-  }
+  return (
+    <ContextProvider
+      value={{
+        state: { reminderInterval, breakDuration, options, isWorkingDuration },
+        actions: { setReminderInterval, setBreakDuration, setOptions },
+        services: { blockerOpenScheduler }
+      }}>
+      {children}
+    </ContextProvider>
+  );
 }
 
 export { Provider, Context };

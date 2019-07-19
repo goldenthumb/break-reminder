@@ -1,10 +1,7 @@
 export enum IPC_EVENT {
-  PREFERENCES = 'preferences',
+  GET_PREFERENCES = 'get.preferences',
+  SET_PREFERENCES = 'set.preferences',
   BLOCKER = 'blocker',
-  REMINDER_INTERVAL = 'reminderInterval',
-  BREAK_DURATION = 'breakDuration',
-  OPTION = 'options',
-  NOTIFICATION = 'notification',
   QUIT = 'quit',
 }
 

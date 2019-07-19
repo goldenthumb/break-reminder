@@ -1,5 +1,4 @@
 import React, { useEffect, useContext } from 'react';
-import scheduler from '../../lib/scheduler';
 import { Context } from '../contexts';
 
 import Header from '../components/Header';
@@ -8,23 +7,16 @@ import TimeBoard from '../components/TimeBoard';
 import BreakTimePicker from '../components/BreakTimePicker';
 import OptionList from '../components/OptionList';
 
-const Main = () => {
-  const { state } = useContext(Context);
-  const { isWorkingDuration, reminderInterval, breakDuration } = state;
+export default function Main() {
+  const { state, services: { blockerOpenScheduler } } = useContext(Context);
+  const { isWorkingDuration, reminderInterval } = state;
 
   useEffect(() => {
     if (!isWorkingDuration) return;
 
-    scheduler.setWorkingDuration(reminderInterval);
-    return () => scheduler.clearWorkingDuration();
+    blockerOpenScheduler.setDuration(reminderInterval);
+    return () => blockerOpenScheduler.clearDuration();
   }, [isWorkingDuration, reminderInterval]);
-
-  useEffect(() => {
-    if (isWorkingDuration) return;
-
-    scheduler.setBreakDuration(breakDuration);
-    return () => scheduler.clearBreakDuration();
-  }, [isWorkingDuration, breakDuration]);
 
   return <>
     <Header />
@@ -34,6 +26,4 @@ const Main = () => {
       <OptionList />
     </Body>
   </>;
-};
-
-export default Main;
+}
