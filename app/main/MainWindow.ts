@@ -1,14 +1,12 @@
 import { resolve } from 'path';
-import { app, ipcMain, BrowserWindow, Tray } from 'electron';
+import { app, ipcMain, systemPreferences, BrowserWindow, Tray } from 'electron';
 import { IPC_EVENT } from '../lib/enums';
 import * as shortcuts from '../lib/shortcuts';
 import { store, Preferences } from './store';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
 
-const TRAY_ICON_PATH = resolve(__dirname, '../assets/images/tray.png');
-
 export default class MainWindow extends BrowserWindow {
-  private _tray: Electron.Tray = new Tray(TRAY_ICON_PATH);
+  private _tray: Electron.Tray = new Tray(getTrayIconPath());
   private _blocker = new Blocker();
 
   constructor() {
@@ -32,6 +30,11 @@ export default class MainWindow extends BrowserWindow {
       shortcuts.stop();
       app.quit();
     });
+
+    systemPreferences.subscribeNotification(
+      'AppleInterfaceThemeChangedNotification',
+      () => this._tray.setImage(getTrayIconPath())
+    );
 
     this._tray.on('right-click', this._toggleWindow);
     this._tray.on('click', this._toggleWindow);
@@ -86,4 +89,11 @@ export default class MainWindow extends BrowserWindow {
 
     return { x, y };
   }
+}
+
+function getTrayIconPath() {
+  return resolve(
+    __dirname,
+    `../assets/images/tray${systemPreferences.isDarkMode() ? '-white' : ''}.png`
+  );
 }
