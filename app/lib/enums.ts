@@ -1,6 +1,7 @@
 export enum IPC_EVENT {
   GET_PREFERENCES = 'get.preferences',
   SET_PREFERENCES = 'set.preferences',
+  GET_Alarm_INFO = 'get.alarm.metadata',
   BLOCKER = 'blocker',
   QUIT = 'quit',
 }

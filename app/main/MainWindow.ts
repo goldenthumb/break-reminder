@@ -1,9 +1,12 @@
 import { resolve } from 'path';
 import { app, ipcMain, systemPreferences, BrowserWindow, Tray } from 'electron';
+import { parseFile } from 'music-metadata';
 import { IPC_EVENT } from '../lib/enums';
 import * as shortcuts from '../lib/shortcuts';
 import { store, Preferences } from './store';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
+
+const ASSETS_PATH = resolve(__dirname, '../assets/');
 
 export default class MainWindow extends BrowserWindow {
   private _tray: Electron.Tray = new Tray(getTrayIconPath());
@@ -58,6 +61,14 @@ export default class MainWindow extends BrowserWindow {
       }
     );
 
+    ipcMain.on(
+      IPC_EVENT.GET_Alarm_INFO,
+      async (event: Electron.IpcMessageEvent) => {
+        const { format } = await parseFile(resolve(ASSETS_PATH, 'audio/alarm.mp3'));
+        event.returnValue = format;
+      }
+    );
+
     ipcMain.on(IPC_EVENT.QUIT, app.quit);
   }
 
@@ -93,7 +104,7 @@ export default class MainWindow extends BrowserWindow {
 
 function getTrayIconPath() {
   return resolve(
-    __dirname,
-    `../assets/images/tray${systemPreferences.isDarkMode() ? '-white' : ''}.png`
+    ASSETS_PATH,
+    `images/tray${systemPreferences.isDarkMode() ? '-white' : ''}.png`
   );
 }
