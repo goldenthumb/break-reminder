@@ -1,9 +1,10 @@
 import { resolve } from 'path';
 import { app, ipcMain, systemPreferences, BrowserWindow, Tray } from 'electron';
 import { parseFile } from 'music-metadata';
-import { IPC_EVENT } from '../lib/enums';
-import * as shortcuts from '../lib/shortcuts';
 import { store, Preferences } from './store';
+import * as shortcuts from '../lib/shortcuts';
+import { IPC_EVENT } from '../lib/enums';
+import PowerMonitor from '../lib/PowerMonitor';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
 
 const ASSETS_PATH = resolve(__dirname, '../assets/');
@@ -11,6 +12,7 @@ const ASSETS_PATH = resolve(__dirname, '../assets/');
 export default class MainWindow extends BrowserWindow {
   private _tray: Electron.Tray = new Tray(getTrayIconPath());
   private _blocker = new Blocker();
+  private _powerMonitor = new PowerMonitor();
 
   constructor() {
     super({
@@ -38,6 +40,9 @@ export default class MainWindow extends BrowserWindow {
       'AppleInterfaceThemeChangedNotification',
       () => this._tray.setImage(getTrayIconPath())
     );
+
+    this._powerMonitor.on(() => this.webContents.send(IPC_EVENT.POWER_MONITOR_ON));
+    this._powerMonitor.off(() => this.webContents.send(IPC_EVENT.POWER_MONITOR_OFF));
 
     this._tray.on('right-click', this._toggleWindow);
     this._tray.on('click', this._toggleWindow);

@@ -1,8 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
 const css = require('./TimeBoard.scss');
+import { ipcRenderer } from 'electron';
 
 import { IoIosPlay, IoIosPause } from 'react-icons/io';
-import { MILLISECOND } from '../../../lib/enums';
+import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
 
 import { Context } from '../../contexts';
 import useTimer from '../../hooks/useTimer';
@@ -27,11 +28,27 @@ export default function TimeBoard() {
 
   useEffect(() => {
     isPlay ? play() : pause();
+
+    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_ON, onListener);
+    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_OFF, offListener);
+
+    return () => {
+      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_ON, onListener);
+      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_OFF, offListener);
+    };
+
+    function onListener() {
+      if (!isPlay) return;
+      blockerOpenScheduler.setDuration(timeLeft);
+    }
+
+    function offListener() {
+      if (!isPlay) return;
+      blockerOpenScheduler.clearDuration();
+    }
   }, [isPlay]);
 
   const togglePlay = () => {
-    if (!isWorkingDuration) return;
-
     const nextPlay = !isPlay;
     setPlayStatus(nextPlay);
 
@@ -48,7 +65,7 @@ export default function TimeBoard() {
       <TimeCounter type='minute' time={timeLeft} />
     </div>
     <div className={css['pause-btn-wrap']}>
-      <Button theme='round-red' action={togglePlay}>
+      <Button theme='round-red' action={togglePlay} disabled={!isWorkingDuration}>
         {isPlay ? <IoIosPause /> : <IoIosPlay />}
       </Button>
     </div>
