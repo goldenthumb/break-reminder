@@ -1,29 +1,29 @@
 import { BrowserWindow, ipcMain, screen } from 'electron';
 import { EventEmitter } from 'events';
 import { IPC_EVENT } from '../lib/enums';
+import { Listener } from '../lib/types';
 
 export enum BLOCKER_STATUS {
   OPEN = 'open',
   CLOSE = 'close',
 }
 
-type Listener = () => void;
-
-export default class Blocker extends EventEmitter {
+export default class Blocker {
+  private _emitter: EventEmitter;
   private _windows: Electron.BrowserWindow[] = [];
   private _status: BLOCKER_STATUS = BLOCKER_STATUS.CLOSE;
 
   constructor() {
-    super();
+    this._emitter = new EventEmitter();
     this._attachEvent();
   }
 
   onOpen(fn: Listener) {
-    this.on(BLOCKER_STATUS.OPEN, fn);
+    this._emitter.on(BLOCKER_STATUS.OPEN, fn);
   }
 
   onClose(fn: Listener) {
-    this.on(BLOCKER_STATUS.CLOSE, fn);
+    this._emitter.on(BLOCKER_STATUS.CLOSE, fn);
   }
 
   private _attachEvent() {
@@ -34,7 +34,8 @@ export default class Blocker extends EventEmitter {
           case BLOCKER_STATUS.OPEN: this._open(); break;
           case BLOCKER_STATUS.CLOSE: this._close(); break;
         }
-      });
+      }
+    );
   }
 
   private async _open() {
@@ -43,8 +44,7 @@ export default class Blocker extends EventEmitter {
       this._windows.push(await createBlockWindow(windowName, display));
     }
 
-    this.emit(this._status = BLOCKER_STATUS.OPEN);
-
+    this._emitter.emit(this._status = BLOCKER_STATUS.OPEN);
   }
 
   private _close() {
@@ -55,7 +55,7 @@ export default class Blocker extends EventEmitter {
     }
 
     this._windows = [];
-    this.emit(this._status = BLOCKER_STATUS.CLOSE);
+    this._emitter.emit(this._status = BLOCKER_STATUS.CLOSE);
   }
 }
 

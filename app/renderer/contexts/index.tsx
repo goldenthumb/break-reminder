@@ -46,10 +46,21 @@ function Provider({ children }: ViewerProps) {
   const blockerOpenScheduler = useMemo(() => new BlockerOpenScheduler(duration, notifier), []);
 
   useEffect(() => {
-    ipcRenderer.on(IPC_EVENT.BLOCKER, blockerListener);
+    ipcRenderer.on(IPC_EVENT.BLOCKER, listener);
 
     return () => {
-      ipcRenderer.removeListener(IPC_EVENT.BLOCKER, blockerListener);
+      ipcRenderer.removeListener(IPC_EVENT.BLOCKER, listener);
+    };
+
+    function listener(event: Electron.IpcMessageEvent, status: BLOCKER_STATUS) {
+      const isWorkingMode = status === BLOCKER_STATUS.CLOSE;
+
+      if (isWorkingMode) {
+        const { reminderInterval } = ipcRenderer.sendSync(IPC_EVENT.GET_PREFERENCES);
+        setReminderInterval(reminderInterval);
+      }
+
+      setWorkingDuration(isWorkingMode);
     }
   }, []);
 
@@ -63,20 +74,6 @@ function Provider({ children }: ViewerProps) {
       reminderInterval, breakDuration, options
     });
   }, [reminderInterval, breakDuration, options]);
-
-  const blockerListener = (
-    event: Electron.IpcMessageEvent,
-    status: BLOCKER_STATUS
-  ) => {
-    const isWorkingMode = status === BLOCKER_STATUS.CLOSE;
-
-    if (isWorkingMode) {
-      const { reminderInterval } = ipcRenderer.sendSync(IPC_EVENT.GET_PREFERENCES);
-      setReminderInterval(reminderInterval);
-    }
-
-    setWorkingDuration(isWorkingMode);
-  };
 
   return (
     <ContextProvider

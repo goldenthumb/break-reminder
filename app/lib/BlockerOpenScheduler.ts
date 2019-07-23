@@ -21,6 +21,8 @@ class BlockerOpenScheduler {
       ipcRenderer.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
     });
 
+    if (delay - MILLISECOND.MIN < 0) return;
+
     this._notifierTimer = setTimeout(
       () => this._notifier.run(),
       delay - MILLISECOND.MIN
