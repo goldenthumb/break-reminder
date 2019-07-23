@@ -1,9 +1,10 @@
 import { resolve } from 'path';
 import { app, ipcMain, BrowserWindow } from 'electron';
 import { parseFile } from 'music-metadata';
-import { store, Preferences } from './store';
 import * as shortcuts from '../lib/shortcuts';
 import { IPC_EVENT } from '../lib/enums';
+import { store, Preferences } from './store';
+import { setAutoLaunch } from './autoLaunch';
 
 import Tray from './Tray';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
@@ -32,6 +33,7 @@ export default class MainApp {
 
     this._attachIpcEvents();
     this._attachBlockerEvents();
+    initialize();
   }
 
   private _attachIpcEvents() {
@@ -85,4 +87,12 @@ function createWindow() {
       autoplayPolicy: 'no-user-gesture-required'
     }
   });
+}
+
+function initialize() {
+  if (app.dock) {
+    app.dock.hide();
+  }
+
+  setAutoLaunch();
 }

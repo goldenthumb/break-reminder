@@ -1,5 +1,4 @@
 import { app } from 'electron';
-import { setAutoLaunch } from './autoLaunch';
 import MainApp from './MainApp';
 
 let mainApp: MainApp;
@@ -13,6 +12,3 @@ app.on('activate', (event, hasVisibleWindows) => {
     mainApp = new MainApp();
   }
 });
-
-app.dock.hide();
-setAutoLaunch();

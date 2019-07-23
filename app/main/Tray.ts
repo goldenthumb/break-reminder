@@ -1,5 +1,6 @@
-import { Tray, systemPreferences } from 'electron';
+import { Tray, systemPreferences, screen } from 'electron';
 import { resolve } from 'path';
+import { __WINDOW__, __MACOS__ } from '../lib/platfrom';
 
 export default class extends Tray {
   constructor() {
@@ -23,6 +24,8 @@ export default class extends Tray {
   }
 
   private _changeTheme() {
+    if (!__MACOS__) return;
+
     systemPreferences.subscribeNotification(
       'AppleInterfaceThemeChangedNotification',
       () => this.setImage(getTrayIconPath())
@@ -33,13 +36,22 @@ export default class extends Tray {
 function getTrayIconPath() {
   return resolve(
     __dirname,
-    `../assets/images/tray${systemPreferences.isDarkMode() ? '-white' : ''}.png`
+    `../assets/images/tray${systemPreferences.isDarkMode() || __WINDOW__ ? '-white' : ''}.png`
   );
 }
 
 function getAppPosition(windowBounds: Electron.Rectangle, trayBounds: Electron.Rectangle) {
+  const screenBounds = screen.getPrimaryDisplay().bounds;
+
+  if (__MACOS__) {
+    return {
+      x: Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2)),
+      y: Math.round(trayBounds.y + trayBounds.height + 4)
+    };
+  }
+
   return {
-    x: Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2)),
-    y: Math.round(trayBounds.y + trayBounds.height + 4)
+    x: Math.round(screenBounds.x + ((screenBounds.width / 2) - (windowBounds.width / 2))),
+    y: Math.round(((screenBounds.height + screenBounds.y) / 2) - (windowBounds.height / 2))
   };
 }
