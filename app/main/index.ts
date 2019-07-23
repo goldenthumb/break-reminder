@@ -1,35 +1,18 @@
 import { app } from 'electron';
-import { store } from './store';
-import MainWindow from './MainWindow';
+import { setAutoLaunch } from './autoLaunch';
+import MainApp from './MainApp';
 
-interface LoginSettings {
-  openAtLogin: boolean;
-  openAsHidden: boolean;
-}
-
-const loginSettings: LoginSettings = {
-  openAtLogin: store.get('options').startAtLogin,
-  openAsHidden: true
-};
-
-let mainWindow: Electron.BrowserWindow;
-
-app.dock.hide();
-
-app.setLoginItemSettings(loginSettings);
+let mainApp: MainApp;
 
 app.once('ready', () => {
-  mainWindow = new MainWindow();
+  mainApp = new MainApp();
 });
 
 app.on('activate', (event, hasVisibleWindows) => {
   if (!hasVisibleWindows) {
-    mainWindow = new MainWindow();
+    mainApp = new MainApp();
   }
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
+app.dock.hide();
+setAutoLaunch();

@@ -29,30 +29,25 @@ export default function TimeBoard() {
   useEffect(() => {
     isPlay ? play() : pause();
 
-    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_ON, onListener);
-    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_OFF, offListener);
+    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_ON, listener);
+    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_OFF, listener);
 
     return () => {
-      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_ON, onListener);
-      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_OFF, offListener);
+      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_ON, listener);
+      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_OFF, listener);
     };
 
-    function onListener() {
+    function listener() {
       if (!isPlay) return;
-      blockerOpenScheduler.setDuration(timeLeft);
-    }
-
-    function offListener() {
-      if (!isPlay) return;
-      blockerOpenScheduler.clearDuration();
+      togglePlay();
     }
   }, [isPlay]);
 
   const togglePlay = () => {
-    const nextPlay = !isPlay;
-    setPlayStatus(nextPlay);
+    const play = !isPlay;
+    setPlayStatus(play);
 
-    if (nextPlay) {
+    if (play) {
       blockerOpenScheduler.setDuration(timeLeft);
     } else {
       blockerOpenScheduler.clearDuration();
