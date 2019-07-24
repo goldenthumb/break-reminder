@@ -8,8 +8,8 @@ Simple timers that remind you to take breaks from your computer.
 <br>
 
 ### Download
-- MacOS : [BreakReminder.dmg](https://dev.goldenthumb.net:9001/download/break-reminder/mac/?file=BreakReminder.dmg)
-
+- MacOS : [BreakReminder.dmg](https://dev.goldenthumb.net:9001/download/break-reminder/?file=BreakReminder.dmg)
+- Windows : [BreakReminder.exe](https://dev.goldenthumb.net:9001/download/break-reminder/?file=BreakReminder.exe)
 <br><br>
 
 ### Features
