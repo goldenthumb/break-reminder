@@ -1,6 +1,11 @@
-import { globalShortcut } from 'electron';
+import { app, globalShortcut } from 'electron';
 
-export function start() {
+export function setShortcuts() {
+  app.on('browser-window-focus', start);
+  app.on('browser-window-blur', stop);
+}
+
+function start() {
   globalShortcut.unregisterAll();
 
   if (process.env.NODE_ENV !== 'development') {
@@ -10,6 +15,6 @@ export function start() {
   }
 }
 
-export function stop() {
+function stop() {
   globalShortcut.unregisterAll();
 }

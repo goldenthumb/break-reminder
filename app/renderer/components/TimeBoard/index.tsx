@@ -27,32 +27,37 @@ export default function TimeBoard() {
   }, [isWorkingDuration, reminderInterval]);
 
   useEffect(() => {
-    isPlay ? play() : pause();
-
-    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_ON, listener);
-    ipcRenderer.on(IPC_EVENT.POWER_MONITOR_OFF, listener);
+    ipcRenderer.on(IPC_EVENT.ACTIVE_POWER, listener);
 
     return () => {
-      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_ON, listener);
-      ipcRenderer.removeListener(IPC_EVENT.POWER_MONITOR_OFF, listener);
+      ipcRenderer.removeListener(IPC_EVENT.ACTIVE_POWER, listener);
     };
 
-    function listener() {
+    function listener(active: boolean) {
       if (!isPlay) return;
-      togglePlay();
+
+      if (active) {
+        blockerOpenScheduler.setDuration(timeLeft);
+        play();
+      } else {
+        blockerOpenScheduler.clearDuration();
+        pause();
+      }
     }
-  }, [isPlay]);
+  }, [isPlay, timeLeft]);
 
-  const togglePlay = () => {
-    const play = !isPlay;
-    setPlayStatus(play);
+  function togglePlay() {
+    const nextPlay = !isPlay;
+    setPlayStatus(nextPlay);
 
-    if (play) {
+    if (nextPlay) {
       blockerOpenScheduler.setDuration(timeLeft);
+      play();
     } else {
       blockerOpenScheduler.clearDuration();
+      pause();
     }
-  };
+  }
 
   return <>
     <div className={css['time-board']}>
@@ -60,9 +65,12 @@ export default function TimeBoard() {
       <TimeCounter type='minute' time={timeLeft} />
     </div>
     <div className={css['pause-btn-wrap']}>
-      <Button theme='round-red' action={togglePlay} disabled={!isWorkingDuration}>
-        {isPlay ? <IoIosPause /> : <IoIosPlay />}
-      </Button>
+      <Button
+        theme='round-red'
+        action={togglePlay}
+        disabled={!isWorkingDuration}
+        children={isPlay ? <IoIosPause /> : <IoIosPlay />}
+      />
     </div>
   </>;
 };

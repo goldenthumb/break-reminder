@@ -1,10 +1,10 @@
 import { resolve } from 'path';
 import { app, ipcMain, BrowserWindow } from 'electron';
 import { parseFile } from 'music-metadata';
-import * as shortcuts from '../lib/shortcuts';
 import { IPC_EVENT } from '../lib/enums';
 import { store, Preferences } from './store';
 import { setAutoLaunch } from './autoLaunch';
+import { setShortcuts } from '../lib/shortcuts';
 
 import Tray from './Tray';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
@@ -17,23 +17,20 @@ export default class MainApp {
   readonly powerMonitor = new PowerMonitor();
 
   constructor() {
-    this.tray = new Tray();
     this.window = createWindow();
     this.window.loadURL(`file://${__dirname}/window.html?window=main`);
-    this.window.webContents.on('did-finish-load', shortcuts.start);
-    this.window.on('closed', () => {
-      shortcuts.stop();
-      app.quit();
-    });
+    this.window.on('closed', app.quit);
 
+    this.tray = new Tray();
     this.tray.attachDisplayWindow(this.window);
 
-    this.powerMonitor.on(() => this.window.webContents.send(IPC_EVENT.POWER_MONITOR_ON));
-    this.powerMonitor.off(() => this.window.webContents.send(IPC_EVENT.POWER_MONITOR_OFF));
+    this.powerMonitor.on(() => this.window.webContents.send(IPC_EVENT.ACTIVE_POWER, true));
+    this.powerMonitor.off(() => this.window.webContents.send(IPC_EVENT.ACTIVE_POWER, false));
 
     this._attachIpcEvents();
     this._attachBlockerEvents();
-    initialize();
+
+    initializeApp();
   }
 
   private _attachIpcEvents() {
@@ -89,10 +86,11 @@ function createWindow() {
   });
 }
 
-function initialize() {
+function initializeApp() {
   if (app.dock) {
     app.dock.hide();
   }
 
+  setShortcuts();
   setAutoLaunch();
 }
