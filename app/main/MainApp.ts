@@ -3,8 +3,8 @@ import { app, ipcMain, BrowserWindow } from 'electron';
 import { parseFile } from 'music-metadata';
 import { IPC_EVENT } from '../lib/enums';
 import { store, Preferences } from './store';
-import { setAutoLaunch } from './autoLaunch';
-import { setShortcuts } from '../lib/shortcuts';
+import { setLoginSetting } from './autoLaunch';
+import shortcuts from '../lib/shortcuts';
 
 import Tray from './Tray';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
@@ -61,10 +61,12 @@ export default class MainApp {
 
   private _attachBlockerEvents() {
     this.blocker.onOpen(() => {
+      shortcuts.start();
       this.window.webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
     });
 
     this.blocker.onClose(() => {
+      shortcuts.stop();
       this.window.webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.CLOSE);
     });
   }
@@ -91,6 +93,9 @@ function initializeApp() {
     app.dock.hide();
   }
 
-  setShortcuts();
-  setAutoLaunch();
+  app.on('browser-window-focus', shortcuts.start);
+  app.on('browser-window-blur', shortcuts.stop);
+  app.on('before-quit', setLoginSetting);
+
+  setLoginSetting();
 }

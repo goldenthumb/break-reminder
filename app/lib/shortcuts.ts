@@ -1,20 +1,18 @@
-import { app, globalShortcut } from 'electron';
+import { globalShortcut } from 'electron';
 
-export function setShortcuts() {
-  app.on('browser-window-focus', start);
-  app.on('browser-window-blur', stop);
-}
+const shortcuts = {
+  start() {
+    globalShortcut.unregisterAll();
 
-function start() {
-  globalShortcut.unregisterAll();
-
-  if (process.env.NODE_ENV !== 'development') {
-    globalShortcut.register('CommandOrControl+R', () => false);
-    globalShortcut.register('CommandOrControl+Shift+R', () => false);
-    globalShortcut.register('F5', () => false);
+    if (process.env.NODE_ENV !== 'development') {
+      globalShortcut.register('CommandOrControl+R', () => false);
+      globalShortcut.register('CommandOrControl+Shift+R', () => false);
+      globalShortcut.register('F5', () => false);
+    }
+  },
+  stop() {
+    globalShortcut.unregisterAll();
   }
-}
+};
 
-function stop() {
-  globalShortcut.unregisterAll();
-}
+export default shortcuts;
