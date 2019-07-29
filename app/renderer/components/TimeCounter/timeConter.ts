@@ -19,9 +19,7 @@ export function increase({ type, time }: TimeType) {
     return increaseHour(hour, minute);
   }
 
-  if (type === 'minute') {
-    return increaseMinute(hour, minute);
-  }
+  return increaseMinute(hour, minute);
 }
 
 export function decrease({ type, time }: TimeType) {
@@ -31,9 +29,7 @@ export function decrease({ type, time }: TimeType) {
     return decreaseHour(hour, minute);
   }
 
-  if (type === 'minute') {
-    return decreaseMinute(hour, minute);
-  }
+  return decreaseMinute(hour, minute);
 }
 
 function increaseHour(hour: number, minute: number) {

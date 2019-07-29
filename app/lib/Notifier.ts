@@ -27,7 +27,7 @@ export default class Notifier {
     this._options = {
       ...this._options,
       ...options
-    }
+    };
   }
 
   setActive(active: boolean) {

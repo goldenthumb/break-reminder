@@ -10,9 +10,10 @@ import useTimer from '../../hooks/useTimer';
 
 import Button from '../Button';
 import TimeCounter from '../TimeCounter';
+import { BLOCKER_STATUS } from '../../../main/Blocker';
 
 export default function TimeBoard() {
-  const { state, services: { blockerOpenScheduler } } = useContext(Context);
+  const { state, services: { notifier } } = useContext(Context);
   const { reminderInterval, isWorkingDuration } = state;
   const [isPlay, setPlayStatus] = useState(true);
   const { timeLeft, play, pause, reset } = useTimer({
@@ -27,6 +28,14 @@ export default function TimeBoard() {
   }, [isWorkingDuration, reminderInterval]);
 
   useEffect(() => {
+    if (timeLeft === MILLISECOND.MIN) {
+      notifier.run();
+    }
+
+    if (timeLeft === 0) {
+      ipcRenderer.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
+    }
+
     ipcRenderer.on(IPC_EVENT.ACTIVE_POWER, listener);
 
     return () => {
@@ -35,28 +44,14 @@ export default function TimeBoard() {
 
     function listener(active: boolean) {
       if (!isPlay) return;
-
-      if (active) {
-        blockerOpenScheduler.setDuration(timeLeft);
-        play();
-      } else {
-        blockerOpenScheduler.clearDuration();
-        pause();
-      }
+      active ? play() : pause();
     }
   }, [isPlay, timeLeft]);
 
   function togglePlay() {
     const nextPlay = !isPlay;
     setPlayStatus(nextPlay);
-
-    if (nextPlay) {
-      blockerOpenScheduler.setDuration(timeLeft);
-      play();
-    } else {
-      blockerOpenScheduler.clearDuration();
-      pause();
-    }
+    nextPlay ? play() : pause();
   }
 
   return <>
@@ -73,4 +68,4 @@ export default function TimeBoard() {
       />
     </div>
   </>;
-};
+}

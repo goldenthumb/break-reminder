@@ -3,15 +3,13 @@ import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/enums';
 import { BLOCKER_STATUS } from '../../main/Blocker';
 import { Preferences, Options } from '../../main/store';
-import BlockerOpenScheduler from '../../lib/BlockerOpenScheduler';
-import Duration from '../../lib/Duration';
 import Notifier from '../../lib/Notifier';
 
 interface AppContext {
   state: ContextState;
   actions: ContextActions;
   services: {
-    blockerOpenScheduler: BlockerOpenScheduler
+    notifier: Notifier
   };
 }
 
@@ -38,12 +36,10 @@ function Provider({ children }: ViewerProps) {
   const [breakDuration, setBreakDuration] = useState(preferences.breakDuration);
   const [options, setOptions] = useState(preferences.options);
   const [isWorkingDuration, setWorkingDuration] = useState(true);
-  const duration = useMemo(() => new Duration(), []);
   const notifier = useMemo(() => new Notifier('Preparing break ...', {
     body: 'Break will commence in 60 seconds.',
     silent: !preferences.options.sound
   }), []);
-  const blockerOpenScheduler = useMemo(() => new BlockerOpenScheduler(duration, notifier), []);
 
   useEffect(() => {
     ipcRenderer.on(IPC_EVENT.BLOCKER, listener);
@@ -80,7 +76,7 @@ function Provider({ children }: ViewerProps) {
       value={{
         state: { reminderInterval, breakDuration, options, isWorkingDuration },
         actions: { setReminderInterval, setBreakDuration, setOptions },
-        services: { blockerOpenScheduler }
+        services: { notifier }
       }}>
       {children}
     </ContextProvider>
