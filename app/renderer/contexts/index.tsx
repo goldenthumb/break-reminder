@@ -3,18 +3,20 @@ import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../lib/enums';
 import { BLOCKER_STATUS } from '../../main/Blocker';
 import { Preferences, Options } from '../../main/store';
+import Duration from '../../lib/Duration';
 import Notifier from '../../lib/Notifier';
+import BlockerOpenScheduler from '../../lib/BlockerOpenScheduler';
 
 interface AppContext {
   state: ContextState;
   actions: ContextActions;
   services: {
-    notifier: Notifier
+    blockerOpenScheduler: BlockerOpenScheduler
   };
 }
 
 interface ContextState extends Preferences {
-  isWorkingDuration: boolean;
+  isWorkingMode: boolean;
 }
 
 interface ContextActions {
@@ -35,11 +37,14 @@ function Provider({ children }: ViewerProps) {
   const [reminderInterval, setReminderInterval] = useState(preferences.reminderInterval);
   const [breakDuration, setBreakDuration] = useState(preferences.breakDuration);
   const [options, setOptions] = useState(preferences.options);
-  const [isWorkingDuration, setWorkingDuration] = useState(true);
+  const [isWorkingMode, setWorkingMode] = useState(true);
+  const duration = useMemo(() => new Duration(), []);
   const notifier = useMemo(() => new Notifier('Preparing break ...', {
     body: 'Break will commence in 60 seconds.',
     silent: !preferences.options.sound
   }), []);
+
+  const blockerOpenScheduler = useMemo(() => new BlockerOpenScheduler(duration, notifier), []);
 
   useEffect(() => {
     ipcRenderer.on(IPC_EVENT.BLOCKER, listener);
@@ -56,7 +61,7 @@ function Provider({ children }: ViewerProps) {
         setReminderInterval(reminderInterval);
       }
 
-      setWorkingDuration(isWorkingMode);
+      setWorkingMode(isWorkingMode);
     }
   }, []);
 
@@ -74,9 +79,9 @@ function Provider({ children }: ViewerProps) {
   return (
     <ContextProvider
       value={{
-        state: { reminderInterval, breakDuration, options, isWorkingDuration },
+        state: { reminderInterval, breakDuration, options, isWorkingMode },
         actions: { setReminderInterval, setBreakDuration, setOptions },
-        services: { notifier }
+        services: { blockerOpenScheduler }
       }}>
       {children}
     </ContextProvider>

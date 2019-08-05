@@ -1,8 +1,9 @@
 export enum IPC_EVENT {
   GET_PREFERENCES = 'get.preferences',
   SET_PREFERENCES = 'set.preferences',
-  GET_Alarm_INFO = 'get.alarm-metadata',
-  ACTIVE_POWER = 'active.power',
+  GET_ALARM_INFO = 'get.alarm-metadata',
+  POWER_ON = 'power.on',
+  POWER_OFF = 'power.off',
   BLOCKER = 'blocker',
   QUIT = 'quit',
 }

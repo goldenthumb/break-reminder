@@ -1,14 +1,15 @@
 import { app } from 'electron';
-import MainApp from './MainApp';
+import App from './App';
+import shortcuts from '../lib/shortcuts';
+import { setLoginSetting } from './autoLaunch';
 
-let mainApp: MainApp;
+if (app.dock) {
+  app.dock.hide();
+}
 
-app.once('ready', () => {
-  mainApp = new MainApp();
-});
+app.once('ready', () => new App());
+app.on('browser-window-focus', shortcuts.start);
+app.on('browser-window-blur', shortcuts.stop);
+app.on('before-quit', setLoginSetting);
 
-app.on('activate', (event, hasVisibleWindows) => {
-  if (!hasVisibleWindows) {
-    mainApp = new MainApp();
-  }
-});
+setLoginSetting();

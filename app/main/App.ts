@@ -3,14 +3,13 @@ import { app, ipcMain, BrowserWindow } from 'electron';
 import { parseFile } from 'music-metadata';
 import { IPC_EVENT } from '../lib/enums';
 import { store, Preferences } from './store';
-import { setLoginSetting } from './autoLaunch';
 import shortcuts from '../lib/shortcuts';
 
 import Tray from './Tray';
 import Blocker, { BLOCKER_STATUS } from './Blocker';
 import PowerMonitor from '../lib/PowerMonitor';
 
-export default class MainApp {
+export default class App {
   readonly tray: Tray;
   readonly window: Electron.BrowserWindow;
   readonly blocker = new Blocker();
@@ -24,13 +23,11 @@ export default class MainApp {
     this.tray = new Tray();
     this.tray.attachDisplayWindow(this.window);
 
-    this.powerMonitor.on(() => this.window.webContents.send(IPC_EVENT.ACTIVE_POWER, true));
-    this.powerMonitor.off(() => this.window.webContents.send(IPC_EVENT.ACTIVE_POWER, false));
+    this.powerMonitor.on(() => this.window.webContents.send(IPC_EVENT.POWER_ON));
+    this.powerMonitor.off(() => this.window.webContents.send(IPC_EVENT.POWER_OFF));
 
     this._attachIpcEvents();
     this._attachBlockerEvents();
-
-    initializeApp();
   }
 
   private _attachIpcEvents() {
@@ -49,7 +46,7 @@ export default class MainApp {
     );
 
     ipcMain.on(
-      IPC_EVENT.GET_Alarm_INFO,
+      IPC_EVENT.GET_ALARM_INFO,
       async (event: Electron.IpcMessageEvent) => {
         const { format } = await parseFile(resolve(__dirname, '../assets/audio/alarm.mp3'));
         event.returnValue = format;
@@ -75,7 +72,7 @@ export default class MainApp {
 function createWindow() {
   return new BrowserWindow({
     width: 300,
-    height: 500,
+    height: 480,
     acceptFirstMouse: true,
     show: false,
     movable: false,
@@ -86,16 +83,4 @@ function createWindow() {
       autoplayPolicy: 'no-user-gesture-required'
     }
   });
-}
-
-function initializeApp() {
-  if (app.dock) {
-    app.dock.hide();
-  }
-
-  app.on('browser-window-focus', shortcuts.start);
-  app.on('browser-window-blur', shortcuts.stop);
-  app.on('before-quit', setLoginSetting);
-
-  setLoginSetting();
 }

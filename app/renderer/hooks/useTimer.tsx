@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-enum STATUS { PLAY, PAUSE }
-
 export interface UseTimerProps {
   time: number;
   interval: number;
@@ -9,27 +7,30 @@ export interface UseTimerProps {
 }
 
 export default function useTimer({ time, interval, autoPlay = true }: UseTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(time);
-  const [status, setStatus] = useState(autoPlay ? STATUS.PLAY : STATUS.PAUSE);
-  const percent = Math.round((time - timeLeft) / time * 100);
+  const [leftTime, setLeftTime] = useState(time);
+  const [isPlay, setPlay] = useState(autoPlay);
+  const percent = Math.round((time - leftTime) / time * 100);
 
   useEffect(() => {
-    if (status !== STATUS.PLAY) return;
+    if (!isPlay) return;
 
-    const timeLeftTimer = setTimeout(() => {
-      const nextTimeLeft = timeLeft - interval;
+    isPlay ? console.log('timer play', leftTime) : console.log('timer resume', leftTime);
 
-      if (nextTimeLeft >= 0) {
-        setTimeLeft(nextTimeLeft);
+    const timer = setTimeout(() => {
+      const nextLeftTime = leftTime - interval;
+
+      if (nextLeftTime >= 0) {
+        setLeftTime(nextLeftTime);
       }
     }, interval);
 
-    return () => clearTimeout(timeLeftTimer);
-  }, [status, timeLeft]);
+    return () => clearTimeout(timer);
+  }, [isPlay, leftTime]);
 
-  const play = () => setStatus(STATUS.PLAY);
-  const pause = () => setStatus(STATUS.PAUSE);
-  const reset = (updateTime = time) => setTimeLeft(updateTime);
+  const play = () => setPlay(true);
+  const pause = () => setPlay(false);
+  const reset = (updateTime = time) => setLeftTime(updateTime);
+  const toggle = (bool?: boolean) => setPlay(bool ? bool : !isPlay);
 
-  return { timeLeft, percent, play, pause, reset };
+  return { isPlay, leftTime, percent, play, pause, reset, toggle };
 }

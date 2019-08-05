@@ -5,7 +5,7 @@ import { IPC_EVENT } from '../../../lib/enums';
 export default function Audio() {
   const audio = useRef<HTMLAudioElement>(null);
   const { breakDuration } = useMemo(() => ipcRenderer.sendSync(IPC_EVENT.GET_PREFERENCES), []);
-  const { duration } = useMemo(() => ipcRenderer.sendSync(IPC_EVENT.GET_Alarm_INFO), []);
+  const { duration } = useMemo(() => ipcRenderer.sendSync(IPC_EVENT.GET_ALARM_INFO), []);
   const audioDelay = breakDuration - (duration.toFixed(3) * 1000);
 
   useEffect(() => {

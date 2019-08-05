@@ -4,13 +4,13 @@ import { Context } from '../../contexts';
 import TimePicker from '../TimePicker';
 
 export default function WorkTimePicker() {
-  const { state: { breakDuration }, actions } = useContext(Context);
+  const { state: { reminderInterval }, actions } = useContext(Context);
 
   return (
     <TimePicker
-      label='Break Time'
-      time={breakDuration}
-      action={actions.setBreakDuration}
+      label='Work Time'
+      time={reminderInterval}
+      action={actions.setReminderInterval}
     />
   );
 }

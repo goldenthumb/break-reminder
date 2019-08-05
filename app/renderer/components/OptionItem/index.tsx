@@ -33,8 +33,8 @@ export default function OptionItem({ name, isChecked, action }: OptionItemProps)
           checkedIcon={false}
           boxShadow='0 1px 5px rgba(0, 0, 0, 0.6)'
           activeBoxShadow='0 0 1px 10px rgba(0, 0, 0, 0.2)'
-          height={10}
-          width={30}
+          height={6}
+          width={26}
         />
       </div>
     </div>
