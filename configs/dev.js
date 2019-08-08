@@ -42,16 +42,16 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
-              localIdentName: '[local]_[hash:base64:4]'
+              localsConvention: 'camelCase',
+              modules: {
+                mode: 'local',
+                localIdentName: '[local]_[hash:base64:8]',
+                context: resolve(__dirname, 'src'),
+              },
             }
           },
           'sass-loader'
         ]
-      },
-      {
-        test: /\.(css)$/,
-        use: ['style-loader', 'css-loader']
       }
     ]
   }
