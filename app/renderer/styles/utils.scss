@@ -1,0 +1,7 @@
+@function rem($size, $base: 16px) {
+    @return ($size / $base) * 1rem;
+}
+
+@function em($size, $base: 16px) {
+    @return ($size / $base) * 1em;
+}

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Provider } from '../contexts';
+
 import Header from '../components/Header';
 import Body from '../components/Body';
 import Timer from '../components/Timer';
@@ -8,13 +10,15 @@ import BreakTimePicker from '../components/BreakTimePicker';
 import OptionList from '../components/OptionList';
 
 export default function Main() {
-  return <>
-    <Header />
-    <Body>
-      <Timer />
-      <WorkTimePicker />
-      <BreakTimePicker />
-      <OptionList />
-    </Body>
-  </>;
+    return (
+        <Provider>
+            <Header />
+            <Body>
+                <Timer />
+                <WorkTimePicker />
+                <BreakTimePicker />
+                <OptionList />
+            </Body>
+        </Provider>
+    );
 }

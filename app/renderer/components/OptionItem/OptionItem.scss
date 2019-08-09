@@ -1,21 +1,11 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
 
 .option-item {
-  display: flex;
-  align-items: center;
-  color: #94969e;
-  padding: 10px 16px;
-  border-bottom: 1px solid #ebecec;
-}
-
-.option-name {
-  display: inline-block;
-  line-height: 22px;
-}
-
-.switch-wrap {
-  display: inline-block;
-  position: absolute;
-  right: 30px;
-  line-height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #94969e;
+    padding: #{em(10px)} #{em(16px)};
+    border-bottom: 1px solid #ebecec;
 }

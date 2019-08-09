@@ -1,11 +1,10 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
 
 .time-board {
-  position: relative;
-  text-align: center;
-  padding-top: 16px;
-  height: 100px;
-  letter-spacing: 0.08em;
-  background: #f9f9f9;
-  color: $defaultColor;
+    position: relative;
+    text-align: center;
+    padding-top: #{em(16px)};
+    background: $body-color;
+    color: $default-color;
 }

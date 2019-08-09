@@ -1,19 +1,19 @@
 @import '../../styles/variable';
 
 .message-wrap {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .content {
-  width: 60%;
-  height: 40%;
-  text-align: center;
-  position: relative;
+    width: 60%;
+    height: 40%;
+    text-align: center;
+    position: relative;
 }

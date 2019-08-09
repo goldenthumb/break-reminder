@@ -1,40 +1,41 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
 
 .wrap {
-  display: inline-block;
-  position: relative;
-  margin-right: 20px;
-  font-size: 80px;
-  font-weight: 100;
+    display: inline-block;
+    position: relative;
+    margin-right: #{em(4px)};
+    font-size: #{rem(80px)};
+    font-weight: 100;
 
-  &:last-child {
-    margin: 0;
-  }
+    &:last-child {
+        margin: 0;
+    }
 }
 
 .hour {
-  font-weight: 300;
-  letter-spacing: -0.04em;
-  margin-left: -3px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    margin-left: -3px;
 }
 
 .label {
-  font-size: 10px;
-  font-weight: 600;
-  position: absolute;
-  top: 20px;
-  margin-left: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    position: absolute;
+    top: 20px;
+    margin-left: 4px;
 }
 
 .minute {
-  font-weight: 200;
-  letter-spacing: -0.04em;
-  margin-left: -3px;
+    font-weight: 200;
+    letter-spacing: -0.04em;
+    margin-left: -3px;
 }
 
 .second {
-  font-size: 18px;
-  font-weight: normal;
-  letter-spacing: -0.04em;
-  margin-left: -16px
+    font-size: 18px;
+    font-weight: normal;
+    letter-spacing: -0.04em;
+    margin-left: -16px
 }

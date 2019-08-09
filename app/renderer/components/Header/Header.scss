@@ -1,23 +1,24 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
 
 .header {
-  display: flex;
-  background: $lightBlue;
-  height: 40px;
-  justify-content: center;
-  align-items: center;
-  color: $defaultColor;
-  border-bottom: 1px solid rgba(50, 50, 50, 0.1);
+    display: flex;
+    background: $light-blue;
+    height: #{rem(40px)};
+    justify-content: center;
+    align-items: center;
+    color: $default-color;
+    border-bottom: 1px solid rgba(50, 50, 50, 0.1);
 }
 
 .title {
-  width: calc(100% - 80px);
-  text-align: center;
-  vertical-align: middle;
-  color: $defaultColor;
+    width: calc(100% - 80px);
+    text-align: center;
+    vertical-align: middle;
+    color: $default-color;
 }
 
 .button-wrap {
-  position: absolute;
-  right: 4px;
+    position: absolute;
+    right: #{em(6px)};
 }

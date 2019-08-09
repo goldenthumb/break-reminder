@@ -1,5 +1,9 @@
+html, body {
+    font-size: 16px;
+}
+
 body, input, button, a {
-  font-family: 'Noto Sans KR', meiryo, sans-serif;
-  overflow: hidden;
-  user-select: none;
+    font-family: 'Noto Sans KR', meiryo, sans-serif;
+    overflow: hidden;
+    user-select: none;
 }

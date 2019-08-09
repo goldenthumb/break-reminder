@@ -1,18 +1,19 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
 
 .title {
-  color: white;
-  text-align: center;
-  font-size: 60px;
-  font-weight: 200;
-  margin-bottom: 4%;
+    color: white;
+    text-align: center;
+    font-size: #{rem(60px)};
+    font-weight: 200;
+    margin-bottom: 4%;
 }
 
 .sub-title {
-  color: white;
-  text-align: center;
-  font-size: 20px;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 400;
-  margin-bottom: 10%;
+    color: white;
+    text-align: center;
+    font-size: #{rem(20px)};
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 400;
+    margin-bottom: 10%;
 }

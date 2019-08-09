@@ -6,14 +6,14 @@ import './index.scss';
 import Routes from './Routes';
 
 function App() {
-  return (
-    <Router>
-      <Route
-        path="/"
-        component={Routes}
-      />
-    </Router>
-  );
+    return (
+        <Router>
+            <Route
+                path="/"
+                component={Routes}
+            />
+        </Router>
+    );
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));

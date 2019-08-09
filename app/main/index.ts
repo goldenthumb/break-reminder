@@ -1,15 +1,25 @@
 import { app } from 'electron';
-import App from './App';
+import { __MACOS__ } from '../lib/platfrom';
+import initializeApp from './initializeApp';
+import registerAutoLaunch from './registerAutoLaunch';
 import shortcuts from '../lib/shortcuts';
-import { setLoginSetting } from './autoLaunch';
 
 if (app.dock) {
-  app.dock.hide();
+    app.dock.hide();
 }
 
-app.once('ready', () => new App());
-app.on('browser-window-focus', shortcuts.start);
-app.on('browser-window-blur', shortcuts.stop);
-app.on('before-quit', setLoginSetting);
+app.once('ready', initializeApp);
 
-setLoginSetting();
+app.on('browser-window-focus', shortcuts.start);
+
+app.on('browser-window-blur', shortcuts.stop);
+
+app.on('activate', (event, hasVisibleWindows) => {
+    if (!hasVisibleWindows) initializeApp();
+});
+
+app.on('window-all-closed', () => {
+    if (!__MACOS__) app.quit();
+});
+
+app.on('before-quit', registerAutoLaunch);

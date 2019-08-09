@@ -1,6 +1,7 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
 
 .progress {
-  width: 200px;
-  margin: 40px auto;
+    width: #{rem(200px)};
+    margin: #{em(100px)} auto;
 }

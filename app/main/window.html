@@ -1,73 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <style>
-    @font-face {
-      font-family: 'Noto Sans KR';
-      font-style: normal;
-      font-weight: 100;
-      src: url(../assets/fonts/NotoSans/NotoSansKR-Thin.woff2) format('woff2'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Thin.woff) format('woff'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Thin.otf) format('opentype');
-    }
+    <meta charset="utf-8">
+    <title>Reminder App</title>
+    <link rel="stylesheet" type="text/css" href="../../node_modules/normalize.css/normalize.css">
+    <style>
+        @font-face {
+            font-family: 'Noto Sans KR';
+            font-style: normal;
+            font-weight: 100;
+            src: url(../assets/fonts/NotoSans/NotoSansKR-Thin.woff2) format('woff2'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Thin.woff) format('woff'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Thin.otf) format('opentype');
+        }
 
-    @font-face {
-      font-family: 'Noto Sans KR';
-      font-style: normal;
-      font-weight: 300;
-      src: url(../assets/fonts/NotoSans/NotoSansKR-Light.woff2) format('woff2'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Light.woff) format('woff'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Light.otf) format('opentype');
-    }
+        @font-face {
+            font-family: 'Noto Sans KR';
+            font-style: normal;
+            font-weight: 300;
+            src: url(../assets/fonts/NotoSans/NotoSansKR-Light.woff2) format('woff2'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Light.woff) format('woff'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Light.otf) format('opentype');
+        }
 
-    @font-face {
-      font-family: 'Noto Sans KR';
-      font-style: normal;
-      font-weight: 400;
-      src: url(../assets/fonts/NotoSans/NotoSansKR-Regular.woff2) format('woff2'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Regular.woff) format('woff'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Regular.otf) format('opentype');
-    }
+        @font-face {
+            font-family: 'Noto Sans KR';
+            font-style: normal;
+            font-weight: 400;
+            src: url(../assets/fonts/NotoSans/NotoSansKR-Regular.woff2) format('woff2'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Regular.woff) format('woff'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Regular.otf) format('opentype');
+        }
 
-    @font-face {
-      font-family: 'Noto Sans KR';
-      font-style: normal;
-      font-weight: 500;
-      src: url(../assets/fonts/NotoSans/NotoSansKR-Medium.woff2) format('woff2'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Medium.woff) format('woff'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Medium.otf) format('opentype');
-    }
+        @font-face {
+            font-family: 'Noto Sans KR';
+            font-style: normal;
+            font-weight: 500;
+            src: url(../assets/fonts/NotoSans/NotoSansKR-Medium.woff2) format('woff2'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Medium.woff) format('woff'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Medium.otf) format('opentype');
+        }
 
-    @font-face {
-      font-family: 'Noto Sans KR';
-      font-style: normal;
-      font-weight: 700;
-      src: url(../assets/fonts/NotoSans/NotoSansKR-Bold.woff2) format('woff2'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Bold.woff) format('woff'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Bold.otf) format('opentype');
-    }
+        @font-face {
+            font-family: 'Noto Sans KR';
+            font-style: normal;
+            font-weight: 700;
+            src: url(../assets/fonts/NotoSans/NotoSansKR-Bold.woff2) format('woff2'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Bold.woff) format('woff'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Bold.otf) format('opentype');
+        }
 
-    @font-face {
-      font-family: 'Noto Sans KR';
-      font-style: normal;
-      font-weight: 900;
-      src: url(../assets/fonts/NotoSans/NotoSansKR-Black.woff2) format('woff2'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Black.woff) format('woff'),
-      url(../assets/fonts/NotoSans/NotoSansKR-Black.otf) format('opentype');
-    }
-  </style>
+        @font-face {
+            font-family: 'Noto Sans KR';
+            font-style: normal;
+            font-weight: 900;
+            src: url(../assets/fonts/NotoSans/NotoSansKR-Black.woff2) format('woff2'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Black.woff) format('woff'),
+            url(../assets/fonts/NotoSans/NotoSansKR-Black.otf) format('opentype');
+        }
+    </style>
 </head>
 <body>
 <div id="root"></div>
 <script>
-  const port = process.env.PORT || 3000;
+    const port = process.env.PORT || 3000;
 
-  const script = process.env.NODE_ENV === 'development'
-    ? `http://localhost:${port}/app/renderer/dist/app.min.js`
-    : '../renderer/dist/app.min.js';
+    const script = process.env.NODE_ENV === 'development'
+        ? `http://localhost:${port}/app/renderer/dist/app.min.js`
+        : '../renderer/dist/app.min.js';
 
-  document.write(`<script defer src="${script}"><\/script>`);
+    document.write(`<script defer src="${script}"><\/script>`);
 </script>
 </body>
 </html>

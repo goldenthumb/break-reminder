@@ -1,17 +1,14 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
+
+$horizon-padding: 30px;
 
 .option-list {
-  font-size: 14px;
-  width: calc(100% - 30px);
-  margin: 40px 15px 0;
-  border-radius: 8px 8px 0 0;
-  background: white;
-  overflow: hidden;
-  box-shadow: 0px -1px 20px 0px rgba(220, 220, 220, 0.75);
-}
-
-.option-item {
-  color: #94969e;
-  padding: 10px 16px;
-  border-bottom: 1px solid #ebecec;
+    font-size: #{rem(14px)};
+    width: calc(100% - #{$horizon-padding * 2});
+    margin: #{em(40px)} $horizon-padding 0;
+    border-radius: #{em(8px)} #{em(8px)} 0 0;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0px -1px 20px 0px rgba(220, 220, 220, 0.75);
 }

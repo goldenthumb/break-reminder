@@ -1,6 +1,7 @@
 @import '../../styles/variable';
+@import '../../styles/utils';
 
 .pause-btn-wrap {
-  text-align: center;
-  padding: 30px 0 38px;
+    text-align: center;
+    padding: #{em(30px)} #{em(36px)};
 }
