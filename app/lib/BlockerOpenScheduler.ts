@@ -7,7 +7,7 @@ import Notifier from './Notifier';
 class BlockerOpenScheduler {
     private _duration: Duration;
     private _notifier: Notifier;
-    private _leftTime: Number = 0;
+    private _startTime: Number = 0;
     private _isPause: boolean = true;
     private _notifierTimer: NodeJS.Timer | null = null;
 
@@ -16,20 +16,26 @@ class BlockerOpenScheduler {
         this._notifier = notifier;
     }
 
+    getLeftDuration() {
+        return Number(this._startTime) - Date.now();
+    }
+
     setDuration(delay: number) {
-        this._isPause = false;
         this.clearDuration();
+
+        this._isPause = false;
+        this._startTime = Date.now() + delay;
 
         this._duration.time(delay).callback(() => {
             ipcRenderer.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
         });
 
-        if (delay - MILLISECOND.MIN < 0) return;
-
-        this._notifierTimer = setTimeout(
-            () => this._notifier.run(),
-            delay - MILLISECOND.MIN
-        );
+        if (delay - MILLISECOND.MIN > 0)  {
+            this._notifierTimer = setTimeout(
+                () => this._notifier.run(),
+                delay - MILLISECOND.MIN
+            );
+        }
     }
 
     clearDuration() {
@@ -40,16 +46,15 @@ class BlockerOpenScheduler {
         this._duration.clear();
     }
 
-    pause(leftTime: number) {
+    pause() {
         if (this._isPause) return;
         this._isPause = true;
-        this._leftTime = leftTime;
         this.clearDuration();
     }
 
-    resume() {
+    resume(leftTime: number) {
         if (!this._isPause) return;
-        this.setDuration(Number(this._leftTime));
+        this.setDuration(leftTime);
     }
 }
 
