@@ -21,19 +21,11 @@ export default function Timer() {
     useEffect(() => {
         ipcRenderer.on(IPC_EVENT.POWER_ON, play);
         ipcRenderer.on(IPC_EVENT.POWER_OFF, pause);
-        document.addEventListener('visibilitychange', visibilityListener);
 
         return () => {
             ipcRenderer.removeListener(IPC_EVENT.POWER_ON, play);
             ipcRenderer.removeListener(IPC_EVENT.POWER_OFF, pause);
-            document.removeEventListener('visibilitychange', visibilityListener);
         };
-
-        function visibilityListener() {
-            if (document.visibilityState === 'visible') {
-                reset(blockerOpenScheduler.getLeftDuration());
-            }
-        }
     }, []);
 
     useEffect(() => {
@@ -42,7 +34,22 @@ export default function Timer() {
             reset(reminderInterval);
         }
 
-        return () => blockerOpenScheduler.clearDuration();
+        document.addEventListener('visibilitychange', visibilityListener);
+
+        return () => {
+            blockerOpenScheduler.clearDuration();
+            document.removeEventListener('visibilitychange', visibilityListener);
+        };
+
+        function visibilityListener() {
+            if (
+                isWorkingMode &&
+                blockerOpenScheduler.isRunning() &&
+                document.visibilityState === 'visible'
+            ) {
+                reset(blockerOpenScheduler.getLeftDuration());
+            }
+        }
     }, [isWorkingMode, reminderInterval]);
 
     useEffect(() => {

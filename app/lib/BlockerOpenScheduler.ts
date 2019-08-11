@@ -8,7 +8,7 @@ class BlockerOpenScheduler {
     private _duration: Duration;
     private _notifier: Notifier;
     private _startTime: Number = 0;
-    private _isPause: boolean = true;
+    private _isRunning: boolean = false;
     private _notifierTimer: NodeJS.Timer | null = null;
 
     constructor(duration: Duration, notifier: Notifier) {
@@ -16,14 +16,18 @@ class BlockerOpenScheduler {
         this._notifier = notifier;
     }
 
+    isRunning() {
+        return this._isRunning;
+    }
+
     getLeftDuration() {
-        return Number(this._startTime) - Date.now();
+        return Math.max(Number(this._startTime) - Date.now(), 0);
     }
 
     setDuration(delay: number) {
         this.clearDuration();
 
-        this._isPause = false;
+        this._isRunning = true;
         this._startTime = Date.now() + delay;
 
         this._duration.time(delay).callback(() => {
@@ -47,13 +51,13 @@ class BlockerOpenScheduler {
     }
 
     pause() {
-        if (this._isPause) return;
-        this._isPause = true;
+        if (!this._isRunning) return;
+        this._isRunning = false;
         this.clearDuration();
     }
 
     resume(leftTime: number) {
-        if (!this._isPause) return;
+        if (this._isRunning) return;
         this.setDuration(leftTime);
     }
 }
