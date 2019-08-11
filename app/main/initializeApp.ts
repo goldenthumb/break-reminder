@@ -30,8 +30,8 @@ export default function initializeApp() {
     tray.attachDisplayWindow(main);
 
     attachIpcEvents();
-    attachBlockerEvents(main.webContents);
-    attachIpcPowerEvents(main.webContents);
+    attachBlockerEvents(main);
+    attachIpcPowerEvents(main);
 }
 
 function attachIpcEvents() {
@@ -60,23 +60,25 @@ function attachIpcEvents() {
     ipcMain.on(IPC_EVENT.QUIT, app.quit);
 }
 
-function attachBlockerEvents(webContents: Electron.webContents) {
+function attachBlockerEvents(main: Electron.BrowserWindow) {
     const blocker = new Blocker();
 
     blocker.onOpen(() => {
         shortcuts.start();
-        webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
+        main.webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
+        main.hide();
     });
 
     blocker.onClose(() => {
         shortcuts.stop();
-        webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.CLOSE);
+        main.webContents.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.CLOSE);
+        main.hide();
     });
 }
 
-function attachIpcPowerEvents(webContents: Electron.webContents) {
+function attachIpcPowerEvents(main: Electron.BrowserWindow) {
     const power = new PowerMonitor();
 
-    power.on(() => webContents.send(IPC_EVENT.POWER_ON));
-    power.off(() => webContents.send(IPC_EVENT.POWER_OFF));
+    power.on(() => main.webContents.send(IPC_EVENT.POWER_ON));
+    power.off(() => main.webContents.send(IPC_EVENT.POWER_OFF));
 }
