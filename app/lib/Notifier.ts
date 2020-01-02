@@ -9,7 +9,7 @@ export interface NotificationOptions {
 }
 
 export default class Notifier {
-    private _isActive: boolean = true;
+    private _isActive = true;
     private _title: string;
     private _options: NotificationOptions;
 
@@ -20,13 +20,14 @@ export default class Notifier {
 
     run() {
         if (!this._isActive) return;
+        // eslint-disable-next-line no-new
         new Notification(this._title, this._options);
     }
 
     setOption(options: NotificationOptions) {
         this._options = {
             ...this._options,
-            ...options
+            ...options,
         };
     }
 

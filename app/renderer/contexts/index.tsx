@@ -11,7 +11,7 @@ interface AppContext {
     state: ContextState;
     actions: ContextActions;
     services: {
-        blockerOpenScheduler: BlockerOpenScheduler
+        blockerOpenScheduler: BlockerOpenScheduler;
     };
 }
 
@@ -29,6 +29,7 @@ interface ViewerProps {
     children: React.ReactNode;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const Context = createContext<AppContext>(null!);
 const { Provider: ContextProvider } = Context;
 
@@ -41,7 +42,7 @@ function Provider({ children }: ViewerProps) {
     const duration = useMemo(() => new Duration(), []);
     const notifier = useMemo(() => new Notifier('Preparing break ...', {
         body: 'Break will commence in 60 seconds.',
-        silent: !preferences.options.sound
+        silent: !preferences.options.sound,
     }), []);
 
     const blockerOpenScheduler = useMemo(() => new BlockerOpenScheduler(duration, notifier), []);
@@ -72,7 +73,7 @@ function Provider({ children }: ViewerProps) {
 
     useEffect(() => {
         ipcRenderer.send(IPC_EVENT.SET_PREFERENCES, {
-            reminderInterval, breakDuration, options
+            reminderInterval, breakDuration, options,
         });
     }, [reminderInterval, breakDuration, options]);
 
@@ -81,8 +82,9 @@ function Provider({ children }: ViewerProps) {
             value={{
                 state: { reminderInterval, breakDuration, options, isWorkingMode },
                 actions: { setReminderInterval, setBreakDuration, setOptions },
-                services: { blockerOpenScheduler }
-            }}>
+                services: { blockerOpenScheduler },
+            }}
+        >
             {children}
         </ContextProvider>
     );

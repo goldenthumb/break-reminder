@@ -11,9 +11,9 @@ export default function Routes({ location: { search } }: RouteComponentProps) {
     const { window } = parse(search);
 
     switch (window) {
-        case 'main': return <Main />;
-        case 'block': return <Block />;
-        case 'overlay': return <Overlay />;
-        default: return null;
+    case 'main': return <Main />;
+    case 'block': return <Block />;
+    case 'overlay': return <Overlay />;
+    default: return null;
     }
 }

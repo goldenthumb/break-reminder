@@ -18,11 +18,11 @@ const defaultPreferences: Preferences = {
     options: {
         startAtLogin: false,
         notification: true,
-        sound: true
-    }
+        sound: true,
+    },
 };
 
 export const store = new Store<Preferences>({
     configName: 'preferences',
-    defaults: defaultPreferences
+    defaults: defaultPreferences,
 });

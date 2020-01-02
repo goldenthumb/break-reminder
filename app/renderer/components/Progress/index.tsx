@@ -1,7 +1,8 @@
 import React from 'react';
-const css = require('./Progress.scss');
 
 import { Line } from 'rc-progress';
+
+const css = require('./Progress.scss');
 
 interface ProgressProps {
     percent: number;

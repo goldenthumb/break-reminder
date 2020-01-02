@@ -7,8 +7,8 @@ import Notifier from './Notifier';
 class BlockerOpenScheduler {
     private _duration: Duration;
     private _notifier: Notifier;
-    private _startTime: Number = 0;
-    private _isRunning: boolean = false;
+    private _startTime = 0;
+    private _isRunning = false;
     private _notifierTimer: NodeJS.Timer | null = null;
 
     constructor(duration: Duration, notifier: Notifier) {
@@ -34,10 +34,10 @@ class BlockerOpenScheduler {
             ipcRenderer.send(IPC_EVENT.BLOCKER, BLOCKER_STATUS.OPEN);
         });
 
-        if (delay - MILLISECOND.MIN > 0)  {
+        if (delay - MILLISECOND.MIN > 0) {
             this._notifierTimer = setTimeout(
                 () => this._notifier.run(),
-                delay - MILLISECOND.MIN
+                delay - MILLISECOND.MIN,
             );
         }
     }

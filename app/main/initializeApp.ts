@@ -21,8 +21,8 @@ export default function initializeApp() {
         webPreferences: {
             devTools: process.env.NODE_ENV === 'development',
             nodeIntegration: true,
-            autoplayPolicy: 'no-user-gesture-required'
-        }
+            autoplayPolicy: 'no-user-gesture-required',
+        },
     });
 
     main.loadURL(`file://${__dirname}/window.html?window=main`);
@@ -39,14 +39,14 @@ function attachIpcEvents() {
         IPC_EVENT.GET_PREFERENCES,
         (event: Electron.IpcMessageEvent) => {
             event.returnValue = store.load();
-        }
+        },
     );
 
     ipcMain.on(
         IPC_EVENT.SET_PREFERENCES,
         (event: Electron.IpcMessageEvent, preferences: Preferences) => {
             store.save(preferences);
-        }
+        },
     );
 
     ipcMain.on(
@@ -54,7 +54,7 @@ function attachIpcEvents() {
         async (event: Electron.IpcMessageEvent) => {
             const { format } = await parseFile(resolve(__dirname, '../assets/audio/alarm.mp3'));
             event.returnValue = format;
-        }
+        },
     );
 
     ipcMain.on(IPC_EVENT.QUIT, app.quit);

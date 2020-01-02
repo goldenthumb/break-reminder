@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-const css = require('./OptionList.scss');
 
 import { Context } from '../../contexts';
 import OptionItem from '../OptionItem';
+
+const css = require('./OptionList.scss');
 
 export default function OptionList() {
     const { state: { options }, actions } = useContext(Context);
@@ -15,9 +16,9 @@ export default function OptionList() {
             action: (checked: boolean) => {
                 actions.setOptions({
                     ...options,
-                    startAtLogin: checked
+                    startAtLogin: checked,
                 });
-            }
+            },
         },
         {
             id: 'option-02',
@@ -26,9 +27,9 @@ export default function OptionList() {
             action: (checked: boolean) => {
                 actions.setOptions({
                     ...options,
-                    notification: checked
+                    notification: checked,
                 });
-            }
+            },
         },
         {
             id: 'option-03',
@@ -37,10 +38,10 @@ export default function OptionList() {
             action: (checked: boolean) => {
                 actions.setOptions({
                     ...options,
-                    sound: checked
+                    sound: checked,
                 });
-            }
-        }
+            },
+        },
     ];
 
     return (

@@ -12,7 +12,7 @@ class Store<T extends object> {
     private _data: T;
 
     constructor(opts: StoreOptions<T>) {
-        this._path = join(app.getPath('userData'), opts.configName + '.json');
+        this._path = join(app.getPath('userData'), `${opts.configName}.json`);
         this._data = this._loadFile(this._path, opts.defaults);
     }
 

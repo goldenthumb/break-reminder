@@ -12,7 +12,7 @@ interface ButtonProps {
 export default function Button({ theme, action, children, disabled }: ButtonProps) {
     return (
         <button
-            type='button'
+            type="button"
             className={css[theme]}
             disabled={disabled}
             onClick={action}

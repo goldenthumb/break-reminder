@@ -12,7 +12,7 @@ const shortcuts = {
     },
     stop() {
         globalShortcut.unregisterAll();
-    }
+    },
 };
 
 export default shortcuts;

@@ -1,9 +1,9 @@
 import React from 'react';
 
-const css = require('./BlockTitle.scss');
-
 import { ipcRenderer } from 'electron';
 import { IPC_EVENT } from '../../../lib/enums';
+
+const css = require('./BlockTitle.scss');
 
 export default function BreakTitle() {
     const { options } = ipcRenderer.sendSync(IPC_EVENT.GET_PREFERENCES);
@@ -14,7 +14,7 @@ export default function BreakTitle() {
         </div>
         {options.sound && (
             <div className={css.subTitle}>
-                {`You'll hear a sound when done`}
+                You'll hear a sound when done
             </div>
         )}
     </>;

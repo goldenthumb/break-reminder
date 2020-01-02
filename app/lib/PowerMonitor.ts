@@ -28,7 +28,7 @@ export default class PowerMonitor {
         });
 
         powerMonitor.on('resume', () => {
-            this._events = this._events.filter(status => status !== 'suspend');
+            this._events = this._events.filter((status) => status !== 'suspend');
             if (!this._events.length) this._emitter.emit('on');
         });
 
@@ -38,7 +38,7 @@ export default class PowerMonitor {
         });
 
         powerMonitor.on('unlock-screen', () => {
-            this._events = this._events.filter(status => status !== 'lock');
+            this._events = this._events.filter((status) => status !== 'lock');
             if (!this._events.length) this._emitter.emit('on');
         });
     }

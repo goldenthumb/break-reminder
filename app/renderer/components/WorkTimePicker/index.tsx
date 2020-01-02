@@ -8,7 +8,7 @@ export default function WorkTimePicker() {
 
     return (
         <TimePicker
-            label='Work Time'
+            label="Work Time"
             time={reminderInterval}
             action={actions.setReminderInterval}
         />

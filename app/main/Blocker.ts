@@ -31,14 +31,16 @@ export default class Blocker {
             IPC_EVENT.BLOCKER,
             (event: Electron.IpcMessageEvent, status: BLOCKER_STATUS) => {
                 switch (status) {
-                    case BLOCKER_STATUS.OPEN:
-                        this._open();
-                        break;
-                    case BLOCKER_STATUS.CLOSE:
-                        this._close();
-                        break;
+                case BLOCKER_STATUS.OPEN:
+                    this._open();
+                    break;
+                case BLOCKER_STATUS.CLOSE:
+                    this._close();
+                    break;
+                default:
+                    break;
                 }
-            }
+            },
         );
     }
 
@@ -55,7 +57,7 @@ export default class Blocker {
         if (this._status === BLOCKER_STATUS.CLOSE) return;
 
         for (const window of this._windows) {
-            window && window.close();
+            if (window) window.close();
         }
 
         this._windows = [];
@@ -76,8 +78,8 @@ function createBlockWindow(windowName: string, display: Electron.Display) {
         webPreferences: {
             devTools: process.env.NODE_ENV === 'development',
             nodeIntegration: true,
-            autoplayPolicy: 'no-user-gesture-required'
-        }
+            autoplayPolicy: 'no-user-gesture-required',
+        },
     });
 
     window.loadURL(`file://${__dirname}/window.html?window=${windowName}`);

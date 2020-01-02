@@ -8,7 +8,7 @@ export default function WorkTimePicker() {
 
     return (
         <TimePicker
-            label='Break Time'
+            label="Break Time"
             time={breakDuration}
             action={actions.setBreakDuration}
         />

@@ -1,5 +1,5 @@
 export default class Duration {
-    public _duration: number = 0;
+    public _duration = 0;
     private _timer: NodeJS.Timer | null = null;
     private _callback: (() => void) | null = null;
 

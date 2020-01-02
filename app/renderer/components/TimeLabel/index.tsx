@@ -1,4 +1,5 @@
 import React from 'react';
+
 const css = require('./TimeLabel.scss');
 
 enum timeKeyword {

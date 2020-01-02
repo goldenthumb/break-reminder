@@ -1,4 +1,5 @@
 import React from 'react';
+
 const css = require('./Body.scss');
 
 interface BodyProps {
@@ -12,4 +13,3 @@ export default function Body({ children }: BodyProps) {
         </div>
     );
 }
-

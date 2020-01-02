@@ -1,6 +1,6 @@
 import { app } from 'electron';
-import { store } from './store';
 import { basename } from 'path';
+import { store } from './store';
 
 export default function registerAutoLaunch() {
     app.setLoginItemSettings({
@@ -9,8 +9,8 @@ export default function registerAutoLaunch() {
         path: app.getPath('exe'),
         args: [
             '--processStart', `"${basename(process.execPath)}"`,
-            '--process-start-args', `"--hidden"`
-        ]
+            '--process-start-args', '"--hidden"',
+        ],
     });
 }
 

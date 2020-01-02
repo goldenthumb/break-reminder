@@ -1,10 +1,11 @@
 import React from 'react';
-const css = require('./TimePicker.scss');
 
 import ReactTimePicker from 'rc-time-picker';
 import moment, { Moment } from 'moment';
 import { MILLISECOND } from '../../../lib/enums';
 import { msToTime } from '../../../lib/utils';
+
+const css = require('./TimePicker.scss');
 
 interface TimePickerProps {
     label: string;

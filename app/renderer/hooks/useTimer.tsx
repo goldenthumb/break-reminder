@@ -9,7 +9,7 @@ export interface UseTimerProps {
 export default function useTimer({ time, interval, autoPlay = true }: UseTimerProps) {
     const [leftTime, setLeftTime] = useState(time);
     const [isPlay, setPlay] = useState(autoPlay);
-    const percent = Math.round((time - leftTime) / time * 100);
+    const percent = Math.round(((time - leftTime) / time) * 100);
 
     useEffect(() => {
         if (!isPlay) return;
@@ -28,7 +28,7 @@ export default function useTimer({ time, interval, autoPlay = true }: UseTimerPr
     const play = () => setPlay(true);
     const pause = () => setPlay(false);
     const reset = (updateTime = time) => setLeftTime(updateTime);
-    const toggle = (bool?: boolean) => setPlay(bool ? bool : !isPlay);
+    const toggle = (bool?: boolean) => setPlay(bool || !isPlay);
 
     return { isPlay, leftTime, percent, play, pause, reset, toggle };
 }

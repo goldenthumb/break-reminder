@@ -1,5 +1,4 @@
 import React, { useEffect, useContext } from 'react';
-const css = require('./Timer.scss');
 
 import { ipcRenderer } from 'electron';
 import { IoIosPlay, IoIosPause } from 'react-icons/io';
@@ -11,11 +10,13 @@ import useTimer from '../../hooks/useTimer';
 import Button from '../Button';
 import TimeBoard from '../TimeBoard';
 
+const css = require('./Timer.scss');
+
 export default function Timer() {
     const { state: { reminderInterval, isWorkingMode }, services: { blockerOpenScheduler } } = useContext(Context);
     const { isPlay, leftTime, play, pause, reset, toggle } = useTimer({
         time: reminderInterval,
-        interval: MILLISECOND.SEC
+        interval: MILLISECOND.SEC,
     });
 
     useEffect(() => {
@@ -64,11 +65,12 @@ export default function Timer() {
         <TimeBoard time={leftTime} />
         <div className={css.pauseBtnWrap}>
             <Button
-                theme='round-red'
+                theme="round-red"
                 action={() => toggle()}
                 disabled={!isWorkingMode}
-                children={isPlay ? <IoIosPause /> : <IoIosPlay />}
-            />
+            >
+                {isPlay ? <IoIosPause /> : <IoIosPlay />}
+            </Button>
         </div>
     </>;
 }

@@ -21,10 +21,9 @@ export default function Audio() {
     return (
         <audio ref={audio}>
             <source
-                type='audio/mp3'
-                src='../assets/audio/alarm.mp3'
+                type="audio/mp3"
+                src="../assets/audio/alarm.mp3"
             />
         </audio>
     );
 }
-
