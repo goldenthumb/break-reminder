@@ -20,18 +20,18 @@ module.exports = () => {
             watchOptions: {
                 aggregateTimeout: 300,
                 ignored: /node_modules/,
-                poll: 100
+                poll: 100,
             },
             before() {
                 spawn('npm', ['run', 'dev-main'], {
                     shell: true,
                     env: process.env,
-                    stdio: 'inherit'
+                    stdio: 'inherit',
                 })
-                    .on('close', code => process.exit(code))
-                    .on('error', spawnError => console.error(spawnError));
-            }
-        }
+                    .on('close', (code) => process.exit(code))
+                    .on('error', (spawnError) => console.error(spawnError));
+            },
+        },
     };
 
     config.output.filename = buildConfig.output.filename;

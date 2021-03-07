@@ -10,10 +10,10 @@ module.exports = {
     output: {
         path: resolve(__dirname, '../app/renderer/dist'),
         publicPath: `http://localhost:${port}/app/renderer/dist/`,
-        filename: 'app.min.js'
+        filename: 'app.min.js',
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.json']
+        extensions: ['.ts', '.tsx', '.js', '.json'],
     },
     module: {
         rules: [
@@ -21,19 +21,19 @@ module.exports = {
                 test: /\.tsx?$/,
                 exclude: [/node_modules/],
                 use: [{
-                    loader: 'ts-loader'
-                }]
+                    loader: 'ts-loader',
+                }],
             },
             {
                 test: /\.js$/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ["@babel/preset-react"],
-                        plugins: ["@babel/plugin-proposal-class-properties"]
-                    }
+                        presets: ['@babel/preset-react'],
+                        plugins: ['@babel/plugin-proposal-class-properties'],
+                    },
                 },
-                exclude: /node_modules/
+                exclude: /node_modules/,
             },
             {
                 test: /\.(scss)$/,
@@ -48,11 +48,11 @@ module.exports = {
                                 localIdentName: '[local]_[hash:base64:8]',
                                 context: resolve(__dirname, 'src'),
                             },
-                        }
+                        },
                     },
-                    'sass-loader'
-                ]
-            }
-        ]
-    }
+                    'sass-loader',
+                ],
+            },
+        ],
+    },
 };
