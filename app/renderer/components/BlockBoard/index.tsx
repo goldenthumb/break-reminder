@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { ipcRenderer } from 'electron';
+
 import { IPC_EVENT } from '../../../lib/enums';
 import { BLOCKER_STATUS } from '../../../main/Blocker';
-
 import useTimer from '../../hooks/useTimer';
+import Audio from '../Audio';
 import BlockTitle from '../BlockTitle';
 import Progress from '../Progress';
 import Skip from '../Skip';
-import Audio from '../Audio';
 
 const css = require('./BlockBoard.scss');
 

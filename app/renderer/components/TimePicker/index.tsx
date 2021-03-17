@@ -1,7 +1,7 @@
 import React from 'react';
-
-import ReactTimePicker from 'rc-time-picker';
 import moment, { Moment } from 'moment';
+import ReactTimePicker from 'rc-time-picker';
+
 import { MILLISECOND } from '../../../lib/enums';
 import { msToTime } from '../../../lib/utils';
 

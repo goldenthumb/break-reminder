@@ -4,14 +4,15 @@
         "module": "commonjs",
         "target": "es6",
         "sourceMap": false,
+        "skipLibCheck": true,
         "typeRoots": [
             "./types"
         ],
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "jsx": "react"
+        "jsx": "react",
+        "baseUrl": ".",
     },
-    "include": [
-        "app/**/*"
-    ]
+    "include": ["app/**/*"],
+    "exclude": ["node_modules"]
 }

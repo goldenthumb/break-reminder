@@ -1,12 +1,10 @@
-import React, { useEffect, useContext } from 'react';
-
+import React, { useContext, useEffect } from 'react';
+import { IoIosPause, IoIosPlay } from 'react-icons/io';
 import { ipcRenderer } from 'electron';
-import { IoIosPlay, IoIosPause } from 'react-icons/io';
-import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
 
+import { IPC_EVENT, MILLISECOND } from '../../../lib/enums';
 import { Context } from '../../contexts';
 import useTimer from '../../hooks/useTimer';
-
 import Button from '../Button';
 import TimeBoard from '../TimeBoard';
 
@@ -44,9 +42,9 @@ export default function Timer() {
 
         function visibilityListener() {
             if (
-                isWorkingMode &&
-                blockerOpenScheduler.isRunning() &&
-                document.visibilityState === 'visible'
+                isWorkingMode
+                && blockerOpenScheduler.isRunning()
+                && document.visibilityState === 'visible'
             ) {
                 reset(blockerOpenScheduler.getLeftDuration());
             }

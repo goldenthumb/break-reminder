@@ -1,8 +1,9 @@
 import { app } from 'electron';
+
 import { __MACOS__ } from '../lib/platfrom';
+import shortcuts from '../lib/shortcuts';
 import initializeApp from './initializeApp';
 import registerAutoLaunch from './registerAutoLaunch';
-import shortcuts from '../lib/shortcuts';
 
 if (app.dock) {
     app.dock.hide();

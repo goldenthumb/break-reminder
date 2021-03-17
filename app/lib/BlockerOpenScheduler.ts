@@ -1,14 +1,19 @@
 import { ipcRenderer } from 'electron';
-import { IPC_EVENT, MILLISECOND } from './enums';
+
 import { BLOCKER_STATUS } from '../main/Blocker';
 import Duration from './Duration';
+import { IPC_EVENT, MILLISECOND } from './enums';
 import Notifier from './Notifier';
 
 class BlockerOpenScheduler {
     private _duration: Duration;
+
     private _notifier: Notifier;
+
     private _startTime = 0;
+
     private _isRunning = false;
+
     private _notifierTimer: NodeJS.Timer | null = null;
 
     constructor(duration: Duration, notifier: Notifier) {

@@ -1,5 +1,6 @@
 import { app } from 'electron';
 import { basename } from 'path';
+
 import { store } from './store';
 
 export default function registerAutoLaunch() {
@@ -16,7 +17,7 @@ export default function registerAutoLaunch() {
 
 function isOpenAtLoginOption() {
     return (
-        process.env.NODE_ENV !== 'development' &&
-        store.get('options').startAtLogin
+        process.env.NODE_ENV !== 'development'
+        && store.get('options').startAtLogin
     );
 }

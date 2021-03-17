@@ -1,13 +1,13 @@
-import { resolve } from 'path';
-import { app, ipcMain, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { parseFile } from 'music-metadata';
-import { IPC_EVENT } from '../lib/enums';
-import { store, Preferences } from './store';
-import shortcuts from '../lib/shortcuts';
+import { resolve } from 'path';
 
-import Tray from './Tray';
-import Blocker, { BLOCKER_STATUS } from './Blocker';
+import { IPC_EVENT } from '../lib/enums';
 import PowerMonitor from '../lib/PowerMonitor';
+import shortcuts from '../lib/shortcuts';
+import Blocker, { BLOCKER_STATUS } from './Blocker';
+import { Preferences, store } from './store';
+import Tray from './Tray';
 
 export default function initializeApp() {
     const tray = new Tray();
@@ -37,21 +37,21 @@ export default function initializeApp() {
 function attachIpcEvents() {
     ipcMain.on(
         IPC_EVENT.GET_PREFERENCES,
-        (event: Electron.IpcMessageEvent) => {
+        (event: Electron.IpcMainEvent) => {
             event.returnValue = store.load();
         },
     );
 
     ipcMain.on(
         IPC_EVENT.SET_PREFERENCES,
-        (event: Electron.IpcMessageEvent, preferences: Preferences) => {
+        (event: Electron.IpcMainEvent, preferences: Preferences) => {
             store.save(preferences);
         },
     );
 
     ipcMain.on(
         IPC_EVENT.GET_ALARM_INFO,
-        async (event: Electron.IpcMessageEvent) => {
+        async (event: Electron.IpcMainEvent) => {
             const { format } = await parseFile(resolve(__dirname, '../assets/audio/alarm.mp3'));
             event.returnValue = format;
         },

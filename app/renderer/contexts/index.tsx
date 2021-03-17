@@ -1,11 +1,12 @@
-import React, { createContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { ipcRenderer } from 'electron';
-import { IPC_EVENT } from '../../lib/enums';
-import { BLOCKER_STATUS } from '../../main/Blocker';
-import { Preferences, Options } from '../../main/store';
-import Duration from '../../lib/Duration';
-import Notifier from '../../lib/Notifier';
+
 import BlockerOpenScheduler from '../../lib/BlockerOpenScheduler';
+import Duration from '../../lib/Duration';
+import { IPC_EVENT } from '../../lib/enums';
+import Notifier from '../../lib/Notifier';
+import { BLOCKER_STATUS } from '../../main/Blocker';
+import { Options, Preferences } from '../../main/store';
 
 interface AppContext {
     state: ContextState;
@@ -54,7 +55,7 @@ function Provider({ children }: ViewerProps) {
             ipcRenderer.removeListener(IPC_EVENT.BLOCKER, listener);
         };
 
-        function listener(event: Electron.IpcMessageEvent, status: BLOCKER_STATUS) {
+        function listener(event: Electron.IpcRendererEvent, status: BLOCKER_STATUS) {
             const isWorkingMode = status === BLOCKER_STATUS.CLOSE;
 
             if (isWorkingMode) {

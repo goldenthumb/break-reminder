@@ -1,5 +1,6 @@
 import { BrowserWindow, ipcMain, screen } from 'electron';
 import { EventEmitter } from 'events';
+
 import { IPC_EVENT } from '../lib/enums';
 import { Listener } from '../lib/types';
 
@@ -10,7 +11,9 @@ export enum BLOCKER_STATUS {
 
 export default class Blocker {
     private _emitter: EventEmitter;
+
     private _windows: Electron.BrowserWindow[] = [];
+
     private _status: BLOCKER_STATUS = BLOCKER_STATUS.CLOSE;
 
     constructor() {
@@ -29,16 +32,16 @@ export default class Blocker {
     private _attachEvent() {
         ipcMain.on(
             IPC_EVENT.BLOCKER,
-            (event: Electron.IpcMessageEvent, status: BLOCKER_STATUS) => {
+            (event: Electron.IpcMainEvent, status: BLOCKER_STATUS) => {
                 switch (status) {
-                case BLOCKER_STATUS.OPEN:
-                    this._open();
-                    break;
-                case BLOCKER_STATUS.CLOSE:
-                    this._close();
-                    break;
-                default:
-                    break;
+                    case BLOCKER_STATUS.OPEN:
+                        this._open();
+                        break;
+                    case BLOCKER_STATUS.CLOSE:
+                        this._close();
+                        break;
+                    default:
+                        break;
                 }
             },
         );

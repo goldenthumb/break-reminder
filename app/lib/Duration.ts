@@ -1,6 +1,8 @@
 export default class Duration {
     public _duration = 0;
+
     private _timer: NodeJS.Timer | null = null;
+
     private _callback: (() => void) | null = null;
 
     time(duration: number = this._duration) {

@@ -1,14 +1,15 @@
 import { app } from 'electron';
+import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { writeFileSync, readFileSync } from 'fs';
 
 interface StoreOptions<Default> {
     configName: string;
     defaults: Default;
 }
 
-class Store<T extends object> {
+class Store<T extends Record<string, any>> {
     private _path: string;
+
     private _data: T;
 
     constructor(opts: StoreOptions<T>) {

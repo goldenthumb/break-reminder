@@ -1,9 +1,8 @@
 import React from 'react';
-
 import { ipcRenderer } from 'electron';
+
 import { IPC_EVENT } from '../../../lib/enums';
 import { BLOCKER_STATUS } from '../../../main/Blocker';
-
 import Button from '../Button';
 
 const css = require('./Skip.scss');

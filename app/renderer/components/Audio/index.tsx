@@ -1,5 +1,6 @@
-import React, { useRef, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { ipcRenderer } from 'electron';
+
 import { IPC_EVENT } from '../../../lib/enums';
 
 export default function Audio() {

@@ -1,9 +1,11 @@
 import { powerMonitor } from 'electron';
 import { EventEmitter } from 'events';
+
 import { Listener } from './types';
 
 export default class PowerMonitor {
     private _emitter: EventEmitter;
+
     private _events: Array<string>;
 
     constructor() {

@@ -10,7 +10,9 @@ export interface NotificationOptions {
 
 export default class Notifier {
     private _isActive = true;
+
     private _title: string;
+
     private _options: NotificationOptions;
 
     constructor(title: string, options: NotificationOptions) {

@@ -1,6 +1,7 @@
-import { Tray, systemPreferences, screen } from 'electron';
+import { screen, systemPreferences, Tray } from 'electron';
 import { resolve } from 'path';
-import { __WINDOW__, __MACOS__ } from '../lib/platfrom';
+
+import { __MACOS__, __WINDOW__ } from '../lib/platfrom';
 
 export default class extends Tray {
     constructor() {

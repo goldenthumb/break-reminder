@@ -1,7 +1,6 @@
 import React from 'react';
-
-import { ipcRenderer } from 'electron';
 import { IoIosPower } from 'react-icons/io';
+import { ipcRenderer } from 'electron';
 
 import Button from '../Button';
 

@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { Line } from 'rc-progress';
 
 const css = require('./Progress.scss');

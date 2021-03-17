@@ -6,16 +6,5 @@
     },
     "extends": [
         "goldenthumb/typescriptreact"
-    ],
-    "rules": {
-        "lines-between-class-members": "off",
-        "import/no-unresolved": "off",
-        "jsx-a11y/media-has-caption": "off",
-        "import/extensions": "off",
-        "@typescript-eslint/no-var-requires": "off",
-        "react/no-unescaped-entities": "off",
-        "react-hooks/exhaustive-deps": "off",
-        "consistent-return": "off",
-        "import/prefer-default-export": "warn"
-    }
+    ]
 }
