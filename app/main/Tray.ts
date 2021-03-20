@@ -1,4 +1,4 @@
-import { screen, systemPreferences, Tray } from 'electron';
+import { nativeTheme, screen, systemPreferences, Tray } from 'electron';
 import { resolve } from 'path';
 
 import { __MACOS__, __WINDOW__ } from '../lib/platfrom';
@@ -37,7 +37,7 @@ export default class extends Tray {
 function getTrayIconPath() {
     return resolve(
         __dirname,
-        `../assets/images/tray${systemPreferences.isDarkMode() || __WINDOW__ ? '-white' : ''}.png`,
+        `../assets/images/tray${nativeTheme.shouldUseDarkColors || __WINDOW__ ? '-white' : ''}.png`,
     );
 }
 
